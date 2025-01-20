@@ -1,0 +1,356 @@
+import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'package:flutter_app/mission_progress_calm.dart';
+
+class CalmBearGameAddition extends StatefulWidget {
+  final String mode;
+  final int missionIndex;
+
+  const CalmBearGameAddition({
+    super.key,
+    required this.mode,
+    required this.missionIndex,
+  });
+
+  static const List<String> missionModes = [
+    "add_1_digit",
+    "add_1_digit_and_2_digit",
+    "add_2_digit_without_carry",
+    "add_2_digit_with_carry",
+    "add_3_digit_and_2_digit",
+    "add_3_digit",
+    "add_4_digit_and_2_digit",
+    "add_4_digit_and_3_digit",
+    "add_4_digit",
+    "add_decimals",
+  ];
+
+  @override
+  State<CalmBearGameAddition> createState() => _CalmBearGameState();
+}
+
+class _CalmBearGameState extends State<CalmBearGameAddition> {
+  int correctAnswers = 0; // Track correct answers
+  int totalQuestionsAnswered = 1; // Track total questions answered
+  String currentExpression = ""; // Current math expression
+  String userInput = ""; // Users input
+  bool gameStarted = false; // Flag to indicate game has started
+  bool showingAnswer = false; // Flag to show correct answer
+  late TextEditingController _controller; // Persistent controller
+  int preStartTimer = 5; // Pre-start countdown timer
+  late Stopwatch _stopwatch; // Stopwatch to track time
+  late FocusNode _focusNode; // Focus to autoclick input
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _controller = TextEditingController();
+    _startPreGameTimer();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose(); // Dispose of the FocusNode
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // Timer for 5-second pre game countdown
+  void _startPreGameTimer() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (preStartTimer > 0) {
+          preStartTimer--;
+        } else {
+          gameStarted = true;
+          _stopwatch = Stopwatch()..start(); // Start the stopwatch
+          timer.cancel();
+          _generateExpression();
+        }
+      });
+    });
+  }
+
+  // Generate a random math expression based on the selected mode
+  void _generateExpression() {
+    final random = Random();
+
+    if (widget.mode == "add_1_digit") {
+      int a = random.nextInt(9) + 0; // 1-digit (1-9)
+      int b = random.nextInt(9) + 0; // 1-digit (1-9)
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_1_digit_and_2_digit") {
+      int a = random.nextInt(9) + 0; // 1-digit (1-9)
+      int b = random.nextInt(90) + 10; // 2-digit (10-99)
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_2_digit_without_carry") {
+      int a = random.nextInt(80) + 10; // 2-digit
+      int b = random.nextInt(80) + 10; // 2-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_2_digit_with_carry") {
+      int a = random.nextInt(90) + 10; // 2-digit
+      int b = random.nextInt(90) + 10; // 2-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_3_digit_and_2_digit") {
+      int a = random.nextInt(800) + 100; // 3-digit
+      int b = random.nextInt(90) + 10; // 2-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_3_digit") {
+      int a = random.nextInt(800) + 100; // 3-digit
+      int b = random.nextInt(800) + 100; // 3-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit_and_2_digit") {
+      int a = random.nextInt(9000) + 1000; // 4-digit
+      int b = random.nextInt(90) + 10; // 2-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit_and_3_digit") {
+      int a = random.nextInt(9000) + 1000; // 4-digit
+      int b = random.nextInt(800) + 100; // 3-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit") {
+      int a = random.nextInt(9000) + 1000; // 4-digit
+      int b = random.nextInt(9000) + 1000; // 4-digit
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_decimals") {
+      double a = (random.nextInt(90000) + 10000) / 100; // Range 100.00 - 999.99
+      double b = (random.nextInt(9000) + 1000) / 100; // Range 10.00 - 99.99
+      currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
+    }
+
+    setState(() {
+      userInput = "";
+      _controller.text = ""; // Reset input field
+      _focusNode
+          .requestFocus(); // Request focus after generating new expression
+    });
+  }
+
+  // Evaluate math expression
+  double _evaluateExpression(String expression) {
+    try {
+      final parts = expression.split(" + ");
+      double a = double.parse(parts[0]);
+      double b = double.parse(parts[1]);
+      return a + b; 
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
+  // Validate user's answer
+  void _validateAnswer() {
+    final correctAnswer = _evaluateExpression(currentExpression);
+    double userAnswer =
+        double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+
+    setState(() {
+      totalQuestionsAnswered++;
+
+      if ((userAnswer - correctAnswer).abs() < 0.01) {
+        correctAnswers++;
+        if (totalQuestionsAnswered == 16) {
+          _endGame();
+        } else {
+          _generateExpression();
+        }
+      } else {
+        showingAnswer = true; // Show the correct answer for incorrect response
+        Future.delayed(const Duration(seconds: 3), () {
+          setState(() {
+            showingAnswer = false;
+            if (totalQuestionsAnswered < 16) {
+              _generateExpression();
+            } else {
+              _endGame();
+            }
+          });
+        });
+      }
+    });
+  }
+
+  // End the game
+  void _endGame() {
+    _stopwatch.stop(); // Stop the stopwatch
+    final elapsedTime = _stopwatch.elapsed;
+
+    // Increment the completed mission count for the current subject
+    MissionProgress.incrementMissionProgress(widget.mode);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              int nextMissionIndex = widget.missionIndex + 1;
+
+              if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameAddition(
+                      mode: CalmBearGameAddition.missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xffffa400),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                "Correct: $correctAnswers",
+                style: GoogleFonts.mali(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 34,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Container(
+        color: const Color(0xffffa400),
+        child: Center(
+          child: gameStarted
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "$totalQuestionsAnswered of 15",
+                      style: GoogleFonts.mali(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 48,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    showingAnswer
+                        ? Text(
+                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                            style: GoogleFonts.mali(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 48,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        : Text(
+                            currentExpression,
+                            style: GoogleFonts.mali(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 48,
+                            ),
+                          ),
+                    const SizedBox(height: 20),
+                  SizedBox(
+                    width: 150,
+                    child: TextField(
+                      focusNode: _focusNode,
+                      cursorColor: const Color(0xffffa400),
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (value) {
+                        setState(() {
+                          userInput = value;
+                        });
+                        if (value.isNotEmpty) {
+                          _validateAnswer();
+                        }
+                      },
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xffffa400)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xffffa400)),
+                        ),
+                        fillColor: Color(0xffffee9ae),
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                    const SizedBox(height: 10),
+                  ],
+                )
+              : Text(
+                  preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
+                  style: GoogleFonts.mali(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 48,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+}
