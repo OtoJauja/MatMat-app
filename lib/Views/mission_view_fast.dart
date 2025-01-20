@@ -126,16 +126,16 @@ class MissionViewFast extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: const Color.fromARGB(255, 50, 50, 50)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           subjectName,
           style: GoogleFonts.mali(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -143,7 +143,7 @@ class MissionViewFast extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        color: const Color(0xffffa400),
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
@@ -171,7 +171,7 @@ class MissionViewFast extends StatelessWidget {
 
   return SingleChildScrollView(
     child: HexagonOffsetGrid.oddFlat(
-      color: const Color(0xffffa400),
+      color: const Color.fromARGB(255, 255, 255, 255),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
       columns: columns,
       rows: rows,
@@ -179,7 +179,7 @@ class MissionViewFast extends StatelessWidget {
         final missionIndex = row * columns + col;
         if (missionIndex >= validMissions.length) {
           return HexagonWidgetBuilder(
-            color: const Color(0xffffa400),
+            color: const Color.fromARGB(255, 255, 255, 255),
             child: Container(), // Empty container
           );
         }

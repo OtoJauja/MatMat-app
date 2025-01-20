@@ -325,7 +325,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -340,7 +340,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
               child: Text(
                 "Correct: $correctAnswers",
                 style: GoogleFonts.mali(
-                  color: Colors.white,
+                  color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -349,7 +349,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
           ),
         ],
       ),
-      backgroundColor: const Color(0xffffa400),
+      backgroundColor: Colors.white,
       body: Center(
         child: gameStarted
             ? Column(
@@ -358,7 +358,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
                   Text(
                     "$totalQuestionsAnswered of 15",
                     style: GoogleFonts.mali(
-                      color: Colors.white,
+                      color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -367,7 +367,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
                   Text(
                     "⏳ $timeLeft seconds",
                     style: GoogleFonts.mali(
-                      color: const Color.fromARGB(255, 255, 255, 255),
+                      color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -376,7 +376,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
                   Text(
                     currentExpression,
                     style: GoogleFonts.mali(
-                      color: const Color.fromARGB(255, 255, 255, 255),
+                      color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -431,7 +431,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
             : Text(
                 preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
                 style: GoogleFonts.mali(
-                  color: const Color.fromARGB(255, 255, 255, 255),
+                  color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 48,
                 ),

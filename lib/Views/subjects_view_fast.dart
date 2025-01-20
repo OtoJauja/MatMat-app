@@ -21,12 +21,12 @@ class SubjectsViewFast extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 50, 50, 50),
           ),
           tooltip: 'Back',
           onPressed: () => Navigator.pop(context),
@@ -34,7 +34,7 @@ class SubjectsViewFast extends StatelessWidget {
         title: Text(
           'Subjects',
           style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -43,16 +43,11 @@ class SubjectsViewFast extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
           ),
         ],
       ),
       body: Container(
-        color: const Color(0xFFFFA400),
+        color: Color.fromARGB(255, 255, 255, 255),
         child: ListView.builder(
           itemCount: subjects.length,
           itemBuilder: (context, index) {
@@ -60,12 +55,12 @@ class SubjectsViewFast extends StatelessWidget {
               title: Text(
                 subjects[index],
                 style: GoogleFonts.mali(
-                  color: Colors.white,
+                  color: const Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
               ),
-              trailing: const Icon(Icons.chevron_right, color: Colors.white),
+              trailing: const Icon(Icons.chevron_right, color: const Color.fromARGB(255, 50, 50, 50)),
               onTap: () {
                 Navigator.push(
                   context,
