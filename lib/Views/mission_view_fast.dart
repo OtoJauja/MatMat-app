@@ -166,7 +166,7 @@ class MissionViewFast extends StatelessWidget {
   Widget _buildHoneycombGrid(List<Map<String, String>> missions, BuildContext context, double hexWidth, Orientation orientation) {
   final validMissions = missions.where((mission) => mission["description"] != null && mission["number"] != null).toList();
 
-  final columns = orientation == Orientation.portrait ? 2 : 6;
+  final columns = orientation == Orientation.portrait ? 2 : 5;
   final rows = (validMissions.length / columns).ceil();
 
   return SingleChildScrollView(

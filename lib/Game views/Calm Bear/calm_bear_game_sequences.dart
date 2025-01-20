@@ -285,7 +285,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -300,7 +300,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
               child: Text(
                 "Correct: $correctAnswers",
                 style: GoogleFonts.mali(
-                  color: Colors.white,
+                  color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -310,7 +310,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         ],
       ),
       body: Container(
-        color: const Color(0xffffa400),
+        color: Colors.white,
         child: Center(
           child: gameStarted
               ? Column(
@@ -319,7 +319,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                     Text(
                       "$totalQuestionsAnswered of 15",
                       style: GoogleFonts.mali(
-                        color: Colors.white,
+                        color: const Color(0xffffa400),
                         fontWeight: FontWeight.bold,
                         fontSize: 48,
                       ),
@@ -329,7 +329,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                         ? Text(
                             "Correct Answer: $nextValue",
                             style: GoogleFonts.mali(
-                              color: Colors.white,
+                              color: const Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -338,7 +338,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                         : Text(
                             currentSequence,
                             style: GoogleFonts.mali(
-                              color: Colors.white,
+                              color: const Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -378,7 +378,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
               : Text(
                   preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
                   style: GoogleFonts.mali(
-                    color: Colors.white,
+                    color: const Color(0xffffa400),
                     fontWeight: FontWeight.bold,
                     fontSize: 48,
                   ),

@@ -264,7 +264,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -279,7 +279,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
               child: Text(
                 "Correct: $correctAnswers",
                 style: GoogleFonts.mali(
-                  color: Colors.white,
+                  color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -289,7 +289,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
         ],
       ),
       body: Container(
-        color: const Color(0xffffa400),
+        color: Colors.white,
         child: Center(
           child: gameStarted
               ? Column(
@@ -298,7 +298,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                     Text(
                       "$totalQuestionsAnswered of 15",
                       style: GoogleFonts.mali(
-                        color: Colors.white,
+                        color: const Color(0xffffa400),
                         fontWeight: FontWeight.bold,
                         fontSize: 48,
                       ),
@@ -308,7 +308,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                         ? Text(
                             "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
                             style: GoogleFonts.mali(
-                              color: Colors.white,
+                              color: const Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -317,7 +317,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                         : Text(
                             currentExpression,
                             style: GoogleFonts.mali(
-                              color: Colors.white,
+                              color: const Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -357,7 +357,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
               : Text(
                   preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
                   style: GoogleFonts.mali(
-                    color: Colors.white,
+                    color: const Color(0xffffa400),
                     fontWeight: FontWeight.bold,
                     fontSize: 48,
                   ),

@@ -16,12 +16,12 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           'Choose mode!',
           style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 255, 255, 255),  
+            color: const Color.fromARGB(255, 50, 50, 50),  
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -30,16 +30,11 @@ class HomeView extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 255, 255, 255),  
-            ),
           ),
         ],
       ),
       body: Container(
-        color: const Color(0xffffa400),
+        color: Colors.white,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -106,14 +106,14 @@ class SettingsView extends StatelessWidget {
     };
 
     return Scaffold(
-      backgroundColor: const Color(0xffffa400),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: const Color(0xffffa400),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         title: Text(
           'Settings',
           style: GoogleFonts.mali(
-            textStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(color: const Color.fromARGB(255, 50, 50, 50), fontWeight: FontWeight.bold, fontSize: 28),
           ),
         ),
         centerTitle: true,
