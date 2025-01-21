@@ -11,7 +11,6 @@ import '../Game views/Fast Bee/fast_bee_game_sequences.dart'; // Sequence game
 import '../Game views/Fast Bee/fast_bee_game_exponentiation.dart'; // Exponent game
 import '../Game views/Fast Bee/fast_bee_game_percentages.dart'; // Percentage game
 
-import '../mission_progress_fast.dart';
 
 class MissionViewFast extends StatelessWidget {
   final String subjectName;
@@ -185,7 +184,6 @@ class MissionViewFast extends StatelessWidget {
         }
 
         final mission = validMissions[missionIndex];
-        final missionProgress = MissionProgress.getMissionProgress(mission["description"]!);
 
         return HexagonWidgetBuilder(
           elevation: 0,
@@ -219,7 +217,7 @@ class MissionViewFast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "$missionProgress of 15",
+                      "0 of 15",
                       style: GoogleFonts.mali(
                         color: const Color.fromARGB(255, 50, 50, 50),
                         fontSize: 18,

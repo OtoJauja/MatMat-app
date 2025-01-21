@@ -274,75 +274,82 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
   }
 
  // End the game
-  void _endGame() {
-    _stopwatch.stop(); // Stop the stopwatch
-    final elapsedTime = _stopwatch.elapsed;
+ void _endGame() {
+  _stopwatch.stop();
+  final elapsedTime = _stopwatch.elapsed;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xffffee9ae),
-        title: Text(
-          "Game Over!",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color(0xffffee9ae),
+      title: Text(
+        "Game Over!",
+        style: GoogleFonts.mali(
+          color: const Color.fromARGB(255, 50, 50, 50),
+          fontWeight: FontWeight.bold,
         ),
-        content: Text(
-          "Correct answers: $correctAnswers\n\n"
-          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-          "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              int nextMissionIndex = widget.missionIndex + 1;
-
-              if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CalmBearGameMixed(
-                      mode: CalmBearGameMixed.missionModes[nextMissionIndex],
-                      missionIndex: nextMissionIndex,
-                    ),
-                  ),
-                );
-              } else {
-                Navigator.popUntil(context, (route) => route.isFirst);
-              }
-            },
-            child: Text(
-              "Next Mission",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-            child: Text(
-              "Back to Missions",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
       ),
-    );
-  }
+      content: Text(
+        "Correct answers: $correctAnswers\n\n"
+        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+        "Do you want to continue to the next mission or choose a different mission?",
+        style: GoogleFonts.mali(
+          color: const Color.fromARGB(255, 50, 50, 50),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); 
+
+            int nextMissionIndex = widget.missionIndex + 1;
+
+            // Proceed to the next mission if available
+            if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CalmBearGameMixed(
+                    mode: CalmBearGameMixed.missionModes[nextMissionIndex],
+                    missionIndex: nextMissionIndex,
+                  ),
+                ),
+              );
+            } else {
+              // If no more missions are available, go back to the first screen
+              Navigator.popUntil(context, (route) => route.isFirst);
+            }
+          },
+          child: Text(
+            "Next Mission",
+            style: GoogleFonts.mali(
+              color: const Color.fromARGB(255, 50, 50, 50),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+          child: Text(
+            "Back to Missions",
+            style: GoogleFonts.mali(
+              color: const Color.fromARGB(255, 50, 50, 50),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +360,8 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers); // Pass correct answers back when closing
           },
         ),
         actions: [
@@ -407,34 +415,36 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                             ),
                           ),
                     const SizedBox(height: 20),
-                  SizedBox(
-                    width: 150,
-                    child: TextField(
-                      focusNode: _focusNode,
-                      cursorColor: const Color(0xffffa400),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      onSubmitted: (value) {
-                        setState(() {
-                          userInput = value;
-                        });
-                        if (value.isNotEmpty) {
-                          _validateAnswer();
-                        }
-                      },
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
+                    SizedBox(
+                      width: 150,
+                      child: TextField(
+                        focusNode: _focusNode,
+                        cursorColor: const Color(0xffffa400),
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        onSubmitted: (value) {
+                          if (mounted == true) {
+                            setState(() {
+                              userInput = value;
+                            });
+                          }
+                          if (value.isNotEmpty) {
+                            _validateAnswer();
+                          }
+                        },
+                        controller: _controller,
+                        decoration: const InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffffa400)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffffa400)),
+                          ),
+                          fillColor: Color(0xffffee9ae),
+                          filled: true,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
-                        ),
-                        fillColor: Color(0xffffee9ae),
-                        filled: true,
                       ),
                     ),
-                  ),
                     const SizedBox(height: 10),
                   ],
                 )

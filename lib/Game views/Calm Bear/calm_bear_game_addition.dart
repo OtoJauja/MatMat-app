@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:flutter_app/mission_progress_calm.dart';
-
 class CalmBearGameAddition extends StatefulWidget {
   final String mode;
   final int missionIndex;
@@ -62,16 +60,18 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
   // Timer for 5-second pre game countdown
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start(); // Start the stopwatch
-          timer.cancel();
-          _generateExpression();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start(); // Start the stopwatch
+            timer.cancel();
+            _generateExpression();
+          }
+        });
+      }
     });
   }
 
@@ -120,13 +120,14 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
       double b = (random.nextInt(9000) + 1000) / 100; // Range 10.00 - 99.99
       currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
     }
-
-    setState(() {
-      userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
-    });
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = ""; // Reset input field
+        _focusNode
+            .requestFocus(); // Request focus after generating new expression
+      });
+    }
   }
 
   // Evaluate math expression
@@ -135,7 +136,7 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
       final parts = expression.split(" + ");
       double a = double.parse(parts[0]);
       double b = double.parse(parts[1]);
-      return a + b; 
+      return a + b;
     } catch (e) {
       return 0.0;
     }
@@ -146,106 +147,112 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++;
 
-    setState(() {
-      totalQuestionsAnswered++;
-
-      if ((userAnswer - correctAnswer).abs() < 0.01) {
-        correctAnswers++;
-        if (totalQuestionsAnswered == 16) {
-          _endGame();
+        if ((userAnswer - correctAnswer).abs() < 0.01) {
+          correctAnswers++;
+          if (totalQuestionsAnswered == 16) {
+            _endGame();
+          } else {
+            _generateExpression();
+          }
         } else {
-          _generateExpression();
-        }
-      } else {
-        showingAnswer = true; // Show the correct answer for incorrect response
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateExpression();
-            } else {
-              _endGame();
-            }
+          showingAnswer =
+              true; // Show the correct answer for incorrect response
+          Future.delayed(const Duration(seconds: 3), () {
+            setState(() {
+              showingAnswer = false;
+              if (totalQuestionsAnswered < 16) {
+                _generateExpression();
+              } else {
+                _endGame();
+              }
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   // End the game
   void _endGame() {
-    _stopwatch.stop(); // Stop the stopwatch
-    final elapsedTime = _stopwatch.elapsed;
+  _stopwatch.stop();
+  final elapsedTime = _stopwatch.elapsed;
 
-    // Increment the completed mission count for the current subject
-    MissionProgress.incrementMissionProgress(widget.mode);
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xffffee9ae),
-        title: Text(
-          "Game Over!",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color(0xffffee9ae),
+      title: Text(
+        "Game Over!",
+        style: GoogleFonts.mali(
+          color: const Color.fromARGB(255, 50, 50, 50),
+          fontWeight: FontWeight.bold,
         ),
-        content: Text(
-          "Correct answers: $correctAnswers\n\n"
-          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-          "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              int nextMissionIndex = widget.missionIndex + 1;
-
-              if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CalmBearGameAddition(
-                      mode: CalmBearGameAddition.missionModes[nextMissionIndex],
-                      missionIndex: nextMissionIndex,
-                    ),
-                  ),
-                );
-              } else {
-                Navigator.popUntil(context, (route) => route.isFirst);
-              }
-            },
-            child: Text(
-              "Next Mission",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-            child: Text(
-              "Back to Missions",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
       ),
-    );
-  }
+      content: Text(
+        "Correct answers: $correctAnswers\n\n"
+        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+        "Do you want to continue to the next mission or choose a different mission?",
+        style: GoogleFonts.mali(
+          color: const Color.fromARGB(255, 50, 50, 50),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); 
+
+            int nextMissionIndex = widget.missionIndex + 1;
+
+            // Proceed to the next mission if available
+            if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CalmBearGameAddition(
+                    mode: CalmBearGameAddition.missionModes[nextMissionIndex],
+                    missionIndex: nextMissionIndex,
+                  ),
+                ),
+              );
+            } else {
+              // If no more missions are available, go back to the first screen
+              Navigator.popUntil(context, (route) => route.isFirst);
+            }
+          },
+          child: Text(
+            "Next Mission",
+            style: GoogleFonts.mali(
+              color: const Color.fromARGB(255, 50, 50, 50),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+          child: Text(
+            "Back to Missions",
+            style: GoogleFonts.mali(
+              color: const Color.fromARGB(255, 50, 50, 50),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +263,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers); // Pass correct answers back when closing
           },
         ),
         actions: [
@@ -310,34 +318,36 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                             ),
                           ),
                     const SizedBox(height: 20),
-                  SizedBox(
-                    width: 150,
-                    child: TextField(
-                      focusNode: _focusNode,
-                      cursorColor: const Color(0xffffa400),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      onSubmitted: (value) {
-                        setState(() {
-                          userInput = value;
-                        });
-                        if (value.isNotEmpty) {
-                          _validateAnswer();
-                        }
-                      },
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
+                    SizedBox(
+                      width: 150,
+                      child: TextField(
+                        focusNode: _focusNode,
+                        cursorColor: const Color(0xffffa400),
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        onSubmitted: (value) {
+                          if (mounted == true) {
+                            setState(() {
+                              userInput = value;
+                            });
+                          }
+                          if (value.isNotEmpty) {
+                            _validateAnswer();
+                          }
+                        },
+                        controller: _controller,
+                        decoration: const InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffffa400)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffffa400)),
+                          ),
+                          fillColor: Color(0xffffee9ae),
+                          filled: true,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
-                        ),
-                        fillColor: Color(0xffffee9ae),
-                        filled: true,
                       ),
                     ),
-                  ),
                     const SizedBox(height: 10),
                   ],
                 )
