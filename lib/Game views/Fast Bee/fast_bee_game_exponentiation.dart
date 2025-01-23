@@ -224,26 +224,22 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
           return sqrt(base).toInt();
         }
       }
-
       // Handle cubic roots
       if (expression.contains("∛")) {
         String baseStr = expression.replaceAll(RegExp(r"[∛ ]"), "");
         int base = int.parse(baseStr);
         return pow(base, 1 / 3).round();
       }
-
       // Handle squares
       if (expression.contains("²")) {
         int base = int.parse(expression.replaceAll("²", ""));
         return pow(base, 2).toInt();
       }
-
       // Handle cubes
       if (expression.contains("³")) {
         int base = int.parse(expression.replaceAll("³", ""));
         return pow(base, 3).toInt();
       }
-
       // Handle addition
       if (expression.contains("+")) {
         var parts = expression.split("+");
@@ -251,7 +247,6 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         int right = _evaluateExpression(parts[1].trim());
         return left + right;
       }
-
       // Handle subtraction
       if (expression.contains("-")) {
         var parts = expression.split("-");
@@ -259,7 +254,6 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         int right = _evaluateExpression(parts[1].trim());
         return left - right;
       }
-
       // Handle multiplication
       if (expression.contains("*")) {
         var parts = expression.split("*");
@@ -267,7 +261,6 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         int right = _evaluateExpression(parts[1].trim());
         return left * right;
       }
-
       // Handle division
       if (expression.contains("/")) {
         var parts = expression.split("/");
@@ -286,7 +279,6 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Validate user's answer
   void _validateAnswer() {
     final correctAnswer = _evaluateExpression(currentExpression);
-
     // Normalize commas in input and parse as double
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
@@ -319,6 +311,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
     }
   }
 
+  // End game
   void _endGame() {
     showDialog(
       context: context,
@@ -346,14 +339,12 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
               Navigator.pop(context);
               int nextMissionIndex = widget.missionIndex + 1;
 
-              if (nextMissionIndex <
-                  FastBeeGameExponentiation.missionModes.length) {
+              if (nextMissionIndex < FastBeeGameExponentiation.missionModes.length) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FastBeeGameExponentiation(
-                      mode: FastBeeGameExponentiation
-                          .missionModes[nextMissionIndex],
+                      mode: FastBeeGameExponentiation.missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
@@ -372,8 +363,12 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -396,7 +391,8 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers);
           },
         ),
         actions: [

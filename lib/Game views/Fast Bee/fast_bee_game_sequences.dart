@@ -286,8 +286,12 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -310,7 +314,8 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers);
           },
         ),
         actions: [

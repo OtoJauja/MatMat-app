@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hexagon/hexagon.dart';
 
 class ProgressView extends StatelessWidget {
   const ProgressView({super.key});

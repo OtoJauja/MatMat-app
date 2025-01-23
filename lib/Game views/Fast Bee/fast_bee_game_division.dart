@@ -203,73 +203,6 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
     });
   }
 
-  // End the game
-  void _endGame() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xffffee9ae),
-        title: Text(
-          "Game Over!",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          "Correct answers: $correctAnswers\n\n"
-          "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              int nextMissionIndex = widget.missionIndex + 1;
-
-              if (nextMissionIndex < FastBeeGameDivision.missionModes.length) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FastBeeGameDivision(
-                      mode: FastBeeGameDivision.missionModes[nextMissionIndex],
-                      missionIndex: nextMissionIndex,
-                    ),
-                  ),
-                );
-              } else {
-                Navigator.popUntil(context, (route) => route.isFirst);
-              }
-            },
-            child: Text(
-              "Next Mission",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-            child: Text(
-              "Back to Missions",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Evaluate a math expression
   double _evaluateExpression(String expression) {
     try {
@@ -328,6 +261,77 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
     }
   }
 
+  // End game
+  void _endGame() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              int nextMissionIndex = widget.missionIndex + 1;
+
+              if (nextMissionIndex < FastBeeGameDivision.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FastBeeGameDivision(
+                      mode: FastBeeGameDivision.missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -337,7 +341,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers);
           },
         ),
         actions: [

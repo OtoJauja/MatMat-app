@@ -225,6 +225,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
     }
   }
 
+  // End game
   void _endGame() {
     showDialog(
       context: context,
@@ -252,14 +253,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
               Navigator.pop(context);
               int nextMissionIndex = widget.missionIndex + 1;
 
-              if (nextMissionIndex <
-                  FastBeeGamePercentages.missionModes.length) {
+              if (nextMissionIndex < FastBeeGamePercentages.missionModes.length) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FastBeeGamePercentages(
-                      mode:
-                          FastBeeGamePercentages.missionModes[nextMissionIndex],
+                      mode: FastBeeGamePercentages.missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
@@ -278,8 +277,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -302,7 +305,8 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers);
           },
         ),
         actions: [

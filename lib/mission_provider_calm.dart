@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Mission { // Provides missions to both calm and fast games
+class Mission {
   final int number;
   final String description;
   int? correctAnswers;
@@ -12,7 +12,7 @@ class Mission { // Provides missions to both calm and fast games
   });
 }
 
-class MissionsProvider with ChangeNotifier {
+class MissionsProviderCalm with ChangeNotifier {
   final Map<String, List<Mission>> _missions = {
     "Addition": [
       Mission(number: 1, description: "Add 1-Digit Numbers"),

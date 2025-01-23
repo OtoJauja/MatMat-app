@@ -12,8 +12,8 @@ import '../Game views/Calm Bear/calm_bear_game_percentages.dart';
 import '../Game views/Calm Bear/calm_bear_game_sequences.dart';
 import '../Game views/Calm Bear/calm_bear_game_subtraction.dart';
 
-import 'package:flutter_app/mission_provider.dart'; // Import the MissionsProvider
-import 'package:flutter_app/hexagon_progress_painter.dart';
+import 'package:flutter_app/mission_provider_calm.dart'; // Import the Missions for Calm bear
+import 'package:flutter_app/hexagon_progress_painter.dart'; // Import hexagon progress painter
 
 class MissionViewCalm extends StatefulWidget {
   final String subjectName;
@@ -32,7 +32,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
     super.initState();
     // Fetch the missions from the provider based on the subject
     final missionsProvider =
-        Provider.of<MissionsProvider>(context, listen: false);
+        Provider.of<MissionsProviderCalm>(context, listen: false);
     missions = missionsProvider.getMissionsForSubject(widget.subjectName);
   }
 

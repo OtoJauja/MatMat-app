@@ -217,6 +217,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
     }
   }
 
+  // End game
   void _endGame() {
     showDialog(
       context: context,
@@ -244,14 +245,12 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
               Navigator.pop(context);
               int nextMissionIndex = widget.missionIndex + 1;
 
-              if (nextMissionIndex <
-                  FastBeeGameMultiplication.missionModes.length) {
+              if (nextMissionIndex < FastBeeGameMultiplication.missionModes.length) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FastBeeGameMultiplication(
-                      mode: FastBeeGameMultiplication
-                          .missionModes[nextMissionIndex],
+                      mode: FastBeeGameMultiplication.missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
@@ -270,8 +269,12 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+            Navigator.pop(context); 
+            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+
+            // Navigate back to the missions list 
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -294,7 +297,8 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                correctAnswers);
           },
         ),
         actions: [

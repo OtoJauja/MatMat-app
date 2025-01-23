@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HexagonProgressPainter extends CustomPainter {
-  final double progress; // progress value between 0.0 and 1.0
+  final double progress; 
 
   HexagonProgressPainter({required this.progress});
 
@@ -16,15 +16,14 @@ class HexagonProgressPainter extends CustomPainter {
     final double height = size.height;
 
     // Create a flat hexagon path
-    hexPath.moveTo(width * 0.25, 0); // Top left corner
-    hexPath.lineTo(width * 0.75, 0); // Top right corner
-    hexPath.lineTo(width, height * 0.5); // Right middle
-    hexPath.lineTo(width * 0.75, height); // Bottom right corner
-    hexPath.lineTo(width * 0.25, height); // Bottom left corner
-    hexPath.lineTo(0, height * 0.5); // Left middle
+    hexPath.moveTo(width * 0.25, 0);
+    hexPath.lineTo(width * 0.75, 0); 
+    hexPath.lineTo(width, height * 0.5); 
+    hexPath.lineTo(width * 0.75, height); 
+    hexPath.lineTo(width * 0.25, height); 
+    hexPath.lineTo(0, height * 0.5);
     hexPath.close();
 
-    // Draw the full hexagon background (empty state)
     canvas.drawPath(hexPath, Paint()..color = const Color(0xffffee9ae));
 
     // Clip the hexagon to only draw progress
