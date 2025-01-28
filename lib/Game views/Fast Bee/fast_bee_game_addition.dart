@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FastBeeGameAddition extends StatefulWidget {
-  // everything shoud be working
   final String mode;
   final int missionIndex;
 
@@ -33,10 +32,10 @@ class FastBeeGameAddition extends StatefulWidget {
 
 class _FastBeeGameState extends State<FastBeeGameAddition> {
   late Timer _timer; // Countdown timer
-  int timeLeft = 90; // 60 seconds to complete
+  late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
   int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
+  int totalQuestionsAnswered = 0; // Track total questions answered
   String currentExpression = ""; // Current math expression
   String userInput = ""; // User's input
   bool gameStarted = false; // Flag to indicate game has started
@@ -47,6 +46,8 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
   @override
   void initState() {
     super.initState();
+    timeLeft =
+        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _startPreGameTimer();
@@ -107,8 +108,15 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
       int b = random.nextInt(90) + 10; // 2-digit (10-99)
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_2_digit_without_carry") {
-      int a = random.nextInt(80) + 10; // 2-digit
-      int b = random.nextInt(80) + 10; // 2-digit
+      int a = random.nextInt(80) + 10; // Generate first 2-digit number (10-89)
+      int b = random.nextInt(80) + 10; // Generate second 2-digit number (10-89)
+      int unitsA = a % 10; // Get the unit place of a
+      int maxUnitsB =
+          9 - unitsA; // Max value for the units digit of b to avoid carry
+      int unitsB = random.nextInt(
+          maxUnitsB + 1); // Generate units digit for b within the limit
+      b = (b ~/ 10) * 10 +
+          unitsB; // Replace the unit digit of b while keeping the tens digit intact
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_2_digit_with_carry") {
       int a = random.nextInt(90) + 10; // 2-digit
@@ -183,11 +191,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
         setState(() {
           correctAnswers++;
           totalQuestionsAnswered++;
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateExpression();
-          }
+          _generateExpression();
         });
       }
     }
@@ -213,7 +217,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
         title: Text(
-          "Game Over!",
+          "Time's Up!",
           style: GoogleFonts.mali(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -257,12 +261,12 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
           ),
           TextButton(
             onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
-
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -285,8 +289,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context,
-                correctAnswers);
+            Navigator.pop(context, correctAnswers);
           },
         ),
         actions: [
@@ -312,7 +315,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "$totalQuestionsAnswered of 15",
+                    "Answered: $totalQuestionsAnswered",
                     style: GoogleFonts.mali(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,

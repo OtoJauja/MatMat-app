@@ -77,58 +77,65 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
 
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
-    final random = Random();
+  final random = Random();
 
-    if (widget.mode == "add_1_digit") {
-      int a = random.nextInt(9) + 0; // 1-digit (1-9)
-      int b = random.nextInt(9) + 0; // 1-digit (1-9)
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_1_digit_and_2_digit") {
-      int a = random.nextInt(9) + 0; // 1-digit (1-9)
-      int b = random.nextInt(90) + 10; // 2-digit (10-99)
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_2_digit_without_carry") {
-      int a = random.nextInt(80) + 10; // 2-digit
-      int b = random.nextInt(80) + 10; // 2-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_2_digit_with_carry") {
-      int a = random.nextInt(90) + 10; // 2-digit
-      int b = random.nextInt(90) + 10; // 2-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_3_digit_and_2_digit") {
-      int a = random.nextInt(800) + 100; // 3-digit
-      int b = random.nextInt(90) + 10; // 2-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_3_digit") {
-      int a = random.nextInt(800) + 100; // 3-digit
-      int b = random.nextInt(800) + 100; // 3-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_4_digit_and_2_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(90) + 10; // 2-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_4_digit_and_3_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(800) + 100; // 3-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_4_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(9000) + 1000; // 4-digit
-      currentExpression = "$a + $b";
-    } else if (widget.mode == "add_decimals") {
-      double a = (random.nextInt(90000) + 10000) / 100; // Range 100.00 - 999.99
-      double b = (random.nextInt(9000) + 1000) / 100; // Range 10.00 - 99.99
-      currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
-    }
-    if (mounted == true) {
-      setState(() {
-        userInput = "";
-        _controller.text = ""; // Reset input field
-        _focusNode
-            .requestFocus(); // Request focus after generating new expression
-      });
-    }
+  if (widget.mode == "add_1_digit") {
+    int a = random.nextInt(9) + 1; // 1-digit (1-9)
+    int b = random.nextInt(9) + 1; // 1-digit (1-9)
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_1_digit_and_2_digit") {
+    int a = random.nextInt(9) + 1; // 1-digit (1-9)
+    int b = random.nextInt(90) + 10; // 2-digit (10-99)
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_2_digit_without_carry") {
+    int a = random.nextInt(80) + 10; // Generate first 2-digit number (10-89)
+    int b = random.nextInt(80) + 10; // Generate second 2-digit number (10-89)
+
+    // Adjust b to ensure no carry for the second digits
+    int unitsA = a % 10; // Get the unit place of a
+    int maxUnitsB = 9 - unitsA; // Max value for the units digit of b to avoid carry
+    int unitsB = random.nextInt(maxUnitsB + 1); // Generate units digit for b within the limit
+    b = (b ~/ 10) * 10 + unitsB; // Replace the unit digit of b while keeping the tens digit intact
+
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_2_digit_with_carry") {
+    int a = random.nextInt(90) + 10; // 2-digit
+    int b = random.nextInt(90) + 10; // 2-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_3_digit_and_2_digit") {
+    int a = random.nextInt(800) + 100; // 3-digit
+    int b = random.nextInt(90) + 10; // 2-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_3_digit") {
+    int a = random.nextInt(800) + 100; // 3-digit
+    int b = random.nextInt(800) + 100; // 3-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_4_digit_and_2_digit") {
+    int a = random.nextInt(9000) + 1000; // 4-digit
+    int b = random.nextInt(90) + 10; // 2-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_4_digit_and_3_digit") {
+    int a = random.nextInt(9000) + 1000; // 4-digit
+    int b = random.nextInt(800) + 100; // 3-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_4_digit") {
+    int a = random.nextInt(9000) + 1000; // 4-digit
+    int b = random.nextInt(9000) + 1000; // 4-digit
+    currentExpression = "$a + $b";
+  } else if (widget.mode == "add_decimals") {
+    double a = (random.nextInt(90000) + 10000) / 100; // Range 100.00 - 999.99
+    double b = (random.nextInt(9000) + 1000) / 100; // Range 10.00 - 99.99
+    currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
   }
+  if (mounted == true) {
+    setState(() {
+      userInput = "";
+      _controller.text = ""; // Reset input field
+      _focusNode
+          .requestFocus(); // Request focus after generating new expression
+    });
+  }
+}
 
   // Evaluate math expression
   double _evaluateExpression(String expression) {

@@ -16,15 +16,15 @@ class FastBeeGameDivision extends StatefulWidget {
 
   static const List<String> missionModes = [
     "div_1_digit",
-    "div_2_digit_by_1_digit",
+    "div_1_or_2_digit_by_1_digit_with_decimal_result",
     "div_3_digit_by_1_digit",
     "div_4_digit_by_1_digit",
     "div_2_digit",
     "div_3_digit_by_2_digit",
     "div_3_digit_by_1_digit_by_1_digit",
+    "div_decimals_by_1_digit",
     "div_4_digit_by_1_digit_by_1_digit",
-    "div_decimals_by_1_digit_or_2_digit",
-    "div_decimals",
+    "div_decimals_by_2_digit",
   ];
 
   @override
@@ -33,13 +33,12 @@ class FastBeeGameDivision extends StatefulWidget {
 
 class _FastBeeGameState extends State<FastBeeGameDivision> {
   late Timer _timer; // Countdown timer
-  int timeLeft = 90; // 90 seconds to complete
+  late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
   int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
+  int totalQuestionsAnswered = 0; // Track total questions answered
   String currentExpression = ""; // Current math expression
   String userInput = ""; // User's input
-  List<String> mistakes = []; // List of incorrect expressions
   bool gameStarted = false; // Flag to indicate game has started
   bool canSkip = false;
   late TextEditingController _controller; // Persistent controller
@@ -48,6 +47,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
   @override
   void initState() {
     super.initState();
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _startPreGameTimer();
@@ -101,43 +101,48 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
 
     if (widget.mode == "div_1_digit") {
       int b = random.nextInt(9) + 1; // Divisor
-      int a = random.nextInt(9) + 1;
-      currentExpression = "$a / $b";
-    } else if (widget.mode == "div_2_digit_by_1_digit") {
+      int a;
+      do {
+        a = random.nextBool() ? random.nextInt(90) + 10 : random.nextInt(9) + 1;
+      } while (a % b != 0); // Ensure no remainder
+      currentExpression = "$a ÷ $b";
+    } else if (widget.mode ==
+        "div_1_or_2_digit_by_1_digit_with_decimal_result") {
       int b = random.nextInt(9) + 1; // Divisor
       int a;
       do {
-        a = (random.nextInt(90) + 10); // Generate a 2-digit number
-      } while (a % b != 0); // Ensure no remainder
-      currentExpression = "$a / $b";
+        a = random.nextInt(90) + 1; // Numerator (1-99)
+      } while (a % b == 0); // Ensure result is decimal
+      currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_1_digit") {
       int b = random.nextInt(9) + 1; // Divisor
       int a;
       do {
-        a = (random.nextInt(900) + 100); // Generate a 3-digit number
+        a = random.nextInt(900) + 100; // Generate a 3-digit number
       } while (a % b != 0); // Ensure no remainder
-      currentExpression = "$a / $b";
+      currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_4_digit_by_1_digit") {
       int b = random.nextInt(9) + 1; // Divisor
       int a;
       do {
-        a = (random.nextInt(900) + 1000); // Generate a 4-digit number
+        a = random.nextInt(9000) + 1000; // Generate a 4-digit number
       } while (a % b != 0); // Ensure no remainder
-      currentExpression = "$a / $b";
+      currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_2_digit") {
-      int b = random.nextInt(90) + 10; // Divisor
-      int a;
+      // Fifth mission: Reduce identical numbers
+      int b, a;
       do {
-        a = (random.nextInt(90) + 10); // Generate a 2-digit number
-      } while (a % b != 0); // Ensure no remainder
-      currentExpression = "$a / $b";
+        b = random.nextInt(90) + 10; // Divisor
+        a = random.nextInt(90) + 10; // Numerator
+      } while (a == b || a % b != 0); // Avoid identical numbers
+      currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_2_digit") {
       int b = random.nextInt(90) + 10; // Divisor
       int a;
       do {
-        a = (random.nextInt(900) + 100); // Generate a 3-digit number
+        a = random.nextInt(900) + 100; // Generate a 3-digit number
       } while (a % b != 0); // Ensure no remainder
-      currentExpression = "$a / $b";
+      currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_1_digit_by_1_digit") {
       int b = random.nextInt(9) + 1; // First divisor
       int c = random.nextInt(9) + 1; // Second divisor
@@ -146,7 +151,16 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
         a = random.nextInt(900) + 100; // Generate a 3-digit number
       } while (a % b != 0 ||
           (a ~/ b) % c != 0); // Ensure no remainders in both steps
-      currentExpression = "$a / $b / $c";
+      currentExpression = "$a ÷ $b ÷ $c";
+    } else if (widget.mode == "div_decimals_by_1_digit") {
+      // Seventh mission: Decimals (xxx.xx) divided by 1-digit
+      int b = random.nextInt(9) + 1; // Divisor
+      double a;
+      do {
+        int multiplier = random.nextInt(9000) + 1000; // Multiplier for xxx.xx
+        a = multiplier / 100.0;
+      } while ((a * 100).toInt() % b != 0); // Ensure result is valid
+      currentExpression = "${a.toStringAsFixed(2)} ÷ $b";
     } else if (widget.mode == "div_4_digit_by_1_digit_by_1_digit") {
       int b = random.nextInt(9) + 1; // First divisor
       int c = random.nextInt(9) + 1; // Second divisor
@@ -155,34 +169,17 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
         a = random.nextInt(9000) + 1000; // Generate a 4-digit number
       } while (a % b != 0 ||
           (a ~/ b) % c != 0); // Ensure no remainders in both steps
-      currentExpression = "$a / $b / $c";
-    } else if (widget.mode == "div_decimals_by_1_digit_or_2_digit") {
-      int b; // Whole number divisor
-      double a; // Decimal dividend
+      currentExpression = "$a ÷ $b ÷ $c";
+    } else if (widget.mode == "div_decimals_by_2_digit") {
+      // Tenth mission: Decimals (xxx.xx) divided by 2-digit
+      int b;
+      double a;
       do {
-        b = random.nextInt(90) + 10; // Generate divisor (10-99)
-        int multiplier =
-            random.nextInt(900) + 100; // Generate a multiplier (100-999)
-        a = (b * multiplier) / 100.0; // Generate dividend as xxx.xx format
-      } while ((a * 100).toInt() % b != 0 || a < 100.0 || a >= 1000.0);
-      currentExpression =
-          "${a.toStringAsFixed(2)} / $b"; // Ensure two decimal places for 'a'
-    } else if (widget.mode == "div_decimals") {
-      double b; // Decimal divisor (x.x format)
-      double a; // Decimal dividend (xx.xx format)
-      do {
-        b = (random.nextInt(90) + 10) /
-            10.0; // Generate divisor in the range 1.0 - 9.9
-        int multiplier =
-            random.nextInt(900) + 100; // Generate a multiplier (100-999)
-        a = (b * multiplier) /
-            100.0; // Generate dividend in the range 10.00 - 99.99
-      } while ((a * 100).toInt() % (b * 10).toInt() != 0 ||
-          a < 9.9 ||
-          a >= 100.0 ||
-          b < 0.9 ||
-          b >= 9.9);
-      currentExpression = "${a.toStringAsFixed(2)} / ${b.toStringAsFixed(1)}";
+        b = random.nextInt(90) + 10; // Divisor (10-99)
+        int multiplier = random.nextInt(90000) + 10000; // Multiplier for xxx.xx
+        a = multiplier / 100.0;
+      } while ((a * 100).toInt() % b != 0); // Ensure result is valid
+      currentExpression = "${a.toStringAsFixed(2)} ÷ $b";
     }
     if (mounted == true) {
       setState(() {
@@ -206,7 +203,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
   // Evaluate a math expression
   double _evaluateExpression(String expression) {
     try {
-      final parts = expression.split(" / ");
+      final parts = expression.split(" ÷ ");
       if (parts.isEmpty) return 0;
 
       // Parse the first number
@@ -239,11 +236,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
         setState(() {
           correctAnswers++;
           totalQuestionsAnswered++;
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateExpression();
-          }
+          _generateExpression();
         });
       }
     }
@@ -269,7 +262,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
         title: Text(
-          "Game Over!",
+          "Time's Up!",
           style: GoogleFonts.mali(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -313,12 +306,12 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
           ),
           TextButton(
             onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
-
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -341,8 +334,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context,
-                correctAnswers);
+            Navigator.pop(context, correctAnswers);
           },
         ),
         actions: [
@@ -368,7 +360,7 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "$totalQuestionsAnswered of 15",
+                    "Answered: $totalQuestionsAnswered",
                     style: GoogleFonts.mali(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
@@ -452,3 +444,4 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
     );
   }
 }
+

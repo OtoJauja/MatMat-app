@@ -17,13 +17,13 @@ class CalmBearGameMixed extends StatefulWidget {
     "1_digit_plus_1_digit_by_1_digit",
     "1_digit_plus_2_digit_by_1_digit",
     "1_digit_times_2_digit_plus_2_digit",
+    "2_digit_plus_1_digit_times_1_digit", 
+    "3_digit_minus_1_digit_times_1_digit", 
+    "2_digit_times_1_digit_minus_1_digit_times_1_digit", 
     "1_digit_times_2_digit_plus_1_digit_times_2_digit",
     "1_digit_times_3_digit_minus_2_digit_times_1_digit",
-    "2_digit_times_2_digit_minus_2_digit_times_1_digit",
-    "1_digit_plus_1_digit_times_1_digit_plus_1_digit",
-    "2_digit_minus_1_digit_divided_by_1_digit",
+    "2_digit_plus_2_digit_divided_by_1_digit",
     "3_digit_plus_2_digit_divided_by_1_digit",
-    "2_digit_times_1_digit_plus_2_digit_times_2_digit",
   ];
 
   @override
@@ -31,15 +31,15 @@ class CalmBearGameMixed extends StatefulWidget {
 }
 
 class _CalmBearGameState extends State<CalmBearGameMixed> {
-  int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
-  String currentExpression = ""; // Current math expression
-  String userInput = ""; // Users input
-  bool gameStarted = false; // Flag to indicate game has started
-  bool showingAnswer = false; // Flag to show correct answer
-  late TextEditingController _controller; // Persistent controller
-  int preStartTimer = 5; // Pre-start countdown timer
-  late Stopwatch _stopwatch; // Stopwatch to track time
+  int correctAnswers = 0;
+  int totalQuestionsAnswered = 1;
+  String currentExpression = "";
+  String userInput = "";
+  bool gameStarted = false;
+  bool showingAnswer = false;
+  late TextEditingController _controller;
+  int preStartTimer = 5;
+  late Stopwatch _stopwatch;
   late FocusNode _focusNode;
 
   @override
@@ -52,12 +52,11 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
 
   @override
   void dispose() {
-    _focusNode.dispose(); // Dispose of the FocusNode
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
 
-  // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -65,7 +64,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
           preStartTimer--;
         } else {
           gameStarted = true;
-          _stopwatch = Stopwatch()..start(); // Start the stopwatch
+          _stopwatch = Stopwatch()..start();
           timer.cancel();
           _generateExpression();
         }
@@ -73,75 +72,81 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
     });
   }
 
-  // Generate a random math expression based on the selected mode
   void _generateExpression() {
     final random = Random();
 
     switch (widget.mode) {
       case "1_digit_plus_1_digit_by_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
         currentExpression = "($a + $b) × $c";
         break;
       case "1_digit_plus_2_digit_by_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
         currentExpression = "($a + $b) × $c";
         break;
       case "1_digit_times_2_digit_plus_2_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(90) + 10; // 2-digit
+        // Updated logic for the 3rd mission
+        List<int> allowedNumbers = [1, 2, 5];
+        int a = allowedNumbers[
+            random.nextInt(allowedNumbers.length)]; // Only 1, 2, or 5
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(90) + 10;
         currentExpression = "$a × ($b + $c)";
         break;
-      case "1_digit_times_2_digit_plus_1_digit_times_2_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit
-        int d = random.nextInt(90) + 10; // 2-digit
+      case "2_digit_plus_1_digit_times_1_digit": // Was the 6th now is the 4th mission
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        currentExpression = "($a + $b) × $c";
+        break;
+      case "3_digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
+        int a = random.nextInt(900) + 100;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        currentExpression = "($a - $b) ÷ $c";
+        break;
+      case "2_digit_times_1_digit_minus_1_digit_times_1_digit": // New 6th mission
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        int d = random.nextInt(9) + 1;
+        currentExpression = "$a × $b - $c × $d";
+        break;
+      case "1_digit_times_2_digit_plus_1_digit_times_2_digit": // Was the 4th now is the 7th mission
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        int d = random.nextInt(90) + 10;
         currentExpression = "$a × $b + $c × $d";
         break;
-      case "1_digit_times_3_digit_minus_2_digit_times_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(900) + 100; // 3-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(9) + 1; // 1-digit
+      case "1_digit_times_3_digit_minus_2_digit_times_1_digit": // Was the 5th now is th 8th mission
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(900) + 100;
+        int c = random.nextInt(90) + 10;
+        int d = random.nextInt(9) + 1;
         currentExpression = "$a × $b - $c × $d";
         break;
-      case "2_digit_times_2_digit_minus_2_digit_times_1_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(9) + 1; // 1-digit
-        currentExpression = "$a × $b - $c × $d";
-        break;
-      case "1_digit_plus_1_digit_times_1_digit_plus_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit
-        int d = random.nextInt(9) + 1; // 1-digit
-        currentExpression = "($a + $b) × ($c + $d)";
-        break;
-      case "2_digit_minus_1_digit_divided_by_1_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit (non-zero)
-        currentExpression = "($a - $b) / $c";
+      case "2_digit_plus_2_digit_divided_by_1_digit":
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        while ((a + b) % c != 0) {
+          c = random.nextInt(9) + 1;
+        }
+        currentExpression = "($a + $b) ÷ $c";
         break;
       case "3_digit_plus_2_digit_divided_by_1_digit":
-        int a = random.nextInt(900) + 100; // 3-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit (non-zero)
-        currentExpression = "($a + $b) / $c";
-        break;
-      case "2_digit_times_1_digit_plus_2_digit_times_2_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(90) + 10; // 2-digit
-        currentExpression = "$a × $b + $c × $d";
+        int a = random.nextInt(900) + 100;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        while ((a + b) % c != 0) {
+          c = random.nextInt(9) + 1;
+        }
+        currentExpression = "($a + $b) ÷ $c";
         break;
       default:
         currentExpression = "Error: Unknown mode";
@@ -149,9 +154,8 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
 
     setState(() {
       userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
+      _controller.text = "";
+      _focusNode.requestFocus();
     });
   }
 
@@ -167,7 +171,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
             return a - b;
           case '×':
             return a * b;
-          case '/':
+          case '÷':
             if (b == 0) throw Exception("Division by zero");
             return a / b; // Use double division
           default:
@@ -234,7 +238,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
       case '-':
         return 1;
       case '×':
-      case '/':
+      case '÷':
         return 2;
       default:
         return 0;
@@ -273,83 +277,84 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
     });
   }
 
- // End the game
- void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+  // End the game
+  void _endGame() {
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGameMixed(
-                    mode: CalmBearGameMixed.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameMixed(
+                      mode: CalmBearGameMixed.missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

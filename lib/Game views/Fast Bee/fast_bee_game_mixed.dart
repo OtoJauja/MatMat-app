@@ -18,13 +18,13 @@ class FastBeeGameMixed extends StatefulWidget {
     "1_digit_plus_1_digit_by_1_digit",
     "1_digit_plus_2_digit_by_1_digit",
     "1_digit_times_2_digit_plus_2_digit",
+    "2_digit_plus_1_digit_times_1_digit", 
+    "3_digit_minus_1_digit_times_1_digit", 
+    "2_digit_times_1_digit_minus_1_digit_times_1_digit", 
     "1_digit_times_2_digit_plus_1_digit_times_2_digit",
     "1_digit_times_3_digit_minus_2_digit_times_1_digit",
-    "2_digit_times_2_digit_minus_2_digit_times_1_digit",
-    "1_digit_plus_1_digit_times_1_digit_plus_1_digit",
-    "2_digit_minus_1_digit_divided_by_1_digit",
+    "2_digit_plus_2_digit_divided_by_1_digit",
     "3_digit_plus_2_digit_divided_by_1_digit",
-    "2_digit_times_1_digit_plus_2_digit_times_2_digit",
   ];
 
   @override
@@ -33,13 +33,12 @@ class FastBeeGameMixed extends StatefulWidget {
 
 class _FastBeeGameState extends State<FastBeeGameMixed> {
   late Timer _timer; // Countdown timer
-  int timeLeft = 90; // 90 seconds to complete
+  late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
   int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
+  int totalQuestionsAnswered = 0; // Track total questions answered
   String currentExpression = ""; // Current math expression
   String userInput = ""; // User's input
-  List<String> mistakes = []; // List of incorrect expressions
   bool gameStarted = false; // Flag to indicate game has started
   bool canSkip = false;
   late TextEditingController _controller; // Persistent controller
@@ -48,6 +47,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
   @override
   void initState() {
     super.initState();
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _startPreGameTimer();
@@ -101,69 +101,76 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
 
     switch (widget.mode) {
       case "1_digit_plus_1_digit_by_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
         currentExpression = "($a + $b) × $c";
         break;
       case "1_digit_plus_2_digit_by_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
         currentExpression = "($a + $b) × $c";
         break;
       case "1_digit_times_2_digit_plus_2_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(90) + 10; // 2-digit
+        // Updated logic for the 3rd mission
+        List<int> allowedNumbers = [1, 2, 5];
+        int a = allowedNumbers[
+            random.nextInt(allowedNumbers.length)]; // Only 1, 2, or 5
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(90) + 10;
         currentExpression = "$a × ($b + $c)";
         break;
-      case "1_digit_times_2_digit_plus_1_digit_times_2_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit
-        int d = random.nextInt(90) + 10; // 2-digit
+      case "2_digit_plus_1_digit_times_1_digit": // Was the 6th now is the 4th mission
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        currentExpression = "($a + $b) × $c";
+        break;
+      case "3_digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
+        int a = random.nextInt(900) + 100;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        currentExpression = "($a - $b) ÷ $c";
+        break;
+      case "2_digit_times_1_digit_minus_1_digit_times_1_digit": // New 6th mission
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        int d = random.nextInt(9) + 1;
+        currentExpression = "$a × $b - $c × $d";
+        break;
+      case "1_digit_times_2_digit_plus_1_digit_times_2_digit": // Was the 4th now is the 7th mission
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        int d = random.nextInt(90) + 10;
         currentExpression = "$a × $b + $c × $d";
         break;
-      case "1_digit_times_3_digit_minus_2_digit_times_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(900) + 100; // 3-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(9) + 1; // 1-digit
+      case "1_digit_times_3_digit_minus_2_digit_times_1_digit": // Was the 5th now is th 8th mission
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(900) + 100;
+        int c = random.nextInt(90) + 10;
+        int d = random.nextInt(9) + 1;
         currentExpression = "$a × $b - $c × $d";
         break;
-      case "2_digit_times_2_digit_minus_2_digit_times_1_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(9) + 1; // 1-digit
-        currentExpression = "$a × $b - $c × $d";
-        break;
-      case "1_digit_plus_1_digit_times_1_digit_plus_1_digit":
-        int a = random.nextInt(9) + 1; // 1-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit
-        int d = random.nextInt(9) + 1; // 1-digit
-        currentExpression = "($a + $b) × ($c + $d)";
-        break;
-      case "2_digit_minus_1_digit_divided_by_1_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(9) + 1; // 1-digit (non-zero)
-        currentExpression = "($a - $b) / $c";
+      case "2_digit_plus_2_digit_divided_by_1_digit":
+        int a = random.nextInt(90) + 10;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        while ((a + b) % c != 0) {
+          c = random.nextInt(9) + 1;
+        }
+        currentExpression = "($a + $b) ÷ $c";
         break;
       case "3_digit_plus_2_digit_divided_by_1_digit":
-        int a = random.nextInt(900) + 100; // 3-digit
-        int b = random.nextInt(90) + 10; // 2-digit
-        int c = random.nextInt(9) + 1; // 1-digit (non-zero)
-        currentExpression = "($a + $b) / $c";
-        break;
-      case "2_digit_times_1_digit_plus_2_digit_times_2_digit":
-        int a = random.nextInt(90) + 10; // 2-digit
-        int b = random.nextInt(9) + 1; // 1-digit
-        int c = random.nextInt(90) + 10; // 2-digit
-        int d = random.nextInt(90) + 10; // 2-digit
-        currentExpression = "$a × $b + $c × $d";
+        int a = random.nextInt(900) + 100;
+        int b = random.nextInt(90) + 10;
+        int c = random.nextInt(9) + 1;
+        while ((a + b) % c != 0) {
+          c = random.nextInt(9) + 1;
+        }
+        currentExpression = "($a + $b) ÷ $c";
         break;
       default:
         currentExpression = "Error: Unknown mode";
@@ -198,7 +205,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
             return a - b;
           case '×':
             return a * b;
-          case '/':
+          case '÷':
             if (b == 0) throw Exception("Division by zero");
             return a / b; // Use double division
           default:
@@ -265,7 +272,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
       case '-':
         return 1;
       case '×':
-      case '/':
+      case '÷':
         return 2;
       default:
         return 0;
@@ -285,11 +292,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
         setState(() {
           correctAnswers++;
           totalQuestionsAnswered++;
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateExpression();
-          }
+          _generateExpression();
         });
       }
     }
@@ -308,14 +311,14 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
   }
 
   // End game
-  void _endGame() {
+ void _endGame() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
         title: Text(
-          "Game Over!",
+          "Time's Up!",
           style: GoogleFonts.mali(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -359,12 +362,12 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
           ),
           TextButton(
             onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
-
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -387,8 +390,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context,
-                correctAnswers);
+            Navigator.pop(context, correctAnswers);
           },
         ),
         actions: [
@@ -414,7 +416,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "$totalQuestionsAnswered of 15",
+                    "Answered: $totalQuestionsAnswered",
                     style: GoogleFonts.mali(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,

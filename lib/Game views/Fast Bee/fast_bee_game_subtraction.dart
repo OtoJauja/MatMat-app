@@ -32,21 +32,22 @@ class FastBeeGameSubtraction extends StatefulWidget {
 }
 
 class _FastBeeGameState extends State<FastBeeGameSubtraction> {
-  late Timer _timer;
-  int timeLeft = 90;
-  int preStartTimer = 5;
-  int correctAnswers = 0;
-  int totalQuestionsAnswered = 1; // Track total questions answered
-  String currentExpression = "";
-  String userInput = "";
-  bool gameStarted = false;
+  late Timer _timer; // Countdown timer
+  late int timeLeft; // Time left for the game
+  int preStartTimer = 5; // Countdown before the game starts
+  int correctAnswers = 0; // Track correct answers
+  int totalQuestionsAnswered = 0; // Track total questions answered
+  String currentExpression = ""; // Current math expression
+  String userInput = ""; // User's input
+  bool gameStarted = false; // Flag to indicate game has started
   bool canSkip = false;
-  late TextEditingController _controller;
+  late TextEditingController _controller; // Persistent controller
   late FocusNode _focusNode; // Focus to autoclick input
 
   @override
   void initState() {
     super.initState();
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _startPreGameTimer();
@@ -98,96 +99,106 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
     if (widget.mode == "sub_2_digit_and_1_digit") {
       int a = random.nextInt(90) + 10; // 10 to 99
       int b = random.nextInt(9) + 1; // 1 to 9
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_2_digit") {
       int a = random.nextInt(90) + 10; // 10 to 99
       int b = random.nextInt(90) + 10; // 10 to 99
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode ==
         "sub_3_digit_and_1_digit_or_2_digit_without_carry") {
-      // should be without carry over
+      // No carry-over allowed
       int a = random.nextInt(800) + 100; // 100 to 999
       int b = random.nextInt(99) + 1; // 1 to 99
-      if (b > a) {
+
+      // Ensure no carry by adjusting each digit
+      int unitsA = a % 10;
+      int unitsB =
+          random.nextInt(unitsA + 1); // Make sure b's units <= a's units
+      b = (b ~/ 10) * 10 + unitsB;
+
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_3_digit_and_1_digit_or_2_digit_with_carry") {
-      // should be with carry over
+      // Carry-over allowed
       int a = random.nextInt(800) + 100; // 100 to 999
       int b = random.nextInt(99) + 1; // 1 to 99
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_3_digit_and_2_digit_and_1_digit") {
+      // Subtract a 2-digit and a 1-digit number from a 3-digit number
       int a = random.nextInt(800) + 100; // 100 to 999
-      int b = random.nextInt(99) + 1; // 1 to 99
-      if (b > a) {
-        int temp = a;
-        a = b;
-        b = temp; // Ensure a >= b
+      int b = random.nextInt(90) + 10; // 10 to 99
+      int c = random.nextInt(9) + 1; // 1 to 9
+
+      if (b + c >= a) {
+        // Ensure a > b + c
+        a = b + c + random.nextInt(50) + 1; // Make a sufficiently larger
       }
-      currentExpression = "$a - $b";
+      currentExpression = "$a - $b - $c";
     } else if (widget.mode == "sub_3_digit") {
       int a = random.nextInt(800) + 100; // 100 to 999
       int b = random.nextInt(800) + 100; // 100 to 999
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit_and_2_digit") {
       int a = random.nextInt(9000) + 1000; // 1000 to 9999
       int b = random.nextInt(90) + 10; // 10 to 99
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit_and_3_digit") {
       int a = random.nextInt(9000) + 1000; // 1000 to 9999
       int b = random.nextInt(900) + 100; // 100 to 999
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit") {
       int a = random.nextInt(9000) + 1000; // 1000 to 9999
       int b = random.nextInt(9000) + 1000; // 1000 to 9999
-      if (b > a) {
+      if (b >= a) {
         int temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_decimals") {
-      double a = (random.nextInt(900) + 100) / 10.0; // 10.0 to 99.9
-      double b = (random.nextInt(90) + 10) / 10.0; // 1.0 to 9.9
-      if (b > a) {
+      // Correct format: xxx.xx - xx.x
+      double a = (random.nextInt(90000) + 10000) / 100.0; // 100.00 to 999.99
+      double b = (random.nextInt(900) + 100) / 10.0; // 10.0 to 99.9
+      if (b >= a) {
         double temp = a;
         a = b;
-        b = temp; // Ensure a >= b
+        b = temp; // Ensure a > b
       }
-      currentExpression = "${a.toStringAsFixed(1)} - ${b.toStringAsFixed(1)}";
+      currentExpression = "${a.toStringAsFixed(2)} - ${b.toStringAsFixed(1)}";
     }
     if (mounted == true) {
       setState(() {
@@ -208,14 +219,19 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
     });
   }
 
+  // Evaluate a math expression
   double _evaluateExpression(String expression) {
     try {
-      final parts = expression.split(" ");
-      double a = double.parse(parts[0]);
-      double b = double.parse(parts[2]);
-      return a - b;
+      // Split the expression by " - " to handle multiple subtractions
+      final parts = expression.split(" - ");
+      double result = double.parse(parts[0]);
+      // Subtract all subsequent numbers from the result
+      for (int i = 1; i < parts.length; i++) {
+        result -= double.parse(parts[i]);
+      }
+      return result;
     } catch (e) {
-      return double.nan;
+      return 0.0;
     }
   }
 
@@ -232,11 +248,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
         setState(() {
           correctAnswers++;
           totalQuestionsAnswered++;
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateExpression();
-          }
+          _generateExpression();
         });
       }
     }
@@ -261,7 +273,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
         title: Text(
-          "Game Over!",
+          "Time's Up!",
           style: GoogleFonts.mali(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -305,12 +317,12 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
           ),
           TextButton(
             onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
-
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -333,8 +345,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context,
-                correctAnswers);
+            Navigator.pop(context, correctAnswers);
           },
         ),
         actions: [
@@ -360,7 +371,7 @@ class _FastBeeGameState extends State<FastBeeGameSubtraction> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "$totalQuestionsAnswered of 15",
+                    "Answered: $totalQuestionsAnswered",
                     style: GoogleFonts.mali(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,

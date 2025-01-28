@@ -138,7 +138,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
                       ),
                     ),
                     Text(
-                      "${mission.correctAnswers ?? 0} of 15",
+                      "Completed: ${mission.correctAnswers ?? 0}",
                       style: GoogleFonts.mali(
                         color: const Color.fromARGB(255, 50, 50, 50),
                         fontSize: 18,

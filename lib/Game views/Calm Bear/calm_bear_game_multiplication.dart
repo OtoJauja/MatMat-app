@@ -17,12 +17,12 @@ class CalmBearGameMultiplication extends StatefulWidget {
     "mult_1_digit",
     "mult_1_digit_by_2_digit",
     "mult_2_digit_by_1_digit",
-    "mult_3_digit_by_1_digit",
+    "mult_3_digit_by_1_digit_or_vice_versa",
     "mult_4_digit_by_1_digit",
     "mult_2_digit",
     "mult_1_digit_by_1_digit_by_1_digit",
     "mult_2_digit_by_1_digit_by_1_digit",
-    "mult_decimal_by_1_digit",
+    "mult_decimal_or_two_decimals_by_1_digit",
     "mult_decimals",
   ];
 
@@ -80,45 +80,55 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
     if (widget.mode == "mult_1_digit") {
       int a = random.nextInt(9) + 1; // 1-digit (1-9)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b";
+      currentExpression = "$a x $b";
     } else if (widget.mode == "mult_1_digit_by_2_digit") {
       int a = random.nextInt(9) + 1; // 1-digit (1-9)
       int b = random.nextInt(90) + 10; // 2-digit (10-99)
-      currentExpression = "$a * $b";
+      currentExpression = "$a x $b";
     } else if (widget.mode == "mult_2_digit_by_1_digit") {
       int a = random.nextInt(90) + 10; // 2-digit (10-99)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b";
-    } else if (widget.mode == "mult_3_digit_by_1_digit") {
-      int a = random.nextInt(900) + 100; // 3-digit (100-999)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b";
+      currentExpression = "$a x $b";
+    } else if (widget.mode == "mult_3_digit_by_1_digit_or_vice_versa") {
+      // Fourth & Fifth Mission: 3-digit x 1-digit or 1-digit x 3-digit
+      int a = random.nextBool()
+          ? random.nextInt(90) + 10
+          : random.nextInt(9) + 1; // Either 3-digit or 1-digit
+      int b = (a > 99)
+          ? random.nextInt(9) + 1
+          : random.nextInt(900) + 100; // Match the other number
+      currentExpression = "$a x $b";
     } else if (widget.mode == "mult_4_digit_by_1_digit") {
       int a = random.nextInt(9000) + 1000; // 4-digit (1000-9999)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b";
+      currentExpression = "$a x $b";
     } else if (widget.mode == "mult_2_digit") {
       int a = random.nextInt(90) + 10; // 2-digit (10-99)
       int b = random.nextInt(90) + 10; // 2-digit (10-99)
-      currentExpression = "$a * $b";
+      currentExpression = "$a x $b";
     } else if (widget.mode == "mult_1_digit_by_1_digit_by_1_digit") {
       int a = random.nextInt(9) + 1; // 1-digit (1-9)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
       int c = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b * $c";
+      currentExpression = "$a x $b x $c";
     } else if (widget.mode == "mult_2_digit_by_1_digit_by_1_digit") {
       int a = random.nextInt(90) + 10; // 2-digit (10-99)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
       int c = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "$a * $b * $c";
-    } else if (widget.mode == "mult_decimal_by_1_digit") {
-      double a = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
+      currentExpression = "$a x $b x $c";
+    } else if (widget.mode == "mult_decimal_or_two_decimals_by_1_digit") {
+      // Ninth Mission: x.x * 1-digit or xx.xx * 1-digit
+      bool twoDecimals =
+          random.nextBool(); // Randomly pick between x.x and xx.xx
+      double a = twoDecimals
+          ? (random.nextInt(9000) + 1000) / 100.0 // xx.xx (10.00 - 99.99)
+          : (random.nextInt(90) + 10) / 10.0; // x.x (1.0 - 9.9)
       int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      currentExpression = "${a.toStringAsFixed(1)} * $b";
+      currentExpression = "${a.toStringAsFixed(twoDecimals ? 2 : 1)} x $b";
     } else if (widget.mode == "mult_decimals") {
       double a = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
       double b = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
-      currentExpression = "${a.toStringAsFixed(1)} * ${b.toStringAsFixed(1)}";
+      currentExpression = "${a.toStringAsFixed(1)} x ${b.toStringAsFixed(1)}";
     }
 
     setState(() {
@@ -182,85 +192,88 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
       }
     });
   }
-  
+
   // End the game
   void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  // Show the dialog first
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    // Show the dialog first
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); // Closes the dialog
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Closes the dialog
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGameMultiplication.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGameMultiplication(
-                    mode: CalmBearGameMultiplication.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex <
+                  CalmBearGameMultiplication.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameMultiplication(
+                      mode: CalmBearGameMultiplication
+                          .missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
