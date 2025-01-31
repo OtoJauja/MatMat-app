@@ -37,10 +37,11 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
   }
 
   void updateMission(int missionNumber, int correctAnswers) {
-    setState(() {
-      // Update the mission with correct answers
-      missions[missionNumber - 1].correctAnswers = correctAnswers;
-    });
+    final missionsProvider =
+        Provider.of<MissionsProviderCalm>(context, listen: false);
+    missionsProvider.updateMissionProgress(
+        widget.subjectName, missionNumber, correctAnswers);
+    setState(() {});
   }
 
   @override
@@ -91,68 +92,69 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
   }
 
   // Build the honeycomb pattern
-  Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context, double hexWidth, Orientation orientation) {
-  final columns = orientation == Orientation.portrait ? 2 : 5;
-  final rows = (missions.length / columns).ceil();
+  Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context,
+      double hexWidth, Orientation orientation) {
+    final columns = orientation == Orientation.portrait ? 2 : 5;
+    final rows = (missions.length / columns).ceil();
 
-  return SingleChildScrollView(
-    child: HexagonOffsetGrid.oddFlat(
-      color: const Color.fromARGB(255, 255, 255, 255),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-      columns: columns,
-      rows: rows,
-      buildTile: (col, row) {
-        final missionIndex = row * columns + col;
-        if (missionIndex >= missions.length) {
+    return SingleChildScrollView(
+      child: HexagonOffsetGrid.oddFlat(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+        columns: columns,
+        rows: rows,
+        buildTile: (col, row) {
+          final missionIndex = row * columns + col;
+          if (missionIndex >= missions.length) {
+            return HexagonWidgetBuilder(
+              color: const Color.fromARGB(255, 255, 255, 255),
+              child: Container(), // Empty container
+            );
+          }
+
+          final mission = missions[missionIndex];
+          final progress = (mission.correctAnswers) / 15;
+
           return HexagonWidgetBuilder(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            child: Container(), // Empty container
-          );
-        }
-
-        final mission = missions[missionIndex];
-        final progress = (mission.correctAnswers ?? 0) / 15;
-
-        return HexagonWidgetBuilder(
-          elevation: 0,
-          padding: 4.0,
-          cornerRadius: 24.0,
-          color: const Color(0xffffee9ae),
-          child: GestureDetector(
-            onTap: () {
-              _navigateToMission(context, widget.subjectName, mission.number);
-            },
-            child: CustomPaint(
-              painter: HexagonProgressPainter(progress: progress),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      mission.number.toString(),
-                      style: GoogleFonts.mali(
-                        color: const Color.fromARGB(255, 50, 50, 50),
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
+            elevation: 0,
+            padding: 4.0,
+            cornerRadius: 24.0,
+            color: const Color(0xffffee9ae),
+            child: GestureDetector(
+              onTap: () {
+                _navigateToMission(context, widget.subjectName, mission.number);
+              },
+              child: CustomPaint(
+                painter: HexagonProgressPainter(progress: progress),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        mission.number.toString(),
+                        style: GoogleFonts.mali(
+                          color: const Color.fromARGB(255, 50, 50, 50),
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "${mission.correctAnswers ?? 0} of 15",
-                      style: GoogleFonts.mali(
-                        color: const Color.fromARGB(255, 50, 50, 50),
-                        fontSize: 18,
+                      Text(
+                        "${mission.correctAnswers} of 15",
+                        style: GoogleFonts.mali(
+                          color: const Color.fromARGB(255, 50, 50, 50),
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 
   Future<void> _navigateToMission(
       BuildContext context, String subjectName, int missionNumber) async {

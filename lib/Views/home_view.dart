@@ -15,6 +15,7 @@ class HomeView extends StatelessWidget {
     final cardWidth = screenWidth > 600 ? screenWidth * 0.4 : screenWidth * 0.9;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

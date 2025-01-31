@@ -38,10 +38,11 @@ class _MissionViewFastState extends State<MissionViewFast> {
   }
 
   void updateMission(int missionNumber, int correctAnswers) {
-    setState(() {
-      // Update the mission with correct answers
-      missions[missionNumber - 1].correctAnswers = correctAnswers;
-    });
+    final missionsProvider =
+        Provider.of<MissionsProviderFast>(context, listen: false);
+    missionsProvider.updateMissionProgress(
+        widget.subjectName, missionNumber, correctAnswers);
+    setState(() {});
   }
 
   @override
@@ -51,6 +52,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
         (orientation == Orientation.portrait ? 6 : 10);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -112,7 +114,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
         }
 
         final mission = missions[missionIndex];
-        final progress = (mission.correctAnswers ?? 0) / 15;
+        final progress = (mission.correctAnswers) / 15;
 
         return HexagonWidgetBuilder(
           elevation: 0,
@@ -138,7 +140,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
                       ),
                     ),
                     Text(
-                      "Completed: ${mission.correctAnswers ?? 0}",
+                      "Completed: ${mission.correctAnswers}",
                       style: GoogleFonts.mali(
                         color: const Color.fromARGB(255, 50, 50, 50),
                         fontSize: 18,

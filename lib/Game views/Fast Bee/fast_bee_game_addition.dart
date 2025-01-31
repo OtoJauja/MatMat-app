@@ -150,7 +150,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
     if (mounted == true) {
       setState(() {
         userInput = "";
-        _controller.text = ""; // Reset input field
+        _controller.text = "";
         canSkip = false;
         _focusNode.requestFocus();
       });
