@@ -46,16 +46,15 @@ class ProgressView extends StatelessWidget {
         return PieChartSectionData(
           value: 1,
           color: colors[i],
-          title:
-              "${subjects[i]}\n${completedMissions.toInt()}",
-          radius: 60 + (completedMissions * 10),
+          title: "${subjects[i]}\n${completedMissions.toInt()}",
+          radius: 15 + (completedMissions * 20),
           titleStyle: GoogleFonts.mali(
-            fontSize: 12,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: const Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
-          titlePositionPercentageOffset: 1.2, 
+          titlePositionPercentageOffset: 2,
         );
       });
     }
@@ -72,14 +71,14 @@ class ProgressView extends StatelessWidget {
           value: 1,
           color: colors[i],
           title: "${subjects[i]}\n${completedMissions.toInt()}",
-          radius: 60 + (completedMissions * 10),
+          radius: 15 + (completedMissions * 20),
           titleStyle: GoogleFonts.mali(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: const Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
-          titlePositionPercentageOffset: 1.2,
+          titlePositionPercentageOffset: 2,
         );
       });
     }

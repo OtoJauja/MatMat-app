@@ -60,16 +60,18 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start(); // Start the stopwatch
-          timer.cancel();
-          _generateExpression();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start(); // Start the stopwatch
+            timer.cancel();
+            _generateExpression();
+          }
+        });
+      }
     });
   }
 
@@ -78,65 +80,63 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
     final random = Random();
 
     if (widget.mode == "mult_1_digit") {
-      int a = random.nextInt(9) + 1; // 1-digit (1-9)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(9) + 1;
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_1_digit_by_2_digit") {
-      int a = random.nextInt(9) + 1; // 1-digit (1-9)
-      int b = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(90) + 10;
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_2_digit_by_1_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(9) + 1;
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_3_digit_by_1_digit_or_vice_versa") {
-      // Fourth & Fifth Mission: 3-digit x 1-digit or 1-digit x 3-digit
-      int a = random.nextBool()
-          ? random.nextInt(90) + 10
-          : random.nextInt(9) + 1; // Either 3-digit or 1-digit
+      int a =
+          random.nextBool() ? random.nextInt(90) + 10 : random.nextInt(9) + 1;
       int b = (a > 99)
           ? random.nextInt(9) + 1
           : random.nextInt(900) + 100; // Match the other number
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_4_digit_by_1_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit (1000-9999)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(9) + 1;
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_2_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int b = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(90) + 10;
       currentExpression = "$a x $b";
     } else if (widget.mode == "mult_1_digit_by_1_digit_by_1_digit") {
-      int a = random.nextInt(9) + 1; // 1-digit (1-9)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      int c = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(9) + 1;
+      int c = random.nextInt(9) + 1;
       currentExpression = "$a x $b x $c";
     } else if (widget.mode == "mult_2_digit_by_1_digit_by_1_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
-      int c = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(9) + 1;
+      int c = random.nextInt(9) + 1;
       currentExpression = "$a x $b x $c";
     } else if (widget.mode == "mult_decimal_or_two_decimals_by_1_digit") {
-      // Ninth Mission: x.x * 1-digit or xx.xx * 1-digit
       bool twoDecimals =
           random.nextBool(); // Randomly pick between x.x and xx.xx
       double a = twoDecimals
-          ? (random.nextInt(9000) + 1000) / 100.0 // xx.xx (10.00 - 99.99)
-          : (random.nextInt(90) + 10) / 10.0; // x.x (1.0 - 9.9)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
+          ? (random.nextInt(9000) + 1000) / 100.0
+          : (random.nextInt(90) + 10) / 10.0;
+      int b = random.nextInt(9) + 1;
       currentExpression = "${a.toStringAsFixed(twoDecimals ? 2 : 1)} x $b";
     } else if (widget.mode == "mult_decimals") {
-      double a = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
-      double b = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
+      double a = (random.nextInt(90) + 10) / 10.0;
+      double b = (random.nextInt(90) + 10) / 10.0;
       currentExpression = "${a.toStringAsFixed(1)} x ${b.toStringAsFixed(1)}";
     }
-
-    setState(() {
-      userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
-    });
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = ""; // Reset input field
+        _focusNode
+            .requestFocus(); // Request focus after generating new expression
+      });
+    }
   }
 
   // Evaluate a math expression
@@ -166,31 +166,35 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++;
 
-    setState(() {
-      totalQuestionsAnswered++;
-
-      if ((userAnswer - correctAnswer).abs() < 0.01) {
-        correctAnswers++;
-        if (totalQuestionsAnswered == 16) {
-          _endGame();
+        if ((userAnswer - correctAnswer).abs() < 0.01) {
+          correctAnswers++;
+          if (totalQuestionsAnswered == 16) {
+            _endGame();
+          } else {
+            _generateExpression();
+          }
         } else {
-          _generateExpression();
-        }
-      } else {
-        showingAnswer = true; // Show the correct answer for incorrect response
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateExpression();
-            } else {
-              _endGame();
+          showingAnswer =
+              true; // Show the correct answer for incorrect response
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted == true) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateExpression();
+                } else {
+                  _endGame();
+                }
+              });
             }
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   // End the game

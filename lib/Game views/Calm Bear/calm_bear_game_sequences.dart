@@ -61,16 +61,18 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
 
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start();
-          timer.cancel();
-          _generateSequence();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start();
+            timer.cancel();
+            _generateSequence();
+          }
+        });
+      }
     });
   }
 
@@ -158,16 +160,17 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         }
         break;
     }
-
-    setState(() {
-      currentSequence = sequence.take(5).join(", ");
-      nextValue = sequence.length > 5
-          ? sequence[5]
-          : 0; // Safeguard for short sequences
-      userInput = "";
-      _controller.text = "";
-      showingAnswer = false;
-    });
+    if (mounted == true) {
+      setState(() {
+        currentSequence = sequence.take(5).join(", ");
+        nextValue = sequence.length > 5
+            ? sequence[5]
+            : 0; // Safeguard for short sequences
+        userInput = "";
+        _controller.text = "";
+        showingAnswer = false;
+      });
+    }
     Future.delayed(Duration.zero,
         () => _focusNode.requestFocus()); // Delay to ensure UI updates
   }
@@ -182,111 +185,118 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
 
   void _validateAnswer() {
     final userAnswer = int.tryParse(userInput) ?? -1;
-    setState(() {
-      totalQuestionsAnswered++; // Increment the total questions counter
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++; // Increment the total questions counter
 
-      if (userAnswer == nextValue) {
-        correctAnswers++; // Increment correct answers if the user's input is correct
-        if (correctAnswers == 16) {
-          _endGame(); // End the game if the user reaches 15 correct answers
+        if (userAnswer == nextValue) {
+          correctAnswers++;
+          if (correctAnswers == 16) {
+            _endGame(); // End the game if the user reaches 15 correct answers
+          } else {
+            _generateSequence(); // Generate the next sequence for the next question
+          }
         } else {
-          _generateSequence(); // Generate the next sequence for the next question
-        }
-      } else {
-        showingAnswer = true; // Set flag to show the correct answer
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateSequence();
-              _focusNode
-                  .requestFocus(); // Ensure focus returns after showing the answer
-            } else {
-              _endGame();
+          showingAnswer = true; // Set flag to show the correct answer
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted == true) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateSequence();
+                  _focusNode
+                      .requestFocus(); // Ensure focus returns after showing the answer
+                } else {
+                  _endGame();
+                }
+              });
             }
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   // End the game
   void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGameSequences.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGameSequences(
-                    mode: CalmBearGameSequences.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex <
+                  CalmBearGameSequences.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameSequences(
+                      mode:
+                          CalmBearGameSequences.missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,9 +370,11 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         onSubmitted: (value) {
-                          setState(() {
-                            userInput = value;
-                          });
+                          if (mounted == true) {
+                            setState(() {
+                              userInput = value;
+                            });
+                          }
                           if (value.isNotEmpty) {
                             _validateAnswer();
                           }

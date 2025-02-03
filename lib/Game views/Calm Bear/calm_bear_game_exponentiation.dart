@@ -60,20 +60,22 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start(); // Start the stopwatch
-          timer.cancel();
-          _generateExpression();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start(); // Start the stopwatch
+            timer.cancel();
+            _generateExpression();
+          }
+        });
+      }
     });
   }
 
-  // Generate a random math expression 
+  // Generate a random math expression
   void _generateExpression() {
     final random = Random();
 
@@ -120,7 +122,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
           for (int i = 1; i <= 9; i++) i * i // 1² to 9²
         ];
         int a = perfectSquares1[random.nextInt(perfectSquares1.length)];
-        int b = random.nextInt(9) + 1; // 1-9
+        int b = random.nextInt(9) + 1;
         currentExpression = "√$a + $b";
         break;
       case "square_root_of_2_digit_times_square_root_of_2_digit":
@@ -135,7 +137,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         break;
       case "square_root_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
         List<int> perfectSquares2DigitOr3Digit = [
-          for (int i = 4; i <= 31; i++) i * i // Perfect squares from 4² to 31²
+          for (int i = 4; i <= 31; i++) i * i
         ];
 
         int a, b;
@@ -150,13 +152,14 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         currentExpression = "√$a / √$b";
         break;
     }
-
-    setState(() {
-      userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
-    });
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = ""; // Reset input field
+        _focusNode
+            .requestFocus(); // Request focus after generating new expression
+      });
+    }
   }
 
   // Evaluate a math expression
@@ -256,110 +259,115 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++;
 
-    setState(() {
-      totalQuestionsAnswered++;
-
-      if ((userAnswer - correctAnswer).abs() < 0.01) {
-        correctAnswers++;
-        if (totalQuestionsAnswered == 16) {
-          _endGame();
+        if ((userAnswer - correctAnswer).abs() < 0.01) {
+          correctAnswers++;
+          if (totalQuestionsAnswered == 16) {
+            _endGame();
+          } else {
+            _generateExpression();
+          }
         } else {
-          _generateExpression();
-        }
-      } else {
-        showingAnswer = true; // Show the correct answer for incorrect response
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateExpression();
-            } else {
-              _endGame();
-            }
+          showingAnswer =
+              true; // Show the correct answer for incorrect response
+          Future.delayed(const Duration(seconds: 3), () {
+            setState(() {
+              showingAnswer = false;
+              if (totalQuestionsAnswered < 16) {
+                _generateExpression();
+              } else {
+                _endGame();
+              }
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   // End the game
   void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGameExponentiation.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGameExponentiation(
-                    mode: CalmBearGameExponentiation.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex <
+                  CalmBearGameExponentiation.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameExponentiation(
+                      mode: CalmBearGameExponentiation
+                          .missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

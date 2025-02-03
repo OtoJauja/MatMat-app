@@ -17,9 +17,9 @@ class CalmBearGameMixed extends StatefulWidget {
     "1_digit_plus_1_digit_by_1_digit",
     "1_digit_plus_2_digit_by_1_digit",
     "1_digit_times_2_digit_plus_2_digit",
-    "2_digit_plus_1_digit_times_1_digit", 
-    "3_digit_minus_1_digit_times_1_digit", 
-    "2_digit_times_1_digit_minus_1_digit_times_1_digit", 
+    "2_digit_plus_1_digit_times_1_digit",
+    "3_digit_minus_1_digit_times_1_digit",
+    "2_digit_times_1_digit_minus_1_digit_times_1_digit",
     "1_digit_times_2_digit_plus_1_digit_times_2_digit",
     "1_digit_times_3_digit_minus_2_digit_times_1_digit",
     "2_digit_plus_2_digit_divided_by_1_digit",
@@ -59,16 +59,18 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
 
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start();
-          timer.cancel();
-          _generateExpression();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start();
+            timer.cancel();
+            _generateExpression();
+          }
+        });
+      }
     });
   }
 
@@ -151,12 +153,13 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
       default:
         currentExpression = "Error: Unknown mode";
     }
-
-    setState(() {
-      userInput = "";
-      _controller.text = "";
-      _focusNode.requestFocus();
-    });
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = "";
+        _focusNode.requestFocus();
+      });
+    }
   }
 
   // Evaluate a math expression
@@ -250,31 +253,33 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++;
 
-    setState(() {
-      totalQuestionsAnswered++;
-
-      if ((userAnswer - correctAnswer).abs() < 0.01) {
-        correctAnswers++;
-        if (totalQuestionsAnswered == 16) {
-          _endGame();
+        if ((userAnswer - correctAnswer).abs() < 0.01) {
+          correctAnswers++;
+          if (totalQuestionsAnswered == 16) {
+            _endGame();
+          } else {
+            _generateExpression();
+          }
         } else {
-          _generateExpression();
-        }
-      } else {
-        showingAnswer = true; // Show the correct answer for incorrect response
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateExpression();
-            } else {
-              _endGame();
-            }
+          showingAnswer =
+              true; // Show the correct answer for incorrect response
+          Future.delayed(const Duration(seconds: 3), () {
+            setState(() {
+              showingAnswer = false;
+              if (totalQuestionsAnswered < 16) {
+                _generateExpression();
+              } else {
+                _endGame();
+              }
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   // End the game

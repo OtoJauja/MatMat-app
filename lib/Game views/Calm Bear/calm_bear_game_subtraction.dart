@@ -79,8 +79,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
     final random = Random();
 
     if (widget.mode == "sub_2_digit_and_1_digit") {
-      int a = random.nextInt(90) + 10; // 10 to 99
-      int b = random.nextInt(9) + 1; // 1 to 9
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(9) + 1;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -88,8 +88,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_2_digit") {
-      int a = random.nextInt(90) + 10; // 10 to 99
-      int b = random.nextInt(90) + 10; // 10 to 99
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(90) + 10;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -98,14 +98,13 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       currentExpression = "$a - $b";
     } else if (widget.mode ==
         "sub_3_digit_and_1_digit_or_2_digit_without_carry") {
-      // No carry-over allowed
-      int a = random.nextInt(800) + 100; // 100 to 999
-      int b = random.nextInt(99) + 1; // 1 to 99
+      // No carry allowed
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(99) + 1;
 
       // Ensure no carry by adjusting each digit
       int unitsA = a % 10;
-      int unitsB =
-          random.nextInt(unitsA + 1); // Make sure b's units <= a's units
+      int unitsB = random.nextInt(unitsA + 1); // Make sure b units <= a units
       b = (b ~/ 10) * 10 + unitsB;
 
       if (b >= a) {
@@ -115,9 +114,9 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_3_digit_and_1_digit_or_2_digit_with_carry") {
-      // Carry-over allowed
-      int a = random.nextInt(800) + 100; // 100 to 999
-      int b = random.nextInt(99) + 1; // 1 to 99
+      // Carry allowed
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(99) + 1;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -125,19 +124,18 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_3_digit_and_2_digit_and_1_digit") {
-      // Subtract a 2-digit and a 1-digit number from a 3-digit number
-      int a = random.nextInt(800) + 100; // 100 to 999
-      int b = random.nextInt(90) + 10; // 10 to 99
-      int c = random.nextInt(9) + 1; // 1 to 9
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(90) + 10;
+      int c = random.nextInt(9) + 1;
 
       if (b + c >= a) {
         // Ensure a > b + c
-        a = b + c + random.nextInt(50) + 1; // Make a sufficiently larger
+        a = b + c + random.nextInt(50) + 1; // Make a larger
       }
       currentExpression = "$a - $b - $c";
     } else if (widget.mode == "sub_3_digit") {
-      int a = random.nextInt(800) + 100; // 100 to 999
-      int b = random.nextInt(800) + 100; // 100 to 999
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(800) + 100;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -145,8 +143,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit_and_2_digit") {
-      int a = random.nextInt(9000) + 1000; // 1000 to 9999
-      int b = random.nextInt(90) + 10; // 10 to 99
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(90) + 10;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -154,8 +152,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit_and_3_digit") {
-      int a = random.nextInt(9000) + 1000; // 1000 to 9999
-      int b = random.nextInt(900) + 100; // 100 to 999
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(900) + 100;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -163,8 +161,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_4_digit") {
-      int a = random.nextInt(9000) + 1000; // 1000 to 9999
-      int b = random.nextInt(9000) + 1000; // 1000 to 9999
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(9000) + 1000;
       if (b >= a) {
         int temp = a;
         a = b;
@@ -172,9 +170,8 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
       }
       currentExpression = "$a - $b";
     } else if (widget.mode == "sub_decimals") {
-      // Correct format: xxx.xx - xx.x
-      double a = (random.nextInt(90000) + 10000) / 100.0; // 100.00 to 999.99
-      double b = (random.nextInt(900) + 100) / 10.0; // 10.0 to 99.9
+      double a = (random.nextInt(90000) + 10000) / 100.0;
+      double b = (random.nextInt(900) + 100) / 10.0;
       if (b >= a) {
         double temp = a;
         a = b;
@@ -195,7 +192,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
   // Evaluate a math expression
   double _evaluateExpression(String expression) {
     try {
-      // Split the expression by " - " to handle multiple subtractions
+      // Split the expression by  -  to handle multiple subtractions
       final parts = expression.split(" - ");
       double result = double.parse(parts[0]);
       // Subtract all subsequent numbers from the result
@@ -228,21 +225,22 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
           showingAnswer =
               true; // Show the correct answer for incorrect response
           Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              showingAnswer = false;
-              if (totalQuestionsAnswered < 16) {
-                _generateExpression();
-              } else {
-                _endGame();
-              }
-            });
+            if (mounted == true) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateExpression();
+                } else {
+                  _endGame();
+                }
+              });
+            }
           });
         }
       });
     }
   }
 
-  // End the game
   // End the game
   void _endGame() {
     _stopwatch.stop();
@@ -309,7 +307,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
               Navigator.pop(context,
                   correctAnswers); // Pass the correct answers back to the previous screen
 
-              // Navigate back to the missions list (pop until first screen)
+              // Navigate back to the missions list
               Navigator.popUntil(context, (route) => route.isFirst);
             },
             child: Text(

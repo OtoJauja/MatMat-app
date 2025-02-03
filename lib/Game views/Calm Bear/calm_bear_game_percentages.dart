@@ -60,16 +60,18 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (preStartTimer > 0) {
-          preStartTimer--;
-        } else {
-          gameStarted = true;
-          _stopwatch = Stopwatch()..start(); // Start the stopwatch
-          timer.cancel();
-          _generateExpression();
-        }
-      });
+      if (mounted == true) {
+        setState(() {
+          if (preStartTimer > 0) {
+            preStartTimer--;
+          } else {
+            gameStarted = true;
+            _stopwatch = Stopwatch()..start(); // Start the stopwatch
+            timer.cancel();
+            _generateExpression();
+          }
+        });
+      }
     });
   }
 
@@ -119,13 +121,14 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
       int percent = random.nextInt(90) + 10; // 2-digit (10-99)
       currentExpression = "$percent% of $a";
     }
-
-    setState(() {
-      userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
-    });
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = ""; // Reset input field
+        _focusNode
+            .requestFocus(); // Request focus after generating new expression
+      });
+    }
   }
 
   double _evaluateExpression(String expression) {
@@ -176,14 +179,16 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
       } else {
         showingAnswer = true; // Show the correct answer for incorrect response
         Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            showingAnswer = false;
-            if (totalQuestionsAnswered < 16) {
-              _generateExpression();
-            } else {
-              _endGame();
-            }
-          });
+          if (mounted == true) {
+            setState(() {
+              showingAnswer = false;
+              if (totalQuestionsAnswered < 16) {
+                _generateExpression();
+              } else {
+                _endGame();
+              }
+            });
+          }
         });
       }
     });
@@ -191,81 +196,84 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
 
   // End the game
   void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGamePercentages.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGamePercentages(
-                    mode: CalmBearGamePercentages.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex <
+                  CalmBearGamePercentages.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGamePercentages(
+                      mode: CalmBearGamePercentages
+                          .missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

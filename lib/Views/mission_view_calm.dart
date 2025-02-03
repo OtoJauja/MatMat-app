@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart'; // Import provider package
+import 'package:provider/provider.dart';
 
 import '../Game views/Calm Bear/calm_bear_game_addition.dart';
 import '../Game views/Calm Bear/calm_bear_game_division.dart';
