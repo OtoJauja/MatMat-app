@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FastBeeGameExponentiation extends StatefulWidget {
@@ -339,12 +340,14 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
               Navigator.pop(context);
               int nextMissionIndex = widget.missionIndex + 1;
 
-              if (nextMissionIndex < FastBeeGameExponentiation.missionModes.length) {
+              if (nextMissionIndex <
+                  FastBeeGameExponentiation.missionModes.length) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FastBeeGameExponentiation(
-                      mode: FastBeeGameExponentiation.missionModes[nextMissionIndex],
+                      mode: FastBeeGameExponentiation
+                          .missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
@@ -363,12 +366,13 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
           ),
           TextButton(
             onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
             child: Text(
               "Back to Missions",
               style: GoogleFonts.mali(
@@ -391,8 +395,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context,
-                correctAnswers);
+            Navigator.pop(context, correctAnswers);
           },
         ),
         actions: [
@@ -450,7 +453,11 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                      ],
                       onChanged: (value) {
                         if (mounted == true) {
                           setState(() {

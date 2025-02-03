@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CalmBearGameAddition extends StatefulWidget {
@@ -77,63 +78,66 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
 
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
-  final random = Random();
+    final random = Random();
 
-  if (widget.mode == "add_1_digit") {
-    int a = random.nextInt(9) + 1;
-    int b = random.nextInt(9) + 1;
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_1_digit_and_2_digit") {
-    int a = random.nextInt(9) + 1;
-    int b = random.nextInt(90) + 10; 
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_2_digit_without_carry") {
-    int a = random.nextInt(80) + 10;
-    int b = random.nextInt(80) + 10; 
-    // Adjust b to ensure no carry for the second digits
-    int unitsA = a % 10; // Get the unit place of a
-    int maxUnitsB = 9 - unitsA; // Max value for the units digit of b to avoid carry
-    int unitsB = random.nextInt(maxUnitsB + 1); // Generate units digit for b within the limit
-    b = (b ~/ 10) * 10 + unitsB; // Replace the unit digit of b while keeping the tens digit intact
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_2_digit_with_carry") {
-    int a = random.nextInt(90) + 10;
-    int b = random.nextInt(90) + 10;
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_3_digit_and_2_digit") {
-    int a = random.nextInt(800) + 100;
-    int b = random.nextInt(90) + 10; 
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_3_digit") {
-    int a = random.nextInt(800) + 100; 
-    int b = random.nextInt(800) + 100;
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_4_digit_and_2_digit") {
-    int a = random.nextInt(9000) + 1000; 
-    int b = random.nextInt(90) + 10;
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_4_digit_and_3_digit") {
-    int a = random.nextInt(9000) + 1000; 
-    int b = random.nextInt(800) + 100;
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_4_digit") {
-    int a = random.nextInt(9000) + 1000; 
-    int b = random.nextInt(9000) + 1000; 
-    currentExpression = "$a + $b";
-  } else if (widget.mode == "add_decimals") {
-    double a = (random.nextInt(90000) + 10000) / 100;
-    double b = (random.nextInt(9000) + 1000) / 100; 
-    currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
+    if (widget.mode == "add_1_digit") {
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(9) + 1;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_1_digit_and_2_digit") {
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(90) + 10;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_2_digit_without_carry") {
+      int a = random.nextInt(80) + 10;
+      int b = random.nextInt(80) + 10;
+      // Adjust b to ensure no carry for the second digits
+      int unitsA = a % 10; // Get the unit place of a
+      int maxUnitsB =
+          9 - unitsA; // Max value for the units digit of b to avoid carry
+      int unitsB = random.nextInt(
+          maxUnitsB + 1); // Generate units digit for b within the limit
+      b = (b ~/ 10) * 10 +
+          unitsB; // Replace the unit digit of b while keeping the tens digit intact
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_2_digit_with_carry") {
+      int a = random.nextInt(90) + 10;
+      int b = random.nextInt(90) + 10;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_3_digit_and_2_digit") {
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(90) + 10;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_3_digit") {
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(800) + 100;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit_and_2_digit") {
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(90) + 10;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit_and_3_digit") {
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(800) + 100;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_4_digit") {
+      int a = random.nextInt(9000) + 1000;
+      int b = random.nextInt(9000) + 1000;
+      currentExpression = "$a + $b";
+    } else if (widget.mode == "add_decimals") {
+      double a = (random.nextInt(90000) + 10000) / 100;
+      double b = (random.nextInt(9000) + 1000) / 100;
+      currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
+    }
+    if (mounted == true) {
+      setState(() {
+        userInput = "";
+        _controller.text = ""; // Reset input field
+        _focusNode
+            .requestFocus(); // Request focus after generating new expression
+      });
+    }
   }
-  if (mounted == true) {
-    setState(() {
-      userInput = "";
-      _controller.text = ""; // Reset input field
-      _focusNode
-          .requestFocus(); // Request focus after generating new expression
-    });
-  }
-}
 
   // Evaluate math expression
   double _evaluateExpression(String expression) {
@@ -183,81 +187,83 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
 
   // End the game
   void _endGame() {
-  _stopwatch.stop();
-  final elapsedTime = _stopwatch.elapsed;
+    _stopwatch.stop();
+    final elapsedTime = _stopwatch.elapsed;
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xffffee9ae),
-      title: Text(
-        "Game Over!",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xffffee9ae),
+        title: Text(
+          "Game Over!",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      content: Text(
-        "Correct answers: $correctAnswers\n\n"
-        "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-        "Do you want to continue to the next mission or choose a different mission?",
-        style: GoogleFonts.mali(
-          color: const Color.fromARGB(255, 50, 50, 50),
-          fontWeight: FontWeight.bold,
+        content: Text(
+          "Correct answers: $correctAnswers\n\n"
+          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "Do you want to continue to the next mission or choose a different mission?",
+          style: GoogleFonts.mali(
+            color: const Color.fromARGB(255, 50, 50, 50),
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-            int nextMissionIndex = widget.missionIndex + 1;
+              int nextMissionIndex = widget.missionIndex + 1;
 
-            // Proceed to the next mission if available
-            if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CalmBearGameAddition(
-                    mode: CalmBearGameAddition.missionModes[nextMissionIndex],
-                    missionIndex: nextMissionIndex,
+              // Proceed to the next mission if available
+              if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalmBearGameAddition(
+                      mode: CalmBearGameAddition.missionModes[nextMissionIndex],
+                      missionIndex: nextMissionIndex,
+                    ),
                   ),
-                ),
-              );
-            } else {
-              // If no more missions are available, go back to the first screen
-              Navigator.popUntil(context, (route) => route.isFirst);
-            }
-          },
-          child: Text(
-            "Next Mission",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+                );
+              } else {
+                // If no more missions are available, go back to the first screen
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }
+            },
+            child: Text(
+              "Next Mission",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); 
-            Navigator.pop(context, correctAnswers); // Pass the correct answers back to the previous screen
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context,
+                  correctAnswers); // Pass the correct answers back to the previous screen
 
-            // Navigate back to the missions list 
-            Navigator.popUntil(context, (route) => route.isFirst);
-          },
-          child: Text(
-            "Back to Missions",
-            style: GoogleFonts.mali(
-              color: const Color.fromARGB(255, 50, 50, 50),
-              fontWeight: FontWeight.bold,
+              // Navigate back to the missions list
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Missions",
+              style: GoogleFonts.mali(
+                color: const Color.fromARGB(255, 50, 50, 50),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
+
   // Game screen
   @override
   Widget build(BuildContext context) {
@@ -329,7 +335,11 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                         focusNode: _focusNode,
                         cursorColor: const Color(0xffffa400),
                         textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        ],
                         onSubmitted: (value) {
                           if (mounted == true) {
                             setState(() {
