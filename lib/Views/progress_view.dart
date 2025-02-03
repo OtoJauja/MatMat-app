@@ -54,7 +54,7 @@ class ProgressView extends StatelessWidget {
             color: const Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
-          titlePositionPercentageOffset: 2,
+          titlePositionPercentageOffset: 1.2,
         );
       });
     }
@@ -78,7 +78,7 @@ class ProgressView extends StatelessWidget {
             color: const Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
-          titlePositionPercentageOffset: 2,
+          titlePositionPercentageOffset: 1.2,
         );
       });
     }

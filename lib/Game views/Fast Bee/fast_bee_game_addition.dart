@@ -100,16 +100,16 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
     final random = Random();
 
     if (widget.mode == "add_1_digit") {
-      int a = random.nextInt(9) + 1; // 1-digit (1-9)
-      int b = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(9) + 1;
+      int b = random.nextInt(9) + 1;
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_1_digit_and_2_digit") {
-      int a = random.nextInt(9) + 1; // 1-digit (1-9)
-      int b = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(9) + 1; 
+      int b = random.nextInt(90) + 10;
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_2_digit_without_carry") {
-      int a = random.nextInt(80) + 10; // Generate first 2-digit number (10-89)
-      int b = random.nextInt(80) + 10; // Generate second 2-digit number (10-89)
+      int a = random.nextInt(80) + 10; 
+      int b = random.nextInt(80) + 10; 
       int unitsA = a % 10; // Get the unit place of a
       int maxUnitsB =
           9 - unitsA; // Max value for the units digit of b to avoid carry
@@ -119,32 +119,32 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
           unitsB; // Replace the unit digit of b while keeping the tens digit intact
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_2_digit_with_carry") {
-      int a = random.nextInt(90) + 10; // 2-digit
-      int b = random.nextInt(90) + 10; // 2-digit
+      int a = random.nextInt(90) + 10; 
+      int b = random.nextInt(90) + 10; 
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_3_digit_and_2_digit") {
-      int a = random.nextInt(800) + 100; // 3-digit
-      int b = random.nextInt(90) + 10; // 2-digit
+      int a = random.nextInt(800) + 100; 
+      int b = random.nextInt(90) + 10; 
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_3_digit") {
-      int a = random.nextInt(800) + 100; // 3-digit
-      int b = random.nextInt(800) + 100; // 3-digit
+      int a = random.nextInt(800) + 100;
+      int b = random.nextInt(800) + 100;
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_4_digit_and_2_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(90) + 10; // 2-digit
+      int a = random.nextInt(9000) + 1000; 
+      int b = random.nextInt(90) + 10; 
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_4_digit_and_3_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(800) + 100; // 3-digit
+      int a = random.nextInt(9000) + 1000; 
+      int b = random.nextInt(800) + 100;
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_4_digit") {
-      int a = random.nextInt(9000) + 1000; // 4-digit
-      int b = random.nextInt(9000) + 1000; // 4-digit
+      int a = random.nextInt(9000) + 1000; 
+      int b = random.nextInt(9000) + 1000; 
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_decimals") {
-      double a = (random.nextInt(90000) + 10000) / 100; // Range 100.00 - 999.99
-      double b = (random.nextInt(9000) + 1000) / 100; // Range 10.00 - 99.99
+      double a = (random.nextInt(90000) + 10000) / 100; 
+      double b = (random.nextInt(9000) + 1000) / 100; 
       currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
     }
     if (mounted == true) {
