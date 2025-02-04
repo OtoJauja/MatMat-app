@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MissionsProviderCalm()),
         ChangeNotifierProvider(create: (_) => MissionsProviderFast()),
       ],
-      child: const MaterialApp(
-        home: MainNavigation(),
+      child: MaterialApp(
+        home: const MainNavigation(),
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(fontFamily: 'Mali'),
       ),
     );
   }

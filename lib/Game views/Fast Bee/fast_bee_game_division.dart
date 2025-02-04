@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FastBeeGameDivision extends StatefulWidget {
   // everything should work
@@ -259,18 +258,18 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
-        title: Text(
+        title: const Text(
           "Time's Up!",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: TextStyle(
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           "Correct answers: $correctAnswers\n\n"
           "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: const TextStyle(
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -294,10 +293,10 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
-            child: Text(
+            child: const Text(
               "Next Mission",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -310,10 +309,10 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
               // Navigate back to the missions list
               Navigator.popUntil(context, (route) => route.isFirst);
             },
-            child: Text(
+            child: const Text(
               "Back to Missions",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -341,8 +340,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
             child: Center(
               child: Text(
                 "Correct: $correctAnswers",
-                style: GoogleFonts.mali(
-                  color: const Color(0xffffa400),
+                style: const TextStyle(
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -359,8 +358,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                 children: [
                   Text(
                     "Answered: $totalQuestionsAnswered",
-                    style: GoogleFonts.mali(
-                      color: const Color(0xffffa400),
+                    style: const TextStyle(
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -368,8 +367,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                   const SizedBox(height: 20),
                   Text(
                     "⏳ $timeLeft seconds",
-                    style: GoogleFonts.mali(
-                      color: const Color(0xffffa400),
+                    style: const TextStyle(
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -377,8 +376,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                   const SizedBox(height: 20),
                   Text(
                     currentExpression,
-                    style: GoogleFonts.mali(
-                      color: const Color(0xffffa400),
+                    style: const TextStyle(
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -424,10 +423,10 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffffee9ae),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Skip",
-                      style: GoogleFonts.mali(
-                        color: const Color.fromARGB(255, 50, 50, 50),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -436,8 +435,8 @@ class _FastBeeGameState extends State<FastBeeGameDivision> {
               )
             : Text(
                 preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
-                style: GoogleFonts.mali(
-                  color: const Color(0xffffa400),
+                style: const TextStyle(
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 48,
                 ),

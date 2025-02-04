@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -110,10 +109,12 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Settings',
-          style: GoogleFonts.mali(
-            textStyle: const TextStyle(color: const Color.fromARGB(255, 50, 50, 50), fontWeight: FontWeight.bold, fontSize: 28),
+          style: TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),  
+            fontWeight: FontWeight.bold,
+            fontSize: 28,
           ),
         ),
         centerTitle: true,
@@ -127,18 +128,21 @@ class SettingsView extends StatelessWidget {
               child: ExpansionTile(
                 title: Text(
                   subject,
-                  style: GoogleFonts.mali(
-                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 50, 50, 50)),
+                  style: const TextStyle(fontFamily: 'Mali',
+                    color: Color.fromARGB(255, 50, 50, 50),  
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                      ),
                   ),
-                ),
                 children: subjectsAndMissions[subject]!.map<Widget>((mission) {
                   return ListTile(
                     title: Text(
                       '${mission["number"]}. ${mission["description"]}',
-                      style: GoogleFonts.mali(
-                        textStyle: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 50, 50, 50)),
+                      style: const TextStyle(fontFamily: 'Mali',
+                    color: Color.fromARGB(255, 50, 50, 50),  
+                    fontSize: 16,
                       ),
-                    ),
+                  ),
                   );
                 }).toList(),
               ),

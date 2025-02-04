@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart'; // Import provider package
 
 import '../Game views/Fast Bee/fast_bee_game_addition.dart'; // Addition game
@@ -63,8 +62,8 @@ class _MissionViewFastState extends State<MissionViewFast> {
         ),
         title: Text(
           widget.subjectName,
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: const TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -133,16 +132,16 @@ class _MissionViewFastState extends State<MissionViewFast> {
                   children: [
                     Text(
                       mission.number.toString(),
-                      style: GoogleFonts.mali(
-                        color: const Color.fromARGB(255, 50, 50, 50),
+                      style: const TextStyle(fontFamily: 'Mali',
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       "Completed: ${mission.correctAnswers}",
-                      style: GoogleFonts.mali(
-                        color: const Color.fromARGB(255, 50, 50, 50),
+                      style: const TextStyle(fontFamily: 'Mali',
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontSize: 18,
                       ),
                     ),

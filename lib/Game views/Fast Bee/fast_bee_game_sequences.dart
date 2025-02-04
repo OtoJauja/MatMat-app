@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FastBeeGameSequences extends StatefulWidget {
   // I think currently everything is fine
@@ -244,7 +243,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
         backgroundColor: const Color(0xffffee9ae),
         title: Text(
           "Game Over!",
-          style: GoogleFonts.mali(
+          style: const TextStyle(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
@@ -252,7 +251,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
         content: Text(
           "Correct answers: $correctAnswers\n\n"
           "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
+          style: const TextStyle(
             color: const Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
@@ -279,7 +278,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
             },
             child: Text(
               "Next Mission",
-              style: GoogleFonts.mali(
+              style: const TextStyle(
                 color: const Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
@@ -296,7 +295,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
             },
             child: Text(
               "Back to Missions",
-              style: GoogleFonts.mali(
+              style: const TextStyle(
                 color: const Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
@@ -325,7 +324,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
             child: Center(
               child: Text(
                 "Correct: $correctAnswers",
-                style: GoogleFonts.mali(
+                style: const TextStyle(
                   color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
@@ -343,7 +342,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
                 children: [
                   Text(
                     "$totalQuestionsAnswered of 15",
-                    style: GoogleFonts.mali(
+                    style: const TextStyle(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
@@ -352,7 +351,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
                   const SizedBox(height: 20),
                   Text(
                     "⏳ $timeLeft seconds",
-                    style: GoogleFonts.mali(
+                    style: const TextStyle(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
@@ -361,7 +360,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
                   const SizedBox(height: 20),
                   Text(
                     currentSequence,
-                    style: GoogleFonts.mali(
+                    style: const TextStyle(
                       color: const Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
@@ -410,7 +409,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
                     ),
                     child: Text(
                       "Skip",
-                      style: GoogleFonts.mali(
+                      style: const TextStyle(
                         color: const Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                       ),
@@ -420,7 +419,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
               )
             : Text(
                 preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
-                style: GoogleFonts.mali(
+                style: const TextStyle(
                   color: const Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 48,

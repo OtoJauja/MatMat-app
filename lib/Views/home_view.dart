@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'subjects_view_fast.dart';
 import 'subjects_view_calm.dart';
@@ -19,10 +18,10 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Choose mode!',
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),  
+          style: TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),  
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -108,19 +107,19 @@ class ModeCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               title,
-              style: GoogleFonts.mali(
+              style: const TextStyle(fontFamily: 'Mali',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: const Color.fromARGB(255, 50, 50, 50),  
+                color: Color.fromARGB(255, 50, 50, 50),  
               ),
             ),
             const SizedBox(height: 5),
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: GoogleFonts.mali(
+              style: const TextStyle(fontFamily: 'Mali',
                 fontSize: 14,
-                color: const Color.fromARGB(255, 50, 50, 50),   
+                color: Color.fromARGB(255, 50, 50, 50),   
               ),
             ),
             const SizedBox(height: 20),
@@ -131,9 +130,9 @@ class ModeCard extends StatelessWidget {
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(20),
               ),
-              child: Text(
+              child: const Text(
                 'Start',
-                style: GoogleFonts.mali(
+                style: TextStyle(fontFamily: 'Mali',
                   color: Colors.white, 
                 ),
               ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../Game views/Calm Bear/calm_bear_game_addition.dart';
@@ -61,8 +60,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
         ),
         title: Text(
           widget.subjectName,
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: const TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -132,16 +131,16 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                     children: [
                       Text(
                         mission.number.toString(),
-                        style: GoogleFonts.mali(
-                          color: const Color.fromARGB(255, 50, 50, 50),
+                        style: const TextStyle(fontFamily: 'Mali',
+                          color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 34,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         "${mission.correctAnswers} of 15",
-                        style: GoogleFonts.mali(
-                          color: const Color.fromARGB(255, 50, 50, 50),
+                        style: const TextStyle(fontFamily: 'Mali',
+                          color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 18,
                         ),
                       ),

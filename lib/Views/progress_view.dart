@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_app/mission_provider_calm.dart';
@@ -48,10 +47,10 @@ class ProgressView extends StatelessWidget {
           color: colors[i],
           title: "${subjects[i]}\n${completedMissions.toInt()}",
           radius: 15 + (completedMissions * 20),
-          titleStyle: GoogleFonts.mali(
+          titleStyle: const TextStyle(fontFamily: 'Mali',
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(255, 50, 50, 50),
+            color: Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
           titlePositionPercentageOffset: 1.2,
@@ -72,10 +71,10 @@ class ProgressView extends StatelessWidget {
           color: colors[i],
           title: "${subjects[i]}\n${completedMissions.toInt()}",
           radius: 15 + (completedMissions * 20),
-          titleStyle: GoogleFonts.mali(
+          titleStyle: const TextStyle(fontFamily: 'Mali',
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(255, 50, 50, 50),
+            color: Color.fromARGB(255, 50, 50, 50),
           ),
           showTitle: true,
           titlePositionPercentageOffset: 1.2,
@@ -92,10 +91,10 @@ class ProgressView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Progress',
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -138,10 +137,10 @@ class ProgressView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: GoogleFonts.mali(
+          style: const TextStyle(fontFamily: 'Mali',
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(255, 50, 50, 50),
+            color: Color.fromARGB(255, 50, 50, 50),
           ),
         ),
         const SizedBox(height: 10),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'mission_view_fast.dart'; // Import Mission View
 
@@ -31,10 +30,10 @@ class SubjectsViewFast extends StatelessWidget {
           tooltip: 'Back',
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
+        title: const Text(
           'Subjects',
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -54,8 +53,8 @@ class SubjectsViewFast extends StatelessWidget {
             return ListTile(
               title: Text(
                 subjects[index],
-                style: GoogleFonts.mali(
-                  color: const Color.fromARGB(255, 50, 50, 50),
+                style: const TextStyle(fontFamily: 'Mali',
+                  color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),

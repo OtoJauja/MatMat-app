@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CalmBearGameDivision extends StatefulWidget {
   final String mode;
@@ -230,10 +229,10 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
-        title: Text(
+        title: const Text(
           "Game Over!",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -241,8 +240,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
           "Correct answers: $correctAnswers\n\n"
           "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
           "Do you want to continue to the next mission or choose a different mission?",
-          style: GoogleFonts.mali(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: const TextStyle(fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -269,10 +268,10 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
-            child: Text(
+            child: const Text(
               "Next Mission",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(fontFamily: 'Mali',
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -286,10 +285,10 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
               // Navigate back to the missions list
               Navigator.popUntil(context, (route) => route.isFirst);
             },
-            child: Text(
+            child: const Text(
               "Back to Missions",
-              style: GoogleFonts.mali(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(fontFamily: 'Mali',
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -318,8 +317,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
             child: Center(
               child: Text(
                 "Correct: $correctAnswers",
-                style: GoogleFonts.mali(
-                  color: const Color(0xffffa400),
+                style: const TextStyle(fontFamily: 'Mali',
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -337,8 +336,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                   children: [
                     Text(
                       "$totalQuestionsAnswered of 15",
-                      style: GoogleFonts.mali(
-                        color: const Color(0xffffa400),
+                      style: const TextStyle(fontFamily: 'Mali',
+                        color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
                         fontSize: 48,
                       ),
@@ -347,8 +346,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                     showingAnswer
                         ? Text(
                             "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: GoogleFonts.mali(
-                              color: const Color(0xffffa400),
+                            style: const TextStyle(fontFamily: 'Mali',
+                              color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -356,8 +355,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                           )
                         : Text(
                             currentExpression,
-                            style: GoogleFonts.mali(
-                              color: const Color(0xffffa400),
+                            style: const TextStyle(fontFamily: 'Mali',
+                              color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
                             ),
@@ -402,8 +401,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                 )
               : Text(
                   preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
-                  style: GoogleFonts.mali(
-                    color: const Color(0xffffa400),
+                  style: const TextStyle(fontFamily: 'Mali',
+                    color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
                     fontSize: 48,
                   ),
