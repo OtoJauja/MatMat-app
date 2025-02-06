@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/mission_provider_calm.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CalmBearGameAddition extends StatefulWidget {
   final String mode;
@@ -31,6 +34,8 @@ class CalmBearGameAddition extends StatefulWidget {
 }
 
 class _CalmBearGameState extends State<CalmBearGameAddition> {
+  int sessionScore = 0; // The score for the current session
+  int highestScore = 0; // The highest score loaded from storage
   int correctAnswers = 0; // Track correct answers
   int totalQuestionsAnswered = 1; // Track total questions answered
   String currentExpression = ""; // Current math expression
@@ -42,11 +47,38 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
   late Stopwatch _stopwatch; // Stopwatch to track time
   late FocusNode _focusNode; // Focus to autoclick input
 
+  Future<void> _saveHighestScore(int missionIndex, int newScore) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = "Addition_highestScore_$missionIndex";
+    int storedScore = prefs.getInt(key) ?? 0;
+
+    if (newScore > storedScore) {
+      await prefs.setInt(key, newScore);
+    }
+  }
+
+  Future<int> _loadHighestScore(int missionIndex) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = "Addition_highestScore_$missionIndex";
+    return prefs.getInt(key) ?? 0;
+  }
+
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
     _controller = TextEditingController();
+
+    // Load the highest score for this mission at the start.
+    _loadHighestScore(widget.missionIndex).then((value) {
+      if (mounted) {
+        setState(() {
+          highestScore = value;
+          sessionScore = 0; // Always start a new session with 0.
+        });
+      }
+    });
+
     _startPreGameTimer();
   }
 
@@ -59,14 +91,19 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
 
   // Timer for 5-second pre game countdown
   void _startPreGameTimer() {
+    setState(() {
+      sessionScore = 0; // Reset only the session score.
+      totalQuestionsAnswered = 1;
+    });
+
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (preStartTimer > 0) {
             preStartTimer--;
           } else {
             gameStarted = true;
-            _stopwatch = Stopwatch()..start(); // Start the stopwatch
+            _stopwatch = Stopwatch()..start();
             timer.cancel();
             _generateExpression();
           }
@@ -160,7 +197,11 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
         totalQuestionsAnswered++;
 
         if ((userAnswer - correctAnswer).abs() < 0.01) {
-          correctAnswers++;
+          sessionScore++; // Increment the session score
+          // Update highestScore if needed.
+          if (sessionScore > highestScore) {
+            highestScore = sessionScore;
+          }
           if (totalQuestionsAnswered == 16) {
             _endGame();
           } else {
@@ -196,7 +237,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
         backgroundColor: const Color(0xffffee9ae),
         title: const Text(
           "Game Over!",
-          style: TextStyle(fontFamily: 'Mali',
+          style: TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
@@ -205,21 +247,30 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
           "Correct answers: $correctAnswers\n\n"
           "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
           "Do you want to continue to the next mission or choose a different mission?",
-          style: const TextStyle(fontFamily: 'Mali',
+          style: const TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              // Save the highest score for the finished mission
+              await _saveHighestScore(widget.missionIndex, highestScore);
+
+              // Update the provider for the finished mission
+              Provider.of<MissionsProviderCalm>(context, listen: false)
+                  .updateMissionProgress(
+                      "Addition", widget.missionIndex + 1, highestScore);
+
+              // Optionally wait a tiny bit to ensure the provider updates
+              await Future.delayed(const Duration(milliseconds: 100));
 
               int nextMissionIndex = widget.missionIndex + 1;
-
-              // Proceed to the next mission if available
               if (nextMissionIndex < CalmBearGameAddition.missionModes.length) {
-                Navigator.pushReplacement(
+                // Remove all game screens and push the next mission
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CalmBearGameAddition(
@@ -227,32 +278,37 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                       missionIndex: nextMissionIndex,
                     ),
                   ),
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
-                // If no more missions are available, go back to the first screen
+                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
             child: const Text(
               "Next Mission",
-              style: TextStyle(fontFamily: 'Mali',
+              style: TextStyle(
+                fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              await _saveHighestScore(widget.missionIndex, highestScore);
+              // Update the provider
+              Provider.of<MissionsProviderCalm>(context, listen: false)
+                  .updateMissionProgress(
+                      "Addition", widget.missionIndex + 1, highestScore);
+              await Future.delayed(const Duration(milliseconds: 100));
               Navigator.pop(context);
-              Navigator.pop(context,
-                  correctAnswers); // Pass the correct answers back to the previous screen
-
-              // Navigate back to the missions list
-              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.pop(context, highestScore);
             },
             child: const Text(
               "Back to Missions",
-              style: TextStyle(fontFamily: 'Mali',
+              style: TextStyle(
+                fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
@@ -272,9 +328,14 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context,
-                correctAnswers); // Pass correct answers back when closing
+          onPressed: () async {
+            await _saveHighestScore(widget.missionIndex, highestScore);
+            // Update the provider
+            Provider.of<MissionsProviderCalm>(context, listen: false)
+                .updateMissionProgress(
+                    "Addition", widget.missionIndex + 1, highestScore);
+            await Future.delayed(const Duration(milliseconds: 100));
+            Navigator.pop(context, highestScore);
           },
         ),
         actions: [
@@ -282,8 +343,9 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "Correct: $correctAnswers",
-                style: const TextStyle(fontFamily: 'Mali',
+                "Correct: $sessionScore",
+                style: const TextStyle(
+                  fontFamily: 'Mali',
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
@@ -302,7 +364,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                   children: [
                     Text(
                       "$totalQuestionsAnswered of 15",
-                      style: const TextStyle(fontFamily: 'Mali',
+                      style: const TextStyle(
+                        fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
                         fontSize: 48,
@@ -312,7 +375,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                     showingAnswer
                         ? Text(
                             "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(fontFamily: 'Mali',
+                            style: const TextStyle(
+                              fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
@@ -321,7 +385,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                           )
                         : Text(
                             currentExpression,
-                            style: const TextStyle(fontFamily: 'Mali',
+                            style: const TextStyle(
+                              fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 48,
@@ -367,7 +432,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                 )
               : Text(
                   preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
-                  style: const TextStyle(fontFamily: 'Mali',
+                  style: const TextStyle(
+                    fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
                     fontSize: 48,

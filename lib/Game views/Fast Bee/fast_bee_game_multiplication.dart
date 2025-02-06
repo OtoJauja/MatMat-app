@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/mission_provider_fast.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FastBeeGameMultiplication extends StatefulWidget {
   // The expressions should work properly
@@ -32,6 +35,8 @@ class FastBeeGameMultiplication extends StatefulWidget {
 }
 
 class _FastBeeGameState extends State<FastBeeGameMultiplication> {
+  int sessionScore = 0; // The score for the current session
+  int highestScore = 0; // The highest score loaded from storage
   late Timer _timer; // Countdown timer
   late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
@@ -44,18 +49,44 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   late TextEditingController _controller; // Persistent controller
   late FocusNode _focusNode; // Focus to autoclick input
 
+  Future<void> _saveHighestScore(int missionIndex, int newScore) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = "fastMultiplication_highestScore_$missionIndex";
+    int storedScore = prefs.getInt(key) ?? 0;
+
+    if (newScore > storedScore) {
+      await prefs.setInt(key, newScore);
+    }
+  }
+
+  Future<int> _loadHighestScore(int missionIndex) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = "fastMultiplication_highestScore_$missionIndex";
+    return prefs.getInt(key) ?? 0;
+  }
+
   @override
   void initState() {
     super.initState();
-    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
+    timeLeft =
+        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
     _focusNode = FocusNode();
     _controller = TextEditingController();
+    // Load the highest score for this mission at the start.
+    _loadHighestScore(widget.missionIndex).then((value) {
+      if (mounted) {
+        setState(() {
+          highestScore = value;
+          sessionScore = 0; // Always start a new session with 0.
+        });
+      }
+    });
     _startPreGameTimer();
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
     _timer.cancel();
     super.dispose();
@@ -63,6 +94,11 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
 
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
+    setState(() {
+      sessionScore = 0; // Reset only the session score.
+      totalQuestionsAnswered = 1;
+    });
+
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted == true) {
         setState(() {
@@ -196,21 +232,24 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   // Validate user's answer
   void _validateAnswer() {
     final correctAnswer = _evaluateExpression(currentExpression);
-
-    // Normalize commas in input and parse as double
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted == true) {
+      setState(() {
+        totalQuestionsAnswered++;
 
-    if ((userAnswer - correctAnswer).abs() < 0.01) {
-      if (mounted == true) {
-        setState(() {
-          correctAnswers++;
-          totalQuestionsAnswered++;
+        if ((userAnswer - correctAnswer).abs() < 0.01) {
+          sessionScore++; // Increment the session score
           _generateExpression();
-        });
-      }
+          // Update highestScore if needed.
+          if (sessionScore > highestScore) {
+            highestScore = sessionScore;
+          }
+        }
+      });
     }
   }
+      
 
   // Skip the current question
   void _skipQuestion() {
@@ -224,36 +263,46 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
     }
   }
 
-  // End game
+  // End the game
   void _endGame() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
-        title: Text(
+        title: const Text(
           "Time's Up!",
-          style: const TextStyle(
-            color: const Color.fromARGB(255, 50, 50, 50),
+          style: TextStyle(
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
-          "Correct answers: $correctAnswers\n\n"
+          "Correct answers: $sessionScore\n\n"
           "Do you want to continue to the next mission or choose a different mission?",
           style: const TextStyle(
-            color: const Color.fromARGB(255, 50, 50, 50),
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              int nextMissionIndex = widget.missionIndex + 1;
+            onPressed: () async {
+              // Save the highest score for the finished mission
+              await _saveHighestScore(widget.missionIndex, highestScore);
 
+              // Update the provider for the finished mission
+              Provider.of<MissionsProviderFast>(context, listen: false)
+                  .updateMissionProgress(
+                      "Multiplication", widget.missionIndex + 1, highestScore);
+
+              // Optionally wait a tiny bit to ensure the provider updates
+              await Future.delayed(const Duration(milliseconds: 100));
+
+              int nextMissionIndex = widget.missionIndex + 1;
               if (nextMissionIndex < FastBeeGameMultiplication.missionModes.length) {
-                Navigator.pushReplacement(
+                // Remove all game screens and push the next mission
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FastBeeGameMultiplication(
@@ -261,31 +310,38 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                       missionIndex: nextMissionIndex,
                     ),
                   ),
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
+                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
-            child: Text(
+            child: const Text(
               "Next Mission",
-              style: const TextStyle(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(
+                fontFamily: 'Mali',
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              await _saveHighestScore(widget.missionIndex, highestScore);
+              // Update the provider
+              Provider.of<MissionsProviderFast>(context, listen: false)
+                  .updateMissionProgress(
+                      "Multiplication", widget.missionIndex + 1, highestScore);
+              await Future.delayed(const Duration(milliseconds: 100));
               Navigator.pop(context);
-              Navigator.pop(context,
-                  correctAnswers); // Pass the correct answers back to the previous screen
-              // Navigate back to the missions list
-              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.pop(context, highestScore);
             },
-            child: Text(
+            child: const Text(
               "Back to Missions",
-              style: const TextStyle(
-                color: const Color.fromARGB(255, 50, 50, 50),
+              style: TextStyle(
+                fontFamily: 'Mali',
+                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -303,8 +359,14 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context, correctAnswers);
+          onPressed: () async {
+            await _saveHighestScore(widget.missionIndex, highestScore);
+            // Update the provider
+            Provider.of<MissionsProviderFast>(context, listen: false)
+                .updateMissionProgress(
+                    "Multiplication", widget.missionIndex + 1, highestScore);
+            await Future.delayed(const Duration(milliseconds: 100));
+            Navigator.pop(context, highestScore);
           },
         ),
         actions: [
@@ -312,9 +374,10 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "Correct: $correctAnswers",
+                "Correct: $sessionScore",
                 style: const TextStyle(
-                  color: const Color(0xffffa400),
+                  fontFamily: 'Mali',
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 34,
                 ),
@@ -330,9 +393,9 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Answered: $totalQuestionsAnswered",
+                    "Answered: $sessionScore",
                     style: const TextStyle(
-                      color: const Color(0xffffa400),
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -341,7 +404,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                   Text(
                     "⏳ $timeLeft seconds",
                     style: const TextStyle(
-                      color: const Color(0xffffa400),
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -350,7 +413,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                   Text(
                     currentExpression,
                     style: const TextStyle(
-                      color: const Color(0xffffa400),
+                      color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -362,11 +425,11 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
-                        ],
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                      ],
                       onChanged: (value) {
                         if (mounted == true) {
                           setState(() {
@@ -396,10 +459,10 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffffee9ae),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Skip",
-                      style: const TextStyle(
-                        color: const Color.fromARGB(255, 50, 50, 50),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -409,7 +472,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
             : Text(
                 preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
                 style: const TextStyle(
-                  color: const Color(0xffffa400),
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 48,
                 ),

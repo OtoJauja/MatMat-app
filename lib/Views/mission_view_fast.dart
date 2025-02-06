@@ -51,7 +51,6 @@ class _MissionViewFastState extends State<MissionViewFast> {
         (orientation == Orientation.portrait ? 6 : 10);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -62,7 +61,8 @@ class _MissionViewFastState extends State<MissionViewFast> {
         ),
         title: Text(
           widget.subjectName,
-          style: const TextStyle(fontFamily: 'Mali',
+          style: const TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
@@ -78,12 +78,20 @@ class _MissionViewFastState extends State<MissionViewFast> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+              // Use Consumer to rebuild when the missions update
               Expanded(
-                child: missions.isEmpty
-                    ? const Center(
-                        child: Text("No missions available for this subject."))
-                    : _buildHoneycombGrid(
-                        missions, context, hexWidth, orientation),
+                child: Consumer<MissionsProviderFast>(
+                  builder: (context, missionsProvider, child) {
+                    List<Mission> missions = missionsProvider
+                        .getMissionsForSubject(widget.subjectName);
+                    return missions.isEmpty
+                        ? const Center(
+                            child:
+                                Text("No missions available for this subject."))
+                        : _buildHoneycombGrid(
+                            missions, context, hexWidth, orientation);
+                  },
+                ),
               ),
             ],
           ),
@@ -139,7 +147,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
                       ),
                     ),
                     Text(
-                      "Completed: ${mission.correctAnswers}",
+                      "Highest: ${mission.correctAnswers}",
                       style: const TextStyle(fontFamily: 'Mali',
                         color: Color.fromARGB(255, 50, 50, 50),
                         fontSize: 18,

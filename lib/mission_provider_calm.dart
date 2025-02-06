@@ -7,8 +7,11 @@ class Mission {
 
   Mission({required this.number, this.correctAnswers = 0, this.isCompleted = false});
 
+  // Only update if the new score is higher
   void updateCorrectAnswers(int answers) {
-    correctAnswers = answers;
+    if (answers > correctAnswers) {
+      correctAnswers = answers;
+    }
     if (correctAnswers >= 15) {
       isCompleted = true;
     }
@@ -21,7 +24,7 @@ class MissionsProviderCalm with ChangeNotifier {
     "Multiplication": List.generate(10, (index) => Mission(number: index + 1)),
     "Division": List.generate(10, (index) => Mission(number: index + 1)),
     "Mixed operations": List.generate(10, (index) => Mission(number: index + 1)),
-    "Exponentiation":List.generate(10, (index) => Mission(number: index + 1)),
+    "Exponentiation": List.generate(10, (index) => Mission(number: index + 1)),
     "Percentages": List.generate(10, (index) => Mission(number: index + 1)),
     "Sequences": List.generate(10, (index) => Mission(number: index + 1)),
   };
@@ -34,10 +37,11 @@ class MissionsProviderCalm with ChangeNotifier {
     return _missions[subject]?.where((mission) => mission.isCompleted).length ?? 0;
   }
 
-  void updateMissionProgress(String subject, int missionNumber, int correctAnswers) {
+  // Update mission only if new score is higher
+  void updateMissionProgress(String subject, int missionNumber, int newScore) {
     final mission = _missions[subject]?.firstWhere((m) => m.number == missionNumber);
     if (mission != null) {
-      mission.updateCorrectAnswers(correctAnswers);
+      mission.updateCorrectAnswers(newScore);
       notifyListeners();
     }
   }

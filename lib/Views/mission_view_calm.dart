@@ -60,7 +60,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
         ),
         title: Text(
           widget.subjectName,
-          style: const TextStyle(fontFamily: 'Mali',
+          style: const TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
@@ -76,12 +77,20 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+              // Use Consumer to rebuild when the missions update
               Expanded(
-                child: missions.isEmpty
-                    ? const Center(
-                        child: Text("No missions available for this subject."))
-                    : _buildHoneycombGrid(
-                        missions, context, hexWidth, orientation),
+                child: Consumer<MissionsProviderCalm>(
+                  builder: (context, missionsProvider, child) {
+                    List<Mission> missions = missionsProvider
+                        .getMissionsForSubject(widget.subjectName);
+                    return missions.isEmpty
+                        ? const Center(
+                            child:
+                                Text("No missions available for this subject."))
+                        : _buildHoneycombGrid(
+                            missions, context, hexWidth, orientation);
+                  },
+                ),
               ),
             ],
           ),
@@ -131,7 +140,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                     children: [
                       Text(
                         mission.number.toString(),
-                        style: const TextStyle(fontFamily: 'Mali',
+                        style: const TextStyle(
+                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 34,
                           fontWeight: FontWeight.bold,
@@ -139,7 +149,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                       ),
                       Text(
                         "${mission.correctAnswers} of 15",
-                        style: const TextStyle(fontFamily: 'Mali',
+                        style: const TextStyle(
+                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 18,
                         ),
