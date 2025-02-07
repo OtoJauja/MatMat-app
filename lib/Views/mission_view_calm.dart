@@ -29,10 +29,9 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
   @override
   void initState() {
     super.initState();
-    // Fetch the missions from the provider based on the subject
-    final missionsProvider =
-        Provider.of<MissionsProviderCalm>(context, listen: false);
-    missions = missionsProvider.getMissionsForSubject(widget.subjectName);
+    // Load saved progress for the given subject
+    Provider.of<MissionsProviderCalm>(context, listen: false)
+        .loadSavedProgress(widget.subjectName);
   }
 
   void updateMission(int missionNumber, int correctAnswers) {

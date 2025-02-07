@@ -14,7 +14,6 @@ import '../Game views/Fast Bee/fast_bee_game_percentages.dart'; // Percentage ga
 import 'package:flutter_app/mission_provider_fast.dart'; // Import the Missions for Fast bee
 import 'package:flutter_app/hexagon_progress_painter.dart'; // Import hexagon progress painter
 
-
 class MissionViewFast extends StatefulWidget {
   final String subjectName;
 
@@ -30,10 +29,9 @@ class _MissionViewFastState extends State<MissionViewFast> {
   @override
   void initState() {
     super.initState();
-    // Fetch the missions from the provider based on the subject
-    final missionsProvider =
-        Provider.of<MissionsProviderFast>(context, listen: false);
-    missions = missionsProvider.getMissionsForSubject(widget.subjectName);
+    // Load saved progress for the given subject
+    Provider.of<MissionsProviderFast>(context, listen: false)
+        .loadSavedProgress(widget.subjectName);
   }
 
   void updateMission(int missionNumber, int correctAnswers) {
@@ -101,68 +99,71 @@ class _MissionViewFastState extends State<MissionViewFast> {
   }
 
   // Build the honeycomb pattern
-  Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context, double hexWidth, Orientation orientation) {
-  final columns = orientation == Orientation.portrait ? 2 : 5;
-  final rows = (missions.length / columns).ceil();
+  Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context,
+      double hexWidth, Orientation orientation) {
+    final columns = orientation == Orientation.portrait ? 2 : 5;
+    final rows = (missions.length / columns).ceil();
 
-  return SingleChildScrollView(
-    child: HexagonOffsetGrid.oddFlat(
-      color: const Color.fromARGB(255, 255, 255, 255),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-      columns: columns,
-      rows: rows,
-      buildTile: (col, row) {
-        final missionIndex = row * columns + col;
-        if (missionIndex >= missions.length) {
+    return SingleChildScrollView(
+      child: HexagonOffsetGrid.oddFlat(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+        columns: columns,
+        rows: rows,
+        buildTile: (col, row) {
+          final missionIndex = row * columns + col;
+          if (missionIndex >= missions.length) {
+            return HexagonWidgetBuilder(
+              color: const Color.fromARGB(255, 255, 255, 255),
+              child: Container(), // Empty container
+            );
+          }
+
+          final mission = missions[missionIndex];
+          final progress = (mission.correctAnswers) / 15;
+
           return HexagonWidgetBuilder(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            child: Container(), // Empty container
-          );
-        }
-
-        final mission = missions[missionIndex];
-        final progress = (mission.correctAnswers) / 15;
-
-        return HexagonWidgetBuilder(
-          elevation: 0,
-          padding: 4.0,
-          cornerRadius: 24.0,
-          color: const Color(0xffffee9ae),
-          child: GestureDetector(
-            onTap: () {
-              _navigateToMission(context, widget.subjectName, mission.number);
-            },
-            child: CustomPaint(
-              painter: HexagonProgressPainter(progress: progress),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      mission.number.toString(),
-                      style: const TextStyle(fontFamily: 'Mali',
-                        color: Color.fromARGB(255, 50, 50, 50),
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
+            elevation: 0,
+            padding: 4.0,
+            cornerRadius: 24.0,
+            color: const Color(0xffffee9ae),
+            child: GestureDetector(
+              onTap: () {
+                _navigateToMission(context, widget.subjectName, mission.number);
+              },
+              child: CustomPaint(
+                painter: HexagonProgressPainter(progress: progress),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        mission.number.toString(),
+                        style: const TextStyle(
+                          fontFamily: 'Mali',
+                          color: Color.fromARGB(255, 50, 50, 50),
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "Highest: ${mission.correctAnswers}",
-                      style: const TextStyle(fontFamily: 'Mali',
-                        color: Color.fromARGB(255, 50, 50, 50),
-                        fontSize: 18,
+                      Text(
+                        "Highest: ${mission.correctAnswers}",
+                        style: const TextStyle(
+                          fontFamily: 'Mali',
+                          color: Color.fromARGB(255, 50, 50, 50),
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 
   Future<void> _navigateToMission(
       BuildContext context, String subjectName, int missionNumber) async {
