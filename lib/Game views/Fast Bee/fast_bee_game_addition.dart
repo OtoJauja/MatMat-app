@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -36,7 +38,7 @@ class FastBeeGameAddition extends StatefulWidget {
 class _FastBeeGameState extends State<FastBeeGameAddition> {
   int sessionScore = 0; // The score for the current session
   int highestScore = 0; // The highest score loaded from storage
-  late Timer _timer; // Countdown timer
+  late Timer _timer; // Countdown timer for the game
   late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
   int correctAnswers = 0; // Track correct answers
@@ -46,7 +48,13 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
   bool gameStarted = false; // Flag to indicate game has started
   bool canSkip = false;
   late TextEditingController _controller; // Persistent controller
-  late FocusNode _focusNode; // Focus to autoclick input
+  late FocusNode _focusNode; // Focus to auto-click input
+
+  // Timer for the skip functionality
+  Timer? _skipTimer;
+
+  // Input field fill color variable
+  Color _inputFillColor = const Color(0xffffee9ae);
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
@@ -67,16 +75,15 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
   @override
   void initState() {
     super.initState();
-    timeLeft =
-        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
-    // Load the highest score for this mission at the start.
+    // Load the highest score for this mission at the start
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0; // Always start a new session with 0
         });
       }
     });
@@ -85,6 +92,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
 
   @override
   void dispose() {
+    _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
     _timer.cancel();
@@ -94,12 +102,12 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0; // Reset only the session score
       totalQuestionsAnswered = 1;
     });
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (preStartTimer > 0) {
             preStartTimer--;
@@ -117,7 +125,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
   // Main game timer
   void _startGameTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (timeLeft > 0) {
             timeLeft--;
@@ -132,6 +140,8 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
 
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
+    // Cancel any existing skip timer so they don't stack
+    _skipTimer?.cancel();
     final random = Random();
 
     if (widget.mode == "add_1_digit") {
@@ -146,12 +156,9 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
       int a = random.nextInt(80) + 10;
       int b = random.nextInt(80) + 10;
       int unitsA = a % 10; // Get the unit place of a
-      int maxUnitsB =
-          9 - unitsA; // Max value for the units digit of b to avoid carry
-      int unitsB = random.nextInt(
-          maxUnitsB + 1); // Generate units digit for b within the limit
-      b = (b ~/ 10) * 10 +
-          unitsB; // Replace the unit digit of b while keeping the tens digit intact
+      int maxUnitsB = 9 - unitsA; // Max value for the units digit of b to avoid carry
+      int unitsB = random.nextInt(maxUnitsB + 1); // Generate units digit for b within the limit
+      b = (b ~/ 10) * 10 + unitsB; // Replace the unit digit of b while keeping the tens digit intact
       currentExpression = "$a + $b";
     } else if (widget.mode == "add_2_digit_with_carry") {
       int a = random.nextInt(90) + 10;
@@ -182,18 +189,20 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
       double b = (random.nextInt(9000) + 1000) / 100;
       currentExpression = "${a.toStringAsFixed(2)} + ${b.toStringAsFixed(1)}";
     }
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
         userInput = "";
         _controller.text = "";
         canSkip = false;
+        // Reset the fill color back to default
+        _inputFillColor = const Color(0xffffee9ae);
         _focusNode.requestFocus();
       });
     }
 
-    // Enable skip after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted == true) {
+    // Start a new timer to enable skip after 5 seconds
+    _skipTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
         setState(() {
           canSkip = true;
         });
@@ -213,32 +222,43 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
     }
   }
 
-  // Validate user's answer
+  // Validate users answer
   void _validateAnswer() {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
-      setState(() {
-        totalQuestionsAnswered++;
-
-        if ((userAnswer - correctAnswer).abs() < 0.01) {
+    if (mounted) {
+      // If the answer is correct
+      if ((userAnswer - correctAnswer).abs() < 0.01) {
+        setState(() {
           sessionScore++; // Increment the session score
-          _generateExpression();
           // Update highestScore if needed.
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
-        }
-      });
+          // Change input field color to green as a confirmation
+          _inputFillColor = Colors.green.shade200;
+        });
+        // Wait for 1 second before proceeding to the next expression
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            setState(() {
+              totalQuestionsAnswered++;
+              _generateExpression();
+              _inputFillColor = const Color(0xffffee9ae);
+            });
+          }
+        });
+      }
     }
   }
-      
 
   // Skip the current question
   void _skipQuestion() {
     if (canSkip) {
-      if (mounted == true) {
+      // Cancel the current skip timer so it doesn't override new state
+      _skipTimer?.cancel();
+      if (mounted) {
         setState(() {
           _generateExpression();
           canSkip = false;
@@ -262,8 +282,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
           ),
         ),
         content: Text(
-          "Correct answers: $sessionScore\n\n"
-          "Do you want to continue to the next mission or choose a different mission?",
+          "Correct answers: $sessionScore\n\nDo you want to continue to the next mission or choose a different mission?",
           style: const TextStyle(
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -274,18 +293,12 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
             onPressed: () async {
               // Save the highest score for the finished mission
               await _saveHighestScore(widget.missionIndex, highestScore);
-
               // Update the provider for the finished mission
               Provider.of<MissionsProviderFast>(context, listen: false)
-                  .updateMissionProgress(
-                      "Addition", widget.missionIndex + 1, highestScore);
-
-              // Optionally wait a tiny bit to ensure the provider updates
+                  .updateMissionProgress("Addition", widget.missionIndex + 1, highestScore);
               await Future.delayed(const Duration(milliseconds: 100));
-
               int nextMissionIndex = widget.missionIndex + 1;
               if (nextMissionIndex < FastBeeGameAddition.missionModes.length) {
-                // Remove all game screens and push the next mission
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -297,7 +310,6 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                   (Route<dynamic> route) => route.isFirst,
                 );
               } else {
-                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
@@ -313,10 +325,8 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
           TextButton(
             onPressed: () async {
               await _saveHighestScore(widget.missionIndex, highestScore);
-              // Update the provider
               Provider.of<MissionsProviderFast>(context, listen: false)
-                  .updateMissionProgress(
-                      "Addition", widget.missionIndex + 1, highestScore);
+                  .updateMissionProgress("Addition", widget.missionIndex + 1, highestScore);
               await Future.delayed(const Duration(milliseconds: 100));
               Navigator.pop(context);
               Navigator.pop(context, highestScore);
@@ -345,10 +355,8 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
           icon: const Icon(Icons.close),
           onPressed: () async {
             await _saveHighestScore(widget.missionIndex, highestScore);
-            // Update the provider
             Provider.of<MissionsProviderFast>(context, listen: false)
-                .updateMissionProgress(
-                    "Addition", widget.missionIndex + 1, highestScore);
+                .updateMissionProgress("Addition", widget.missionIndex + 1, highestScore);
             await Future.delayed(const Duration(milliseconds: 100));
             Navigator.pop(context, highestScore);
           },
@@ -381,7 +389,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -390,7 +398,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -399,7 +407,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -409,13 +417,12 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                       ],
                       onChanged: (value) {
-                        if (mounted == true) {
+                        if (mounted) {
                           setState(() {
                             userInput = value;
                           });
@@ -425,14 +432,14 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                         }
                       },
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        fillColor: Color(0xffffee9ae),
+                        fillColor: _inputFillColor,
                         filled: true,
                       ),
                     ),
@@ -458,7 +465,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
-                  fontSize: 48,
+                  fontSize: 38,
                 ),
               ),
       ),

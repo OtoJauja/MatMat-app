@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class CalmBearGameMixed extends StatefulWidget {
     "1_digit_plus_2_digit_by_1_digit",
     "1_digit_times_2_digit_plus_2_digit",
     "2_digit_plus_1_digit_times_1_digit",
-    "3_digit_minus_1_digit_times_1_digit",
+    "2digit_minus_1_digit_times_1_digit",
     "2_digit_times_1_digit_minus_1_digit_times_1_digit",
     "1_digit_times_2_digit_plus_1_digit_times_2_digit",
     "1_digit_times_3_digit_minus_2_digit_times_1_digit",
@@ -144,8 +146,8 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         int c = random.nextInt(9) + 1;
         currentExpression = "($a + $b) × $c";
         break;
-      case "3_digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
-        int a = random.nextInt(900) + 100;
+      case "2digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
+        int a = random.nextInt(90) + 10;
         int b = random.nextInt(9) + 1;
         int c = random.nextInt(9) + 1;
         currentExpression = "($a - $b) ÷ $c";
@@ -165,27 +167,26 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         currentExpression = "$a × $b + $c × $d";
         break;
       case "1_digit_times_3_digit_minus_2_digit_times_1_digit": // Was the 5th now is th 8th mission
-        int a = random.nextInt(9) + 1;
-        int b = random.nextInt(900) + 100;
-        int c = random.nextInt(90) + 10;
-        int d = random.nextInt(9) + 1;
-        currentExpression = "$a × $b - $c × $d";
+        int a = random.nextInt(900) + 100;
+        int b = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 1;
+        currentExpression = "$a × $b - $c";
         break;
       case "2_digit_plus_2_digit_divided_by_1_digit":
         int a = random.nextInt(90) + 10;
         int b = random.nextInt(90) + 10;
-        int c = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 2;
         while ((a + b) % c != 0) {
-          c = random.nextInt(9) + 1;
+          c = random.nextInt(9) + 2;
         }
         currentExpression = "($a + $b) ÷ $c";
         break;
-      case "3_digit_plus_2_digit_divided_by_1_digit":
+      case "3_digit_plus_2_digit_divided_by_1_digit": // !!!Either a whole result or a result with one digit behind the comma
         int a = random.nextInt(900) + 100;
         int b = random.nextInt(90) + 10;
-        int c = random.nextInt(9) + 1;
+        int c = random.nextInt(9) + 2;
         while ((a + b) % c != 0) {
-          c = random.nextInt(9) + 1;
+          c = random.nextInt(9) + 2;
         }
         currentExpression = "($a + $b) ÷ $c";
         break;
@@ -469,20 +470,35 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -490,8 +506,9 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -506,7 +523,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -537,7 +554,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

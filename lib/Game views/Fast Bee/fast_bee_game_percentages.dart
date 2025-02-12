@@ -23,8 +23,8 @@ class FastBeeGamePercentages extends StatefulWidget {
     "50_percent_of_1_digit_2_digit_or_3_digit",
     "20_25_50_percent_of_2_digit_3_digit_or_4_digit",
     "2_digit_plus_10_20_25_or_50_percent",
-    "2_digit_minus_10_20_25_or_50_percent",
-    "30_percent_of_3_digit",
+    "2_digit_minus_10_or_50_percent",
+    "30_percent_of_2_digit",
     "3_digit_plus_10_20_25_or_50_percent",
     "1_digit_percent_of_2_digit",
     "2_digit_percent_of_2_digit",
@@ -49,6 +49,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   late TextEditingController _controller; // Persistent controller
   late FocusNode _focusNode; // Focus to autoclick input
 
+  // Timer for the skip functionality
+  Timer? _skipTimer;
+
+  // Input field fill color variable
+  Color _inputFillColor = const Color(0xffffee9ae);
+
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
     String key = "fastPercentages_highestScore_$missionIndex";
@@ -68,16 +74,15 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   @override
   void initState() {
     super.initState();
-    timeLeft =
-        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
-    // Load the highest score for this mission at the start.
+    // Load the highest score for this mission at the start
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0; // Always start a new session with 0
         });
       }
     });
@@ -86,6 +91,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
 
   @override
   void dispose() {
+    _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
     _timer.cancel();
@@ -95,12 +101,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0; // Reset only the session score
       totalQuestionsAnswered = 1;
     });
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (preStartTimer > 0) {
             preStartTimer--;
@@ -118,7 +124,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   // Main game timer
   void _startGameTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (timeLeft > 0) {
             timeLeft--;
@@ -134,61 +140,80 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
     final random = Random();
-
+    _skipTimer?.cancel();
     if (widget.mode == "10_percent_of_2_digit_or_3_digit") {
-      int a = random.nextInt(900) + 10; // 3-digit (10-999)
+      int a = random.nextBool()
+          ? random.nextInt(90) + 10
+          : random.nextInt(900) + 100;
       currentExpression = "10% of $a";
     } else if (widget.mode == "20_percent_of_2_digit_or_3_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-999)
+      int a;
+      if (random.nextBool()) {
+        a = random.nextInt(90) + 10;
+      } else {
+        a = random.nextInt(900) + 100;
+      }
       currentExpression = "20% of $a";
     } else if (widget.mode == "50_percent_of_1_digit_2_digit_or_3_digit") {
-      int a = random.nextInt(1000); // 1- to 3-digit (0-999)
+      int a;
+      int pick = random.nextInt(3);
+      if (pick == 0) {
+        a = random.nextInt(9) + 1;
+      } else if (pick == 1) {
+        a = random.nextInt(90) + 10;
+      } else {
+        a = random.nextInt(900) + 100;
+      }
       currentExpression = "50% of $a";
     } else if (widget.mode ==
         "20_25_50_percent_of_2_digit_3_digit_or_4_digit") {
-      int a = random.nextInt(9000) + 10; // 3- or 4-digit (100-9999)
+      int a = random.nextBool()
+          ? random.nextInt(90) + 10
+          : random.nextInt(900) + 100;
       List<int> percentages = [20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
       currentExpression = "$percent% of $a";
     } else if (widget.mode == "2_digit_plus_10_20_25_or_50_percent") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(90) + 10;
       List<int> percentages = [10, 20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a + $percent%";
-    } else if (widget.mode == "2_digit_minus_10_20_25_or_50_percent") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      List<int> percentages = [10, 20, 25, 50];
+      currentExpression = "Increase $a by $percent%";
+    } else if (widget.mode == "2_digit_minus_10_or_50_percent") {
+      int a = random.nextInt(90) + 10;
+      List<int> percentages = [10, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a - $percent%";
-    } else if (widget.mode == "30_percent_of_3_digit") {
-      int a = random.nextInt(900) + 100; // 3-digit (100-999)
+      currentExpression = "Decrease $a by $percent%";
+    } else if (widget.mode == "30_percent_of_2_digit") {
+      int a = random.nextInt(90) + 10;
       currentExpression = "30% of $a";
     } else if (widget.mode == "3_digit_plus_10_20_25_or_50_percent") {
-      int a = random.nextInt(900) + 100; // 3-digit (100-999)
+      int a = random.nextInt(900) + 100;
       List<int> percentages = [10, 20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a + $percent%";
+      currentExpression = "Increase $a by $percent%";
     } else if (widget.mode == "1_digit_percent_of_2_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int percent = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(90) + 10;
+      int percent = random.nextInt(8) + 2;
       currentExpression = "$percent% of $a";
     } else if (widget.mode == "2_digit_percent_of_2_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int percent = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(90) + 10;
+      int percent = random.nextInt(90) + 10;
       currentExpression = "$percent% of $a";
     }
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
         userInput = "";
-        _controller.text = ""; // Reset input field
+        _controller.text = "";
         canSkip = false;
+        // Reset the fill color back to default
+        _inputFillColor = const Color(0xffffee9ae);
         _focusNode.requestFocus();
       });
     }
 
-    // Enable skip after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted == true) {
+    // Start a new timer to enable skip after 5 seconds
+    _skipTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
         setState(() {
           canSkip = true;
         });
@@ -198,27 +223,34 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
 
   double _evaluateExpression(String expression) {
     try {
+      // Handle expressions like "20% of 150"
       if (expression.contains(" of ")) {
-        // Handle percentage calculations like "20% of 150"
         final parts = expression.split(" of ");
         double percentage = double.parse(parts[0].replaceAll("%", "").trim());
         double value = double.parse(parts[1].trim());
         return (percentage / 100) * value;
-      } else if (expression.contains("+") && expression.contains("%")) {
-        // Handle addition with percentage like "150 + 10%"
-        final parts = expression.split(" + ");
+      }
+      // Handle expressions that start with "Increase"
+      else if (expression.startsWith("Increase")) {
+        // Remove the keyword "Increase" and split by " by "
+        String temp = expression.replaceFirst("Increase", "").trim();
+        List<String> parts = temp.split(" by ");
+        if (parts.length < 2) throw Exception("Invalid format for Increase");
         double baseValue = double.parse(parts[0].trim());
         double percentage = double.parse(parts[1].replaceAll("%", "").trim());
         return baseValue + (percentage / 100) * baseValue;
-      } else if (expression.contains("-") && expression.contains("%")) {
-        // Handle subtraction with percentage like "150 - 10%"
-        final parts = expression.split(" - ");
+      }
+      // Handle expressions that start with "Decrease"
+      else if (expression.startsWith("Decrease")) {
+        // Remove the keyword "Decrease" and split by " by "
+        String temp = expression.replaceFirst("Decrease", "").trim();
+        List<String> parts = temp.split(" by ");
+        if (parts.length < 2) throw Exception("Invalid format for Decrease");
         double baseValue = double.parse(parts[0].trim());
         double percentage = double.parse(parts[1].replaceAll("%", "").trim());
         return baseValue - (percentage / 100) * baseValue;
       }
     } catch (e) {
-      // Log error for debugging
       print("Error evaluating expression: $e");
       return 0.0;
     }
@@ -230,19 +262,29 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
-      setState(() {
-        totalQuestionsAnswered++;
-
-        if ((userAnswer - correctAnswer).abs() < 0.01) {
+    if (mounted) {
+      // If the answer is correct
+      if ((userAnswer - correctAnswer).abs() < 0.01) {
+        setState(() {
           sessionScore++; // Increment the session score
-          _generateExpression();
           // Update highestScore if needed.
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
-        }
-      });
+          // Change input field color to green as a confirmation
+          _inputFillColor = Colors.green.shade200;
+        });
+        // Wait for 1 second before proceeding to the next expression
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            setState(() {
+              totalQuestionsAnswered++;
+              _generateExpression();
+              _inputFillColor = const Color(0xffffee9ae);
+            });
+          }
+        });
+      }
     }
   }
       
@@ -250,7 +292,9 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
   // Skip the current question
   void _skipQuestion() {
     if (canSkip) {
-      if (mounted == true) {
+      // Cancel the current skip timer so it doesn't override new state
+      _skipTimer?.cancel();
+      if (mounted) {
         setState(() {
           _generateExpression();
           canSkip = false;
@@ -393,7 +437,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -402,7 +446,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -411,7 +455,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -421,13 +465,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                       ],
                       onChanged: (value) {
-                        if (mounted == true) {
+                        if (mounted) {
                           setState(() {
                             userInput = value;
                           });
@@ -437,14 +480,14 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                         }
                       },
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        fillColor: Color(0xffffee9ae),
+                        fillColor: _inputFillColor,
                         filled: true,
                       ),
                     ),
@@ -470,7 +513,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> {
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
-                  fontSize: 48,
+                  fontSize: 38,
                 ),
               ),
       ),

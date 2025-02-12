@@ -23,7 +23,7 @@ class CalmBearGameSequences extends StatefulWidget {
     "sequence_1_digit_multiply",
     "sequence_2_digit_multiply",
     "sequence_squares",
-    "sequence_fibonacci",
+    "sequence_fibonacci",       // mission 7 will display 6 numbers with last one as x
     "sequence_x2_plus_1",
     "sequence_double_and_sum_digits",
     "sequence_primes",
@@ -123,36 +123,34 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
 
     switch (widget.mode) {
       case "sequence_start_add_1_digit":
-        start = random.nextInt(6) + 1;
-        increment = random.nextInt(9) + 1;
+        start = random.nextInt(6) + 1; // 1 to 6
+        increment = random.nextInt(9) + 1; // 1 to 9
         sequence = List.generate(6, (i) => start + i * increment);
         break;
       case "sequence_2_digit_add_1_digit":
-        start = random.nextInt(90) + 10;
+        start = random.nextInt(90) + 10; // 10 to 99
         increment = random.nextInt(9) + 1;
         sequence = List.generate(6, (i) => start + i * increment);
         break;
       case "sequence_3_digit_subtract":
-        start = random.nextInt(900) + 100;
-        increment = random.nextInt(90) + 10;
-        sequence = [];
-        for (int i = 0; i < 6; i++) {
-          int value = start - i * increment;
-          if (value < 0) {
-            value = 0;
-          }
-          sequence.add(value);
+        // Ensure no zeros
+        increment = random.nextInt(90) + 10; // 10 to 99
+        int minStart = 5 * increment + 100; // Ensure the 6th number is at least 100.
+        if (minStart > 999) {
+          minStart = 999;
         }
+        start = random.nextInt(999 - minStart + 1) + minStart;
+        sequence = List.generate(6, (i) => start - i * increment);
         break;
       case "sequence_1_digit_multiply":
         start = random.nextInt(9) + 1;
-        increment = random.nextBool() ? 2 : 3;
-        sequence = List.generate(6, (i) => start * pow(increment, i).toInt());
+        int multiplier = random.nextBool() ? 2 : 3;
+        sequence = List.generate(6, (i) => start * pow(multiplier, i).toInt());
         break;
       case "sequence_2_digit_multiply":
         start = random.nextInt(90) + 10;
-        increment = random.nextBool() ? 2 : 3;
-        sequence = List.generate(6, (i) => start * pow(increment, i).toInt());
+        int multiplier = random.nextBool() ? 2 : 3;
+        sequence = List.generate(6, (i) => start * pow(multiplier, i).toInt());
         break;
       case "sequence_squares":
         start = random.nextInt(20) + 1;
@@ -168,11 +166,15 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         break;
       case "sequence_x2_plus_1":
         start = random.nextInt(9) + 2;
-        sequence = List.generate(6, (i) => (start = start * 2 + 1));
+        sequence = List.generate(6, (i) {
+          if (i == 0) return start;
+          start = start * 2 + 1;
+          return start;
+        });
         break;
       case "sequence_double_and_sum_digits":
         start = random.nextInt(89) + 10;
-        sequence.add(start);
+        sequence = [start];
         for (int i = 1; i < 6; i++) {
           if (i % 2 == 1) {
             start = start
@@ -188,30 +190,39 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         break;
       case "sequence_primes":
         sequence = [];
-        int primeCount = 0;
         int candidate = random.nextInt(50) + 10;
-        while (primeCount < 6) {
+        while (sequence.length < 6) {
           if (_isPrime(candidate)) {
             sequence.add(candidate);
-            primeCount++;
           }
           candidate++;
         }
         break;
     }
-    if (mounted == true) {
+
+    // Transform the generated full sequence into the display format
+    // For most modes, we display 5 items
+    // first three numbers, then x then the fifth number
+    // For the Fibonacci mode display 6 items first five numbers then x
+    if (widget.mode == "sequence_fibonacci") {
+      nextValue = sequence[5];
+      currentSequence =
+          "${sequence[0]}; ${sequence[1]}; ${sequence[2]}; ${sequence[3]}; ${sequence[4]}; x";
+    } else {
+      // For all other modes display 5 items replacing the fourth number with x
+      nextValue = sequence[3];
+      currentSequence =
+          "${sequence[0]}; ${sequence[1]}; ${sequence[2]}; x; ${sequence[4]}";
+    }
+
+    if (mounted) {
       setState(() {
-        currentSequence = sequence.take(5).join(", ");
-        nextValue = sequence.length > 5
-            ? sequence[5]
-            : 0; // Safeguard for short sequences
         userInput = "";
         _controller.text = "";
         showingAnswer = false;
       });
     }
-    Future.delayed(Duration.zero,
-        () => _focusNode.requestFocus()); // Delay to ensure UI updates
+    Future.delayed(Duration.zero, () => _focusNode.requestFocus());
   }
 
   bool _isPrime(int number) {
@@ -224,12 +235,11 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
 
   void _validateAnswer() {
     final userAnswer = int.tryParse(userInput) ?? -1;
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
-        totalQuestionsAnswered++; // Increment the total questions counter
-
+        totalQuestionsAnswered++; // Increment total questions
         if (userAnswer == nextValue) {
-          sessionScore++; // Increment the session score
+          sessionScore++; // Increment session score
           // Update highestScore if needed.
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
@@ -240,8 +250,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
             _generateSequence();
           }
         } else {
-          showingAnswer =
-              true; // Show the correct answer for incorrect response
+          showingAnswer = true; // Show correct answer for incorrect response
           Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               showingAnswer = false;
@@ -257,7 +266,6 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
     }
   }
 
-  // End the game
   void _endGame() {
     _stopwatch.stop();
     final elapsedTime = _stopwatch.elapsed;
@@ -288,20 +296,13 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         actions: [
           TextButton(
             onPressed: () async {
-              // Save the highest score for the finished mission
               await _saveHighestScore(widget.missionIndex, highestScore);
-
-              // Update the provider for the finished mission
               Provider.of<MissionsProviderCalm>(context, listen: false)
                   .updateMissionProgress(
                       "Sequences", widget.missionIndex + 1, highestScore);
-
-              // Optionally wait a tiny bit to ensure the provider updates
               await Future.delayed(const Duration(milliseconds: 100));
-
               int nextMissionIndex = widget.missionIndex + 1;
               if (nextMissionIndex < CalmBearGameSequences.missionModes.length) {
-                // Remove all game screens and push the next mission
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -310,11 +311,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                       missionIndex: nextMissionIndex,
                     ),
                   ),
-                  (Route<dynamic> route) =>
-                      route.isFirst,
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
-                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
@@ -330,7 +329,6 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
           TextButton(
             onPressed: () async {
               await _saveHighestScore(widget.missionIndex, highestScore);
-              // Update the provider
               Provider.of<MissionsProviderCalm>(context, listen: false)
                   .updateMissionProgress(
                       "Sequences", widget.missionIndex + 1, highestScore);
@@ -362,7 +360,6 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
           icon: const Icon(Icons.close),
           onPressed: () async {
             await _saveHighestScore(widget.missionIndex, highestScore);
-            // Update the provider
             Provider.of<MissionsProviderCalm>(context, listen: false)
                 .updateMissionProgress(
                     "Sequences", widget.missionIndex + 1, highestScore);
@@ -399,7 +396,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                       style: const TextStyle(
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -409,7 +406,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                             style: const TextStyle(
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
                             textAlign: TextAlign.center,
                           )
@@ -418,7 +415,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                             style: const TextStyle(
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
                           ),
                     const SizedBox(height: 20),
@@ -434,7 +431,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -464,7 +461,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                   style: const TextStyle(
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

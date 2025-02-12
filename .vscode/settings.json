@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "E:/Flutter/flutter_app/linux"
+    "cmake.sourceDirectory": "E:/Flutter/flutter_app/linux",
+    "bitoAI.codeCompletion.enableAutoCompletion": false
 }

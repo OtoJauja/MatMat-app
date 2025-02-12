@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -137,14 +139,14 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
       int a;
       do {
         a = random.nextInt(900) + 100;
-      } while (a % b != 0); 
+      } while (a % b != 0);
       currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_4_digit_by_1_digit") {
-      int b = random.nextInt(9) + 1; 
+      int b = random.nextInt(9) + 1;
       int a;
       do {
         a = random.nextInt(9000) + 1000;
-      } while (a % b != 0); 
+      } while (a % b != 0);
       currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_2_digit") {
       int b, a;
@@ -157,20 +159,20 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
       int b = random.nextInt(90) + 10;
       int a;
       do {
-        a = random.nextInt(900) + 100; 
+        a = random.nextInt(900) + 100;
       } while (a % b != 0);
       currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_1_digit_by_1_digit") {
-      int b = random.nextInt(9) + 1; 
+      int b = random.nextInt(9) + 1;
       int c = random.nextInt(9) + 1;
       int a;
       do {
-        a = random.nextInt(900) + 100; 
+        a = random.nextInt(900) + 100;
       } while (a % b != 0 ||
           (a ~/ b) % c != 0); // Ensure no remainders in both steps
       currentExpression = "$a ÷ $b ÷ $c";
     } else if (widget.mode == "div_decimals_by_1_digit") {
-      int b = random.nextInt(9) + 1; 
+      int b = random.nextInt(9) + 1;
       double a;
       do {
         int multiplier = random.nextInt(9000) + 1000; // Multiplier for xxx.xx
@@ -178,7 +180,7 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
       } while ((a * 100).toInt() % b != 0); // Ensure result is valid
       currentExpression = "${a.toStringAsFixed(2)} ÷ $b";
     } else if (widget.mode == "div_4_digit_by_1_digit_by_1_digit") {
-      int b = random.nextInt(9) + 1; 
+      int b = random.nextInt(9) + 1;
       int c = random.nextInt(9) + 1;
       int a;
       do {
@@ -318,8 +320,7 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                       missionIndex: nextMissionIndex,
                     ),
                   ),
-                  (Route<dynamic> route) =>
-                      route.isFirst,
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
                 // If no further missions are available, return to the mission view
@@ -409,20 +410,36 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toString()}",
+                                  style:
+                                      const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -430,8 +447,9 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -446,7 +464,7 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -477,7 +495,7 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

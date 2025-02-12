@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -381,20 +383,35 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -402,8 +419,9 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -418,7 +436,7 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -449,7 +467,7 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

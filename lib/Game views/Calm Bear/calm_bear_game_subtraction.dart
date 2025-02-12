@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -92,10 +94,12 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
 
   // Timer for 5-second pre game countdown
   void _startPreGameTimer() {
-    setState(() {
-      sessionScore = 0; // Reset only the session score.
-      totalQuestionsAnswered = 1;
-    });
+    if (mounted) {
+      setState(() {
+        sessionScore = 0; // Reset only the session score.
+        totalQuestionsAnswered = 1;
+      });
+    }
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
@@ -267,14 +271,16 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
           showingAnswer =
               true; // Show the correct answer for incorrect response
           Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              showingAnswer = false;
-              if (totalQuestionsAnswered < 16) {
-                _generateExpression();
-              } else {
-                _endGame();
-              }
-            });
+            if (mounted) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateExpression();
+                } else {
+                  _endGame();
+                }
+              });
+            }
           });
         }
       });
@@ -426,20 +432,36 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                  style:
+                                      const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -447,8 +469,9 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -463,7 +486,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -494,7 +517,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

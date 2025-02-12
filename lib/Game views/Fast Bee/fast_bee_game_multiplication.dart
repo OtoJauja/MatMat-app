@@ -49,6 +49,12 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   late TextEditingController _controller; // Persistent controller
   late FocusNode _focusNode; // Focus to autoclick input
 
+  // Timer for the skip functionality
+  Timer? _skipTimer;
+
+  // Input field fill color variable
+  Color _inputFillColor = const Color(0xffffee9ae);
+
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
     String key = "fastMultiplication_highestScore_$missionIndex";
@@ -68,16 +74,15 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   @override
   void initState() {
     super.initState();
-    timeLeft =
-        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
-    // Load the highest score for this mission at the start.
+    // Load the highest score for this mission at the start
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0; // Always start a new session with 0
         });
       }
     });
@@ -86,6 +91,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
 
   @override
   void dispose() {
+    _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
     _timer.cancel();
@@ -95,12 +101,12 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0; // Reset only the session score
       totalQuestionsAnswered = 1;
     });
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (preStartTimer > 0) {
             preStartTimer--;
@@ -118,7 +124,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   // Main game timer
   void _startGameTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (timeLeft > 0) {
             timeLeft--;
@@ -134,6 +140,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
     final random = Random();
+    _skipTimer?.cancel();
 
     if (widget.mode == "mult_1_digit") {
       int a = random.nextInt(9) + 1; // 1-digit (1-9)
@@ -188,18 +195,20 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
       double b = (random.nextInt(90) + 10) / 10.0; // Decimal (1.0 - 9.9)
       currentExpression = "${a.toStringAsFixed(1)} x ${b.toStringAsFixed(1)}";
     }
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
         userInput = "";
-        _controller.text = ""; // Reset input field
+        _controller.text = "";
         canSkip = false;
+        // Reset the fill color back to default
+        _inputFillColor = const Color(0xffffee9ae);
         _focusNode.requestFocus();
       });
     }
 
-    // Enable skip after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted == true) {
+    // Start a new timer to enable skip after 5 seconds
+    _skipTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
         setState(() {
           canSkip = true;
         });
@@ -234,19 +243,29 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
-      setState(() {
-        totalQuestionsAnswered++;
-
-        if ((userAnswer - correctAnswer).abs() < 0.01) {
+    if (mounted) {
+      // If the answer is correct
+      if ((userAnswer - correctAnswer).abs() < 0.01) {
+        setState(() {
           sessionScore++; // Increment the session score
-          _generateExpression();
           // Update highestScore if needed.
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
-        }
-      });
+          // Change input field color to green as a confirmation
+          _inputFillColor = Colors.green.shade200;
+        });
+        // Wait for 1 second before proceeding to the next expression
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            setState(() {
+              totalQuestionsAnswered++;
+              _generateExpression();
+              _inputFillColor = const Color(0xffffee9ae);
+            });
+          }
+        });
+      }
     }
   }
       
@@ -254,7 +273,9 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
   // Skip the current question
   void _skipQuestion() {
     if (canSkip) {
-      if (mounted == true) {
+      // Cancel the current skip timer so it doesn't override new state
+      _skipTimer?.cancel();
+      if (mounted) {
         setState(() {
           _generateExpression();
           canSkip = false;
@@ -397,7 +418,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -406,7 +427,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -415,7 +436,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -425,13 +446,12 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                       ],
                       onChanged: (value) {
-                        if (mounted == true) {
+                        if (mounted) {
                           setState(() {
                             userInput = value;
                           });
@@ -441,14 +461,14 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                         }
                       },
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        fillColor: Color(0xffffee9ae),
+                        fillColor: _inputFillColor,
                         filled: true,
                       ),
                     ),
@@ -474,7 +494,7 @@ class _FastBeeGameState extends State<FastBeeGameMultiplication> {
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
-                  fontSize: 48,
+                  fontSize: 38,
                 ),
               ),
       ),

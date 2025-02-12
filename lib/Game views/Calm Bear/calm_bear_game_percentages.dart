@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -22,8 +24,8 @@ class CalmBearGamePercentages extends StatefulWidget {
     "50_percent_of_1_digit_2_digit_or_3_digit",
     "20_25_50_percent_of_2_digit_3_digit_or_4_digit",
     "2_digit_plus_10_20_25_or_50_percent",
-    "2_digit_minus_10_20_25_or_50_percent",
-    "30_percent_of_3_digit",
+    "2_digit_minus_10_or_50_percent",
+    "30_percent_of_2_digit",
     "3_digit_plus_10_20_25_or_50_percent",
     "1_digit_percent_of_2_digit",
     "2_digit_percent_of_2_digit",
@@ -39,7 +41,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
   int correctAnswers = 0; // Track correct answers
   int totalQuestionsAnswered = 1; // Track total questions answered
   String currentExpression = ""; // Current math expression
-  String userInput = ""; // Users input
+  String userInput = ""; // User's input
   bool gameStarted = false; // Flag to indicate game has started
   bool showingAnswer = false; // Flag to show correct answer
   late TextEditingController _controller; // Persistent controller
@@ -49,10 +51,8 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
-    // Use a subject-specific key:
     String key = "Percentages_highestScore_$missionIndex";
     int storedScore = prefs.getInt(key) ?? 0;
-
     if (newScore > storedScore) {
       await prefs.setInt(key, newScore);
     }
@@ -75,7 +75,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0;
         });
       }
     });
@@ -85,15 +85,15 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
 
   @override
   void dispose() {
-    _focusNode.dispose(); // Dispose of the FocusNode
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
 
-  // Timer for 5-second pre game countdown
+  // Timer for 5-second pre-game countdown.
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0;
       totalQuestionsAnswered = 1;
     });
 
@@ -113,103 +113,126 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
     });
   }
 
-  // Generate a random math expression based on the selected mode
+  // Generate a random math expression based on the selected mode.
   void _generateExpression() {
     final random = Random();
 
     if (widget.mode == "10_percent_of_2_digit_or_3_digit") {
-      int a = random.nextInt(900) + 10; // 3-digit (10-999)
+      int a = random.nextBool()
+          ? random.nextInt(90) + 10
+          : random.nextInt(900) + 100;
       currentExpression = "10% of $a";
     } else if (widget.mode == "20_percent_of_2_digit_or_3_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-999)
+      int a;
+      if (random.nextBool()) {
+        a = random.nextInt(90) + 10;
+      } else {
+        a = random.nextInt(900) + 100;
+      }
       currentExpression = "20% of $a";
     } else if (widget.mode == "50_percent_of_1_digit_2_digit_or_3_digit") {
-      int a = random.nextInt(1000); // 1- to 3-digit (0-999)
+      int a;
+      int pick = random.nextInt(3);
+      if (pick == 0) {
+        a = random.nextInt(9) + 1;
+      } else if (pick == 1) {
+        a = random.nextInt(90) + 10;
+      } else {
+        a = random.nextInt(900) + 100;
+      }
       currentExpression = "50% of $a";
     } else if (widget.mode ==
         "20_25_50_percent_of_2_digit_3_digit_or_4_digit") {
-      int a = random.nextInt(9000) + 10; // 3- or 4-digit (100-9999)
+      int a = random.nextBool()
+          ? random.nextInt(90) + 10
+          : random.nextInt(900) + 100;
       List<int> percentages = [20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
       currentExpression = "$percent% of $a";
     } else if (widget.mode == "2_digit_plus_10_20_25_or_50_percent") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(90) + 10;
       List<int> percentages = [10, 20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a + $percent%";
-    } else if (widget.mode == "2_digit_minus_10_20_25_or_50_percent") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      List<int> percentages = [10, 20, 25, 50];
+      currentExpression = "Increase $a by $percent%";
+    } else if (widget.mode == "2_digit_minus_10_or_50_percent") {
+      int a = random.nextInt(90) + 10;
+      List<int> percentages = [10, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a - $percent%";
-    } else if (widget.mode == "30_percent_of_3_digit") {
-      int a = random.nextInt(900) + 100; // 3-digit (100-999)
+      currentExpression = "Decrease $a by $percent%";
+    } else if (widget.mode == "30_percent_of_2_digit") {
+      int a = random.nextInt(90) + 10;
       currentExpression = "30% of $a";
     } else if (widget.mode == "3_digit_plus_10_20_25_or_50_percent") {
-      int a = random.nextInt(900) + 100; // 3-digit (100-999)
+      int a = random.nextInt(900) + 100;
       List<int> percentages = [10, 20, 25, 50];
       int percent = percentages[random.nextInt(percentages.length)];
-      currentExpression = "$a + $percent%";
+      currentExpression = "Increase $a by $percent%";
     } else if (widget.mode == "1_digit_percent_of_2_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int percent = random.nextInt(9) + 1; // 1-digit (1-9)
+      int a = random.nextInt(90) + 10;
+      int percent = random.nextInt(8) + 2;
       currentExpression = "$percent% of $a";
     } else if (widget.mode == "2_digit_percent_of_2_digit") {
-      int a = random.nextInt(90) + 10; // 2-digit (10-99)
-      int percent = random.nextInt(90) + 10; // 2-digit (10-99)
+      int a = random.nextInt(90) + 10;
+      int percent = random.nextInt(90) + 10;
       currentExpression = "$percent% of $a";
     }
-    if (mounted == true) {
+
+    if (mounted) {
       setState(() {
         userInput = "";
-        _controller.text = ""; // Reset input field
-        _focusNode
-            .requestFocus(); // Request focus after generating new expression
+        _controller.text = "";
+        _focusNode.requestFocus();
+        showingAnswer = false;
       });
     }
   }
 
+  // Evaluate the percentage expression.
   double _evaluateExpression(String expression) {
     try {
+      // Handle expressions like "20% of 150"
       if (expression.contains(" of ")) {
-        // Handle percentage calculations like "20% of 150"
         final parts = expression.split(" of ");
         double percentage = double.parse(parts[0].replaceAll("%", "").trim());
         double value = double.parse(parts[1].trim());
         return (percentage / 100) * value;
-      } else if (expression.contains("+") && expression.contains("%")) {
-        // Handle addition with percentage like "150 + 10%"
-        final parts = expression.split(" + ");
+      }
+      // Handle expressions that start with "Increase"
+      else if (expression.startsWith("Increase")) {
+        // Remove the keyword "Increase" and split by " by "
+        String temp = expression.replaceFirst("Increase", "").trim();
+        List<String> parts = temp.split(" by ");
+        if (parts.length < 2) throw Exception("Invalid format for Increase");
         double baseValue = double.parse(parts[0].trim());
         double percentage = double.parse(parts[1].replaceAll("%", "").trim());
         return baseValue + (percentage / 100) * baseValue;
-      } else if (expression.contains("-") && expression.contains("%")) {
-        // Handle subtraction with percentage like "150 - 10%"
-        final parts = expression.split(" - ");
+      }
+      // Handle expressions that start with "Decrease"
+      else if (expression.startsWith("Decrease")) {
+        // Remove the keyword "Decrease" and split by " by "
+        String temp = expression.replaceFirst("Decrease", "").trim();
+        List<String> parts = temp.split(" by ");
+        if (parts.length < 2) throw Exception("Invalid format for Decrease");
         double baseValue = double.parse(parts[0].trim());
         double percentage = double.parse(parts[1].replaceAll("%", "").trim());
         return baseValue - (percentage / 100) * baseValue;
       }
     } catch (e) {
-      // Log error for debugging
       print("Error evaluating expression: $e");
       return 0.0;
     }
     return 0.0;
   }
 
-  // Validate user's answer
   void _validateAnswer() {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
         totalQuestionsAnswered++;
-
         if ((userAnswer - correctAnswer).abs() < 0.01) {
-          sessionScore++; // Increment the session score
-          // Update highestScore if needed.
+          sessionScore++;
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
@@ -219,8 +242,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
             _generateExpression();
           }
         } else {
-          showingAnswer =
-              true; // Show the correct answer for incorrect response
+          showingAnswer = true;
           Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               showingAnswer = false;
@@ -236,7 +258,6 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
     }
   }
 
-  // End the game
   void _endGame() {
     _stopwatch.stop();
     final elapsedTime = _stopwatch.elapsed;
@@ -267,33 +288,26 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
         actions: [
           TextButton(
             onPressed: () async {
-              // Save the highest score for the finished mission
               await _saveHighestScore(widget.missionIndex, highestScore);
-
-              // Update the provider for the finished mission
               Provider.of<MissionsProviderCalm>(context, listen: false)
                   .updateMissionProgress(
                       "Percentages", widget.missionIndex + 1, highestScore);
-
-              // Optionally wait a tiny bit to ensure the provider updates
               await Future.delayed(const Duration(milliseconds: 100));
-
               int nextMissionIndex = widget.missionIndex + 1;
-              if (nextMissionIndex < CalmBearGamePercentages.missionModes.length) {
-                // Remove all game screens and push the next mission
+              if (nextMissionIndex <
+                  CalmBearGamePercentages.missionModes.length) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CalmBearGamePercentages(
-                      mode: CalmBearGamePercentages.missionModes[nextMissionIndex],
+                      mode: CalmBearGamePercentages
+                          .missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
-                  (Route<dynamic> route) =>
-                      route.isFirst,
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
-                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
@@ -309,7 +323,6 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
           TextButton(
             onPressed: () async {
               await _saveHighestScore(widget.missionIndex, highestScore);
-              // Update the provider
               Provider.of<MissionsProviderCalm>(context, listen: false)
                   .updateMissionProgress(
                       "Percentages", widget.missionIndex + 1, highestScore);
@@ -331,7 +344,6 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
     );
   }
 
-  // Game screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -342,7 +354,6 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
           icon: const Icon(Icons.close),
           onPressed: () async {
             await _saveHighestScore(widget.missionIndex, highestScore);
-            // Update the provider
             Provider.of<MissionsProviderCalm>(context, listen: false)
                 .updateMissionProgress(
                     "Percentages", widget.missionIndex + 1, highestScore);
@@ -380,20 +391,35 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -401,8 +427,9 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -417,7 +444,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -448,7 +475,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

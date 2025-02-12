@@ -17,16 +17,16 @@ class CalmBearGameExponentiation extends StatefulWidget {
   });
 
   static const List<String> missionModes = [
-    "1_digit_squared",
-    "2_digit_squared",
-    "1_digit_cubed",
+    "1_digit_squared", 
+    "2_digit_squared", 
+    "1_digit_cubed",  
     "1_digit_squared_plus_1_digit_squared",
-    "1_digit_cubed_minus_1_digit_squared",
-    "square_root_of_1_digit_2_digit_3_digit",
-    "cubic_root_of_1_digit_2_digit_3_digit",
-    "square_root_of_1_digit_or_2_digit_plus_1_digit",
-    "square_root_of_2_digit_times_square_root_of_2_digit",
-    "square_root_of_2_digit_divided_square_root_of_2_digit_or_3_digit",
+    "1_digit_cubed_minus_1_digit_squared",  
+    "square_root_of_1_digit_2_digit_3_digit",   
+    "cubic_root_of_1_digit_2_digit_3_digit", 
+    "square_root_of_1_digit_or_2_digit_plus_1_digit", 
+    "square_root_of_2_digit_times_square_root_of_2_digit", 
+    "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit",
   ];
 
   @override
@@ -34,25 +34,23 @@ class CalmBearGameExponentiation extends StatefulWidget {
 }
 
 class _CalmBearGameState extends State<CalmBearGameExponentiation> {
-  int sessionScore = 0; // The score for the current session.
-  int highestScore = 0; // The highest score loaded from storage.
-  int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
-  String currentExpression = ""; // Current math expression
-  String userInput = ""; // Users input
-  bool gameStarted = false; // Flag to indicate game has started
-  bool showingAnswer = false; // Flag to show correct answer
-  late TextEditingController _controller; // Persistent controller
-  int preStartTimer = 5; // Pre-start countdown timer
-  late Stopwatch _stopwatch; // Stopwatch to track time
+  int sessionScore = 0;
+  int highestScore = 0;
+  int correctAnswers = 0;
+  int totalQuestionsAnswered = 1;
+  String currentExpression = "";
+  String userInput = "";
+  bool gameStarted = false;
+  bool showingAnswer = false;
+  late TextEditingController _controller;
+  int preStartTimer = 5;
+  late Stopwatch _stopwatch;
   late FocusNode _focusNode;
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
-    // Use a subject-specific key:
     String key = "Exponentiation_highestScore_$missionIndex";
     int storedScore = prefs.getInt(key) ?? 0;
-
     if (newScore > storedScore) {
       await prefs.setInt(key, newScore);
     }
@@ -69,34 +67,29 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     super.initState();
     _focusNode = FocusNode();
     _controller = TextEditingController();
-
-    // Load the highest score for this mission at the start.
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0;
         });
       }
     });
-
     _startPreGameTimer();
   }
 
   @override
   void dispose() {
-    _focusNode.dispose(); // Dispose of the FocusNode
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
 
-  // Timer for 5-second pre game countdown
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0;
       totalQuestionsAnswered = 1;
     });
-
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
@@ -113,17 +106,15 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     });
   }
 
-  // Generate a random math expression
   void _generateExpression() {
     final random = Random();
-
     switch (widget.mode) {
       case "1_digit_squared":
         int a = random.nextInt(9) + 1;
         currentExpression = "$a²";
         break;
       case "2_digit_squared":
-        int a = random.nextInt(90) + 10;
+        int a = random.nextInt(11) + 10; // 10 to 20
         currentExpression = "$a²";
         break;
       case "1_digit_cubed":
@@ -138,6 +129,16 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
       case "1_digit_cubed_minus_1_digit_squared":
         int a = random.nextInt(9) + 1;
         int b = random.nextInt(9) + 1;
+        // Ensure the first number is larger than the second.
+        if (a <= b) {
+          int temp = a;
+          a = b;
+          b = temp;
+          if (a == b) {
+            // Adjust if they end up equal.
+            b = (a > 1) ? a - 1 : a + 1;
+          }
+        }
         currentExpression = "$a³ - $b²";
         break;
       case "square_root_of_1_digit_2_digit_3_digit":
@@ -146,164 +147,151 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         currentExpression = "√$a";
         break;
       case "cubic_root_of_1_digit_2_digit_3_digit":
+        // Exclude 1³ by starting at 2³.
         int a = [
-          pow(1, 3).toInt(),
           pow(2, 3).toInt(),
           pow(3, 3).toInt(),
           pow(4, 3).toInt(),
           pow(5, 3).toInt(),
+          pow(6, 3).toInt(),
         ][random.nextInt(5)];
         currentExpression = "∛$a";
         break;
       case "square_root_of_1_digit_or_2_digit_plus_1_digit":
-        List<int> perfectSquares1 = [
-          for (int i = 1; i <= 9; i++) i * i // 1² to 9²
-        ];
+        List<int> perfectSquares1 = [for (int i = 1; i <= 9; i++) i * i];
         int a = perfectSquares1[random.nextInt(perfectSquares1.length)];
         int b = random.nextInt(9) + 1;
-        currentExpression = "√$a + $b";
+        // Change the expression to add a 1-digit squared.
+        currentExpression = "√$a + $b²";
         break;
       case "square_root_of_2_digit_times_square_root_of_2_digit":
-        List<int> perfectSquares2Digit = [
-          for (int i = 4; i <= 9; i++) i * i // 16, 36, 64, 81
-        ];
-        int a =
-            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
-        int b =
-            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        List<int> perfectSquares2Digit = [16, 25, 36, 49, 64, 81];
+        int a = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        int b = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
         currentExpression = "√$a * √$b";
         break;
-      case "square_root_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
-        List<int> perfectSquares2DigitOr3Digit = [
-          for (int i = 4; i <= 31; i++) i * i
-        ];
-
-        int a, b;
-        do {
-          a = perfectSquares2DigitOr3Digit[
-              random.nextInt(perfectSquares2DigitOr3Digit.length)];
-          b = perfectSquares2DigitOr3Digit[
-              random.nextInt(perfectSquares2DigitOr3Digit.length)];
-        } while (
-            sqrt(a) % sqrt(b) != 0 || a == b); // Ensure divisibility and a != b
-
-        currentExpression = "√$a / √$b";
-        break;
-    }
-    if (mounted == true) {
-      setState(() {
-        userInput = "";
-        _controller.text = ""; // Reset input field
-        _focusNode
-            .requestFocus(); // Request focus after generating new expression
-      });
-    }
-  }
-
-  // Evaluate a math expression
-  int _evaluateExpression(String expression) {
-    try {
-      // Handle square roots
-      if (expression.contains("√")) {
-        // Parse square root expressions
-        if (expression.contains("*")) {
-          var parts = expression.split("*");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left * right;
-        } else if (expression.contains("/")) {
-          var parts = expression.split("/");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left ~/ right;
-        } else if (expression.contains("+")) {
-          var parts = expression.split("+");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left + right;
-        } else if (expression.contains("-")) {
-          var parts = expression.split("-");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left - right;
-        } else {
-          // Simple square root
-          String baseStr = expression.replaceAll(RegExp(r"[√ ]"), "");
-          int base = int.parse(baseStr);
-          return sqrt(base).toInt();
+      case "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
+      List<int> twoDigitSquares = [16, 25, 36, 49, 64, 81];
+      List<int> threeDigitSquares = [
+        100, 121, 144, 169, 196, 225, 256, 289, 324, 361,
+        400, 441, 484, 529, 576, 625, 676, 729, 784, 841, 900, 961
+      ];
+      bool chooseTwoDigit = random.nextBool();
+      int b;
+      if (chooseTwoDigit) {
+        b = twoDigitSquares[random.nextInt(twoDigitSquares.length)];
+      } else {
+        b = threeDigitSquares[random.nextInt(threeDigitSquares.length)];
+      }
+      int divisor = sqrt(b).toInt(); // Whole number
+      List<int> candidates = [];
+      for (int i = 10; i <= 99; i++) {
+        if (i % divisor == 0) {
+          candidates.add(i);
         }
       }
-
-      // Handle cubic roots
-      if (expression.contains("∛")) {
-        String baseStr = expression.replaceAll(RegExp(r"[∛ ]"), "");
-        int base = int.parse(baseStr);
-        return pow(base, 1 / 3).round();
+      if (candidates.isEmpty) {
+        candidates = [10, 20, 30];
       }
+      int a = candidates[random.nextInt(candidates.length)];
+      
+      currentExpression = "$a² ÷ √$b";
+      break;
+      default:
+        currentExpression = "";
+    }
+    if (mounted) {
+      setState(() {
+        userInput = "";
+        _controller.text = "";
+        showingAnswer = false;
+      });
+    }
+    Future.delayed(Duration.zero, () => _focusNode.requestFocus());
+  }
 
-      // Handle squares
-      if (expression.contains("²")) {
-        int base = int.parse(expression.replaceAll("²", ""));
-        return pow(base, 2).toInt();
-      }
-
-      // Handle cubes
-      if (expression.contains("³")) {
-        int base = int.parse(expression.replaceAll("³", ""));
-        return pow(base, 3).toInt();
-      }
-
+  // New evaluation function: We first check for top‑level + and – (including the en dash “–”)
+  int _evaluateExpression(String expression) {
+    try {
+      expression = expression.trim();
       // Handle addition
       if (expression.contains("+")) {
         var parts = expression.split("+");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left + right;
+        int sum = 0;
+        for (var part in parts) {
+          sum += _evaluateExpression(part.trim());
+        }
+        return sum;
       }
-
-      // Handle subtraction
-      if (expression.contains("-")) {
-        var parts = expression.split("-");
+      // Handle en dash subtraction
+      if (expression.contains("–")) {
+        var parts = expression.split("–");
         int left = _evaluateExpression(parts[0].trim());
         int right = _evaluateExpression(parts[1].trim());
         return left - right;
       }
-
-      // Handle multiplication
+      // Handle subtraction with "-" (if not a negative number)
+      if (expression.contains("-") && !expression.startsWith("-")) {
+        var parts = expression.split("-");
+        int result = _evaluateExpression(parts[0].trim());
+        for (int i = 1; i < parts.length; i++) {
+          result -= _evaluateExpression(parts[i].trim());
+        }
+        return result;
+      }
       if (expression.contains("*")) {
         var parts = expression.split("*");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left * right;
+        int product = 1;
+        for (var part in parts) {
+          product *= _evaluateExpression(part.trim());
+        }
+        return product;
       }
-
-      // Handle division
-      if (expression.contains("/")) {
-        var parts = expression.split("/");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left ~/ right;
+      if (expression.contains("÷")) {
+        var parts = expression.split("÷");
+        int result = _evaluateExpression(parts[0].trim());
+        for (int i = 1; i < parts.length; i++) {
+          result = result ~/ _evaluateExpression(parts[i].trim());
+        }
+        return result;
       }
+      // Handle square roots (assumes expression starts with "√")
+      if (expression.startsWith("√")) {
+        String baseStr = expression.substring(1).trim();
+        int base = int.parse(baseStr);
+        return sqrt(base).toInt();
+      }
+      // Handle cubic roots (assumes expression starts with "∛")
+      if (expression.startsWith("∛")) {
+        String baseStr = expression.substring(1).trim();
+        int base = int.parse(baseStr);
+        return pow(base, 1/3).round();
+      }
+      // Handle squares
+      if (expression.contains("²")) {
+        int base = int.parse(expression.replaceAll("²", "").trim());
+        return pow(base, 2).toInt();
+      }
+      // Handle cubes
+      if (expression.contains("³")) {
+        int base = int.parse(expression.replaceAll("³", "").trim());
+        return pow(base, 3).toInt();
+      }
+      // If plain number:
+      return int.tryParse(expression) ?? 0;
     } catch (e) {
-      return 0; // Return 0 if there's an error
+      return 0;
     }
-
-    // If the expression is a plain number
-    return int.tryParse(expression) ?? 0;
   }
 
-  // Validate user's answer
   void _validateAnswer() {
     final correctAnswer = _evaluateExpression(currentExpression);
-    double userAnswer =
-        double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
+    double userAnswer = double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+    if (mounted) {
       setState(() {
         totalQuestionsAnswered++;
-
         if ((userAnswer - correctAnswer).abs() < 0.01) {
-          sessionScore++; // Increment the session score
-          // Update highestScore if needed.
+          sessionScore++;
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
@@ -313,8 +301,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
             _generateExpression();
           }
         } else {
-          showingAnswer =
-              true; // Show the correct answer for incorrect response
+          showingAnswer = true;
           Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               showingAnswer = false;
@@ -330,11 +317,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     }
   }
 
-  // End the game
   void _endGame() {
     _stopwatch.stop();
     final elapsedTime = _stopwatch.elapsed;
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -361,20 +346,12 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         actions: [
           TextButton(
             onPressed: () async {
-              // Save the highest score for the finished mission
               await _saveHighestScore(widget.missionIndex, highestScore);
-
-              // Update the provider for the finished mission
               Provider.of<MissionsProviderCalm>(context, listen: false)
-                  .updateMissionProgress(
-                      "Exponentiation", widget.missionIndex + 1, highestScore);
-
-              // Optionally wait a tiny bit to ensure the provider updates
+                  .updateMissionProgress("Exponentiation", widget.missionIndex + 1, highestScore);
               await Future.delayed(const Duration(milliseconds: 100));
-
               int nextMissionIndex = widget.missionIndex + 1;
               if (nextMissionIndex < CalmBearGameExponentiation.missionModes.length) {
-                // Remove all game screens and push the next mission
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -383,11 +360,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                       missionIndex: nextMissionIndex,
                     ),
                   ),
-                  (Route<dynamic> route) =>
-                      route.isFirst,
+                  (Route<dynamic> route) => route.isFirst,
                 );
               } else {
-                // If no further missions are available, return to the mission view
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
@@ -403,10 +378,8 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
           TextButton(
             onPressed: () async {
               await _saveHighestScore(widget.missionIndex, highestScore);
-              // Update the provider
               Provider.of<MissionsProviderCalm>(context, listen: false)
-                  .updateMissionProgress(
-                      "Exponentiation", widget.missionIndex + 1, highestScore);
+                  .updateMissionProgress("Exponentiation", widget.missionIndex + 1, highestScore);
               await Future.delayed(const Duration(milliseconds: 100));
               Navigator.pop(context);
               Navigator.pop(context, highestScore);
@@ -425,7 +398,6 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     );
   }
 
-  // Game screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -436,10 +408,8 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
           icon: const Icon(Icons.close),
           onPressed: () async {
             await _saveHighestScore(widget.missionIndex, highestScore);
-            // Update the provider
             Provider.of<MissionsProviderCalm>(context, listen: false)
-                .updateMissionProgress(
-                    "Exponentiation", widget.missionIndex + 1, highestScore);
+                .updateMissionProgress("Exponentiation", widget.missionIndex + 1, highestScore);
             await Future.delayed(const Duration(milliseconds: 100));
             Navigator.pop(context, highestScore);
           },
@@ -474,20 +444,35 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                         fontFamily: 'Mali',
                         color: Color(0xffffa400),
                         fontWeight: FontWeight.bold,
-                        fontSize: 48,
+                        fontSize: 38,
                       ),
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontFamily: 'Mali',
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentExpression,
@@ -495,8 +480,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                               fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
-                              fontSize: 48,
+                              fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -511,7 +497,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                         ],
                         onSubmitted: (value) {
-                          if (mounted == true) {
+                          if (mounted) {
                             setState(() {
                               userInput = value;
                             });
@@ -542,7 +528,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                     fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 48,
+                    fontSize: 38,
                   ),
                 ),
         ),

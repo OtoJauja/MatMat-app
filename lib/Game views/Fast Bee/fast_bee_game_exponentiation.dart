@@ -18,16 +18,16 @@ class FastBeeGameExponentiation extends StatefulWidget {
   });
 
   static const List<String> missionModes = [
-    "1_digit_squared",
-    "2_digit_squared",
-    "1_digit_cubed",
+    "1_digit_squared", 
+    "2_digit_squared", 
+    "1_digit_cubed",  
     "1_digit_squared_plus_1_digit_squared",
-    "1_digit_cubed_minus_1_digit_squared",
-    "square_root_of_1_digit_2_digit_3_digit",
-    "cubic_root_of_1_digit_2_digit_3_digit",
-    "square_root_of_1_digit_or_2_digit_plus_1_digit",
-    "square_root_of_2_digit_times_square_root_of_2_digit",
-    "square_root_of_2_digit_divided_square_root_of_2_digit_or_3_digit",
+    "1_digit_cubed_minus_1_digit_squared",  
+    "square_root_of_1_digit_2_digit_3_digit",   
+    "cubic_root_of_1_digit_2_digit_3_digit", 
+    "square_root_of_1_digit_or_2_digit_plus_1_digit", 
+    "square_root_of_2_digit_times_square_root_of_2_digit", 
+    "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit",
   ];
 
   @override
@@ -37,18 +37,23 @@ class FastBeeGameExponentiation extends StatefulWidget {
 class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   int sessionScore = 0; // The score for the current session
   int highestScore = 0; // The highest score loaded from storage
-  late Timer _timer; // Countdown timer
-  int timeLeft = 90; // 90 seconds to complete
+  late Timer _timer; // Countdown timer for the game
+  late int timeLeft; // Time left for the game
   int preStartTimer = 5; // Countdown before the game starts
   int correctAnswers = 0; // Track correct answers
-  int totalQuestionsAnswered = 1; // Track total questions answered
+  int totalQuestionsAnswered = 0; // Track total questions answered
   String currentExpression = ""; // Current math expression
   String userInput = ""; // User's input
-  List<String> mistakes = []; // List of incorrect expressions
   bool gameStarted = false; // Flag to indicate game has started
-  bool canSkip = false; // Sets the skip button to false
+  bool canSkip = false;
   late TextEditingController _controller; // Persistent controller
-  late FocusNode _focusNode; // Focus to autoclick input
+  late FocusNode _focusNode; // Focus to auto-click input
+
+  // Timer for the skip functionality
+  Timer? _skipTimer;
+
+  // Input field fill color variable
+  Color _inputFillColor = const Color(0xffffee9ae);
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
@@ -69,16 +74,15 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   @override
   void initState() {
     super.initState();
-    timeLeft =
-        widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission
+    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
-    // Load the highest score for this mission at the start.
+    // Load the highest score for this mission at the start
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
         setState(() {
           highestScore = value;
-          sessionScore = 0; // Always start a new session with 0.
+          sessionScore = 0; // Always start a new session with 0
         });
       }
     });
@@ -87,6 +91,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
 
   @override
   void dispose() {
+    _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
     _timer.cancel();
@@ -96,12 +101,12 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Timer for 5-second pre-game countdown
   void _startPreGameTimer() {
     setState(() {
-      sessionScore = 0; // Reset only the session score.
+      sessionScore = 0; // Reset only the session score
       totalQuestionsAnswered = 1;
     });
 
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (preStartTimer > 0) {
             preStartTimer--;
@@ -119,7 +124,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Main game timer
   void _startGameTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted == true) {
+      if (mounted) {
         setState(() {
           if (timeLeft > 0) {
             timeLeft--;
@@ -135,14 +140,14 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Generate a random math expression based on the selected mode
   void _generateExpression() {
     final random = Random();
-
+    _skipTimer?.cancel();
     switch (widget.mode) {
       case "1_digit_squared":
         int a = random.nextInt(9) + 1;
         currentExpression = "$a²";
         break;
       case "2_digit_squared":
-        int a = random.nextInt(90) + 10;
+        int a = random.nextInt(11) + 10; // 10 to 20
         currentExpression = "$a²";
         break;
       case "1_digit_cubed":
@@ -157,6 +162,16 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
       case "1_digit_cubed_minus_1_digit_squared":
         int a = random.nextInt(9) + 1;
         int b = random.nextInt(9) + 1;
+        // Ensure the first number is larger than the second.
+        if (a <= b) {
+          int temp = a;
+          a = b;
+          b = temp;
+          if (a == b) {
+            // Adjust if they end up equal.
+            b = (a > 1) ? a - 1 : a + 1;
+          }
+        }
         currentExpression = "$a³ - $b²";
         break;
       case "square_root_of_1_digit_2_digit_3_digit":
@@ -165,62 +180,73 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
         currentExpression = "√$a";
         break;
       case "cubic_root_of_1_digit_2_digit_3_digit":
+        // Exclude 1³ by starting at 2³.
         int a = [
-          pow(1, 3).toInt(),
           pow(2, 3).toInt(),
           pow(3, 3).toInt(),
           pow(4, 3).toInt(),
           pow(5, 3).toInt(),
+          pow(6, 3).toInt(),
         ][random.nextInt(5)];
         currentExpression = "∛$a";
         break;
       case "square_root_of_1_digit_or_2_digit_plus_1_digit":
-        List<int> perfectSquares1 = [
-          for (int i = 1; i <= 9; i++) i * i // 1² to 9²
-        ];
+        List<int> perfectSquares1 = [for (int i = 1; i <= 9; i++) i * i];
         int a = perfectSquares1[random.nextInt(perfectSquares1.length)];
-        int b = random.nextInt(9) + 1; // 1-9
-        currentExpression = "√$a + $b";
+        int b = random.nextInt(9) + 1;
+        // Change the expression to add a 1-digit squared.
+        currentExpression = "√$a + $b²";
         break;
       case "square_root_of_2_digit_times_square_root_of_2_digit":
-        List<int> perfectSquares2Digit = [
-          for (int i = 4; i <= 9; i++) i * i // 16, 36, 64, 81
-        ];
-        int a =
-            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
-        int b =
-            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        List<int> perfectSquares2Digit = [16, 25, 36, 49, 64, 81];
+        int a = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        int b = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
         currentExpression = "√$a * √$b";
         break;
-      case "square_root_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
-        List<int> perfectSquares2DigitOr3Digit = [
-          for (int i = 4; i <= 31; i++) i * i // Perfect squares from 4² to 31²
-        ];
-
-        int a, b;
-        do {
-          a = perfectSquares2DigitOr3Digit[
-              random.nextInt(perfectSquares2DigitOr3Digit.length)];
-          b = perfectSquares2DigitOr3Digit[
-              random.nextInt(perfectSquares2DigitOr3Digit.length)];
-        } while (
-            sqrt(a) % sqrt(b) != 0 || a == b); // Ensure divisibility and a != b
-
-        currentExpression = "√$a / √$b";
-        break;
+      case "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
+      List<int> twoDigitSquares = [16, 25, 36, 49, 64, 81];
+      List<int> threeDigitSquares = [
+        100, 121, 144, 169, 196, 225, 256, 289, 324, 361,
+        400, 441, 484, 529, 576, 625, 676, 729, 784, 841, 900, 961
+      ];
+      bool chooseTwoDigit = random.nextBool();
+      int b;
+      if (chooseTwoDigit) {
+        b = twoDigitSquares[random.nextInt(twoDigitSquares.length)];
+      } else {
+        b = threeDigitSquares[random.nextInt(threeDigitSquares.length)];
+      }
+      int divisor = sqrt(b).toInt(); // Whole number
+      List<int> candidates = [];
+      for (int i = 10; i <= 99; i++) {
+        if (i % divisor == 0) {
+          candidates.add(i);
+        }
+      }
+      if (candidates.isEmpty) {
+        candidates = [10, 20, 30];
+      }
+      int a = candidates[random.nextInt(candidates.length)];
+      
+      currentExpression = "$a² ÷ √$b";
+      break;
+      default:
+        currentExpression = "";
     }
-    if (mounted == true) {
+    if (mounted) {
       setState(() {
         userInput = "";
-        _controller.text = ""; // Reset input field
+        _controller.text = "";
         canSkip = false;
+        // Reset the fill color back to default
+        _inputFillColor = const Color(0xffffee9ae);
         _focusNode.requestFocus();
       });
     }
 
-    // Enable skip after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted == true) {
+    // Start a new timer to enable skip after 5 seconds
+    _skipTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
         setState(() {
           canSkip = true;
         });
@@ -231,86 +257,75 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Evaluate a math expression
   int _evaluateExpression(String expression) {
     try {
-      // Handle square roots
-      if (expression.contains("√")) {
-        // Parse square root expressions
-        if (expression.contains("*")) {
-          var parts = expression.split("*");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left * right;
-        } else if (expression.contains("/")) {
-          var parts = expression.split("/");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left ~/ right;
-        } else if (expression.contains("+")) {
-          var parts = expression.split("+");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left + right;
-        } else if (expression.contains("-")) {
-          var parts = expression.split("-");
-          int left = _evaluateExpression(parts[0].trim());
-          int right = _evaluateExpression(parts[1].trim());
-          return left - right;
-        } else {
-          // Simple square root
-          String baseStr = expression.replaceAll(RegExp(r"[√ ]"), "");
-          int base = int.parse(baseStr);
-          return sqrt(base).toInt();
-        }
-      }
-      // Handle cubic roots
-      if (expression.contains("∛")) {
-        String baseStr = expression.replaceAll(RegExp(r"[∛ ]"), "");
-        int base = int.parse(baseStr);
-        return pow(base, 1 / 3).round();
-      }
-      // Handle squares
-      if (expression.contains("²")) {
-        int base = int.parse(expression.replaceAll("²", ""));
-        return pow(base, 2).toInt();
-      }
-      // Handle cubes
-      if (expression.contains("³")) {
-        int base = int.parse(expression.replaceAll("³", ""));
-        return pow(base, 3).toInt();
-      }
+      expression = expression.trim();
       // Handle addition
       if (expression.contains("+")) {
         var parts = expression.split("+");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left + right;
+        int sum = 0;
+        for (var part in parts) {
+          sum += _evaluateExpression(part.trim());
+        }
+        return sum;
       }
-      // Handle subtraction
-      if (expression.contains("-")) {
-        var parts = expression.split("-");
+      // Handle en dash subtraction
+      if (expression.contains("–")) {
+        var parts = expression.split("–");
         int left = _evaluateExpression(parts[0].trim());
         int right = _evaluateExpression(parts[1].trim());
         return left - right;
       }
-      // Handle multiplication
+      // Handle subtraction with "-" (if not a negative number)
+      if (expression.contains("-") && !expression.startsWith("-")) {
+        var parts = expression.split("-");
+        int result = _evaluateExpression(parts[0].trim());
+        for (int i = 1; i < parts.length; i++) {
+          result -= _evaluateExpression(parts[i].trim());
+        }
+        return result;
+      }
       if (expression.contains("*")) {
         var parts = expression.split("*");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left * right;
+        int product = 1;
+        for (var part in parts) {
+          product *= _evaluateExpression(part.trim());
+        }
+        return product;
       }
-      // Handle division
-      if (expression.contains("/")) {
-        var parts = expression.split("/");
-        int left = _evaluateExpression(parts[0].trim());
-        int right = _evaluateExpression(parts[1].trim());
-        return left ~/ right;
+      if (expression.contains("÷")) {
+        var parts = expression.split("÷");
+        int result = _evaluateExpression(parts[0].trim());
+        for (int i = 1; i < parts.length; i++) {
+          result = result ~/ _evaluateExpression(parts[i].trim());
+        }
+        return result;
       }
+      // Handle square roots (assumes expression starts with "√")
+      if (expression.startsWith("√")) {
+        String baseStr = expression.substring(1).trim();
+        int base = int.parse(baseStr);
+        return sqrt(base).toInt();
+      }
+      // Handle cubic roots (assumes expression starts with "∛")
+      if (expression.startsWith("∛")) {
+        String baseStr = expression.substring(1).trim();
+        int base = int.parse(baseStr);
+        return pow(base, 1/3).round();
+      }
+      // Handle squares
+      if (expression.contains("²")) {
+        int base = int.parse(expression.replaceAll("²", "").trim());
+        return pow(base, 2).toInt();
+      }
+      // Handle cubes
+      if (expression.contains("³")) {
+        int base = int.parse(expression.replaceAll("³", "").trim());
+        return pow(base, 3).toInt();
+      }
+      // If plain number:
+      return int.tryParse(expression) ?? 0;
     } catch (e) {
-      return 0; // Return 0 if there's an error
+      return 0;
     }
-
-    // If the expression is a plain number
-    return int.tryParse(expression) ?? 0;
   }
 
   // Validate user's answer
@@ -318,19 +333,29 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
-      setState(() {
-        totalQuestionsAnswered++;
-
-        if ((userAnswer - correctAnswer).abs() < 0.01) {
+    if (mounted) {
+      // If the answer is correct
+      if ((userAnswer - correctAnswer).abs() < 0.01) {
+        setState(() {
           sessionScore++; // Increment the session score
-          _generateExpression();
           // Update highestScore if needed.
           if (sessionScore > highestScore) {
             highestScore = sessionScore;
           }
-        }
-      });
+          // Change input field color to green as a confirmation
+          _inputFillColor = Colors.green.shade200;
+        });
+        // Wait for 1 second before proceeding to the next expression
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            setState(() {
+              totalQuestionsAnswered++;
+              _generateExpression();
+              _inputFillColor = const Color(0xffffee9ae);
+            });
+          }
+        });
+      }
     }
   }
       
@@ -338,7 +363,9 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
   // Skip the current question
   void _skipQuestion() {
     if (canSkip) {
-      if (mounted == true) {
+      // Cancel the current skip timer so it doesn't override new state
+      _skipTimer?.cancel();
+      if (mounted) {
         setState(() {
           _generateExpression();
           canSkip = false;
@@ -481,7 +508,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -490,7 +517,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -499,7 +526,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
+                      fontSize: 38,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -509,13 +536,12 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                       ],
                       onChanged: (value) {
-                        if (mounted == true) {
+                        if (mounted) {
                           setState(() {
                             userInput = value;
                           });
@@ -525,14 +551,14 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                         }
                       },
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xffffa400)),
                         ),
-                        fillColor: Color(0xffffee9ae),
+                        fillColor: _inputFillColor,
                         filled: true,
                       ),
                     ),
@@ -558,7 +584,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> {
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
-                  fontSize: 48,
+                  fontSize: 38,
                 ),
               ),
       ),
