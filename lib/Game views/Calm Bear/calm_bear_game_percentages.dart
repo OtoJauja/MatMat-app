@@ -450,7 +450,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
                         ],
                         onSubmitted: (value) {
                           if (mounted) {

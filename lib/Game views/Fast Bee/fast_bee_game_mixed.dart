@@ -526,7 +526,7 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
                       ],
                       onChanged: (value) {
                         if (mounted) {
