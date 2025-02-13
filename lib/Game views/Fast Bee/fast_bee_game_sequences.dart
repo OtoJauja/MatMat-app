@@ -435,14 +435,6 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Answered: $sessionScore",
-                    style: const TextStyle(
-                      color: Color(0xffffa400),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 38,
-                    ),
-                  ),
                   const SizedBox(height: 20),
                   Text(
                     "⏳ $timeLeft seconds",

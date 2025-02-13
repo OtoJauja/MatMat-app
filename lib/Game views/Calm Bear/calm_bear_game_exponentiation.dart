@@ -129,13 +129,13 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
       case "1_digit_cubed_minus_1_digit_squared":
         int a = random.nextInt(9) + 1;
         int b = random.nextInt(9) + 1;
-        // Ensure the first number is larger than the second.
+        // Ensure the first number is larger than the second
         if (a <= b) {
           int temp = a;
           a = b;
           b = temp;
           if (a == b) {
-            // Adjust if they end up equal.
+            // Adjust if they end up equal
             b = (a > 1) ? a - 1 : a + 1;
           }
         }
@@ -460,8 +460,15 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                               children: [
                                 TextSpan(
                                   text:
-                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                      "$currentExpression = ",
                                   style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                // Display correct result in green
+                                TextSpan(
+                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.lightGreen,
+                                  ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
                                 TextSpan(

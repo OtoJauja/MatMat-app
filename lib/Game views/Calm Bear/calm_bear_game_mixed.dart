@@ -486,8 +486,14 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                               children: [
                                 TextSpan(
                                   text:
-                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
+                                      "$currentExpression = ",
                                   style: const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                TextSpan(
+                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.lightGreen,
+                                  ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
                                 TextSpan(

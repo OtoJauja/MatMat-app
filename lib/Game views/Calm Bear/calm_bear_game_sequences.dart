@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class CalmBearGameSequences extends StatefulWidget {
     "sequence_1_digit_multiply",
     "sequence_2_digit_multiply",
     "sequence_squares",
-    "sequence_fibonacci",       // mission 7 will display 6 numbers with last one as x
+    "sequence_fibonacci", // mission 7 will display 6 numbers with last one as x
     "sequence_x2_plus_1",
     "sequence_double_and_sum_digits",
     "sequence_primes",
@@ -135,7 +137,8 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
       case "sequence_3_digit_subtract":
         // Ensure no zeros
         increment = random.nextInt(90) + 10; // 10 to 99
-        int minStart = 5 * increment + 100; // Ensure the 6th number is at least 100.
+        int minStart =
+            5 * increment + 100; // Ensure the 6th number is at least 100.
         if (minStart > 999) {
           minStart = 999;
         }
@@ -252,14 +255,16 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
         } else {
           showingAnswer = true; // Show correct answer for incorrect response
           Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              showingAnswer = false;
-              if (totalQuestionsAnswered < 16) {
-                _generateSequence();
-              } else {
-                _endGame();
-              }
-            });
+            if (mounted) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateSequence();
+                } else {
+                  _endGame();
+                }
+              });
+            }
           });
         }
       });
@@ -302,12 +307,14 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                       "Sequences", widget.missionIndex + 1, highestScore);
               await Future.delayed(const Duration(milliseconds: 100));
               int nextMissionIndex = widget.missionIndex + 1;
-              if (nextMissionIndex < CalmBearGameSequences.missionModes.length) {
+              if (nextMissionIndex <
+                  CalmBearGameSequences.missionModes.length) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CalmBearGameSequences(
-                      mode: CalmBearGameSequences.missionModes[nextMissionIndex],
+                      mode:
+                          CalmBearGameSequences.missionModes[nextMissionIndex],
                       missionIndex: nextMissionIndex,
                     ),
                   ),
@@ -401,14 +408,40 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? Text(
-                            "Correct Answer: $nextValue",
-                            style: const TextStyle(
-                              color: Color(0xffffa400),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 38,
-                            ),
+                        ? RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: "x = ",
+                                  style: TextStyle(
+                                    fontFamily: 'Mali',
+                                    color: Color(0xffffa400),
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "$nextValue ",
+                                  style: const TextStyle(
+                                    fontFamily: 'Mali',
+                                    color: Colors.lightGreen,
+                                  ),
+                                ),
+                                // Display the users incorrect answer in red with a strike
+                                TextSpan(
+                                  text: "($userInput)",
+                                  style: const TextStyle(
+                                    fontFamily: 'Mali',
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Text(
                             currentSequence,
@@ -417,6 +450,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                               fontWeight: FontWeight.bold,
                               fontSize: 38,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                     const SizedBox(height: 20),
                     SizedBox(

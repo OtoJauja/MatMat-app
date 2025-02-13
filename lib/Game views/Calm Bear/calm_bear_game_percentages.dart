@@ -244,14 +244,16 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
         } else {
           showingAnswer = true;
           Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              showingAnswer = false;
-              if (totalQuestionsAnswered < 16) {
-                _generateExpression();
-              } else {
-                _endGame();
-              }
-            });
+            if (mounted) {
+              setState(() {
+                showingAnswer = false;
+                if (totalQuestionsAnswered < 16) {
+                  _generateExpression();
+                } else {
+                  _endGame();
+                }
+              });
+            }
           });
         }
       });
@@ -406,9 +408,16 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                               ),
                               children: [
                                 TextSpan(
-                                  text:
-                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                                  style: const TextStyle(color: Color(0xffffa400)),
+                                  text: "$currentExpression = ",
+                                  style:
+                                      const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                TextSpan(
+                                  text: _evaluateExpression(currentExpression)
+                                      .toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.lightGreen,
+                                  ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
                                 TextSpan(

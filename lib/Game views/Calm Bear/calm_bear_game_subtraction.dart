@@ -441,21 +441,27 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                               style: const TextStyle(
-                                fontFamily: 'Mali',
                                 fontSize: 38,
                                 fontWeight: FontWeight.bold,
                               ),
                               children: [
                                 TextSpan(
                                   text:
-                                      "$currentExpression = ${_evaluateExpression(currentExpression).toStringAsFixed(2)}",
-                                  style:
-                                      const TextStyle(color: Color(0xffffa400)),
+                                      "$currentExpression = ",
+                                  style: const TextStyle(color: Color(0xffffa400), fontFamily: 'Mali',),
+                                ),
+                                TextSpan(
+                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    fontFamily: 'Mali',
+                                    color: Colors.lightGreen,
+                                  ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
                                 TextSpan(
                                   text: "($userInput)",
                                   style: const TextStyle(
+                                    fontFamily: 'Mali',
                                     color: Colors.red,
                                     decoration: TextDecoration.lineThrough,
                                   ),

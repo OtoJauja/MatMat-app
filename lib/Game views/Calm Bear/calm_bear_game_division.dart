@@ -128,11 +128,29 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
       currentExpression = "$a ÷ $b";
     } else if (widget.mode ==
         "div_1_or_2_digit_by_1_digit_with_decimal_result") {
-      int b = random.nextInt(9) + 1;
-      int a;
-      do {
-        a = random.nextInt(90) + 1;
-      } while (a % b == 0);
+      // Valid one-digit divisor.
+      final validBs = [2, 4, 5, 6, 8];
+      int b = validBs[random.nextInt(validBs.length)];
+      int maxM = (900 / b).floor();
+      int m;
+      if (b == 5) {
+        List<int> possibleMs = [];
+        for (int x = 2; x <= maxM; x += 2) {
+          if (x % 10 != 0) {
+            possibleMs.add(x);
+          }
+        }
+        m = possibleMs[random.nextInt(possibleMs.length)];
+      } else {
+        List<int> possibleMs = [];
+        for (int x = 5; x <= maxM; x += 5) {
+          if (x % 10 != 0) {
+            possibleMs.add(x);
+          }
+        }
+        m = possibleMs[random.nextInt(possibleMs.length)];
+      }
+      int a = (m * b) ~/ 10;
       currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_1_digit") {
       int b = random.nextInt(9) + 1;
@@ -425,10 +443,17 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                               ),
                               children: [
                                 TextSpan(
-                                  text:
-                                      "$currentExpression = ${_evaluateExpression(currentExpression).toString()}",
+                                  text: "$currentExpression = ",
                                   style:
                                       const TextStyle(color: Color(0xffffa400)),
+                                ),
+                                TextSpan(
+                                  text: _evaluateExpression(currentExpression)
+                                      .toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.lightGreen,
+                                    fontFamily: 'Mali',
+                                  ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
                                 TextSpan(
