@@ -22,6 +22,10 @@ class LearnView extends StatelessWidget {
             'name': 'Fun Multiplication video',
             'url': 'https://www.youtube.com/watch?v=eW2dRLyoyds&t=159s'
           },
+          {
+            'name': 'Multiplication from 1 to 20',
+            'url': 'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
+          },
         ],
       },
       {
@@ -29,8 +33,12 @@ class LearnView extends StatelessWidget {
         'subtitle': 'Division',
         'tips': [
           {
-            'name': 'Division Tips',
-            'url': 'https://www.idtech.com/blog/easy-division-tricks-for-kids'
+            'name': 'Division Basics',
+            'url': 'https://www.youtube.com/watch?v=rGMecZ_aERo'
+          },
+          {
+            'name': 'Division from 1 to 10',
+            'url': 'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
           },
         ],
       },
@@ -40,7 +48,11 @@ class LearnView extends StatelessWidget {
         'tips': [
           {
             'name': 'Understanding Sequences',
-            'url': 'https://www.example.com/sequences'
+            'url': 'https://www.youtube.com/watch?v=tfU1tNf_65s'
+          },
+          {
+            'name': 'Understanding Sequences: nth Term',
+            'url': 'https://www.youtube.com/watch?v=xtvJwaYfXss&t=1s'
           },
         ],
       },
@@ -50,7 +62,19 @@ class LearnView extends StatelessWidget {
         'tips': [
           {
             'name': 'Exponentiation Basics',
-            'url': 'https://www.example.com/exponentiation'
+            'url': 'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
+          },
+          {
+            'name': 'Introduction to Exponents',
+            'url': 'https://www.youtube.com/watch?v=XZRQhkii0h0'
+          },
+          {
+            'name': 'Square roots',
+            'url': 'https://www.k8worksheets.com/pdfs/square-root/charts-4.pdf'
+          },
+          {
+            'name': 'Cubic roots',
+            'url': 'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
           },
         ],
       },
@@ -61,6 +85,14 @@ class LearnView extends StatelessWidget {
           {
             'name': 'Percentages Made Simple',
             'url': 'https://byjus.com/maths/percentage/'
+          },
+          {
+            'name': 'Percentages in 10s',
+            'url': 'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
+          },
+          {
+            'name': 'Percentages: Per 100',
+            'url': 'https://www.mathsisfun.com/percentage.html'
           },
         ],
       },
@@ -201,7 +233,7 @@ class TipsView extends StatelessWidget {
                 await launchUrl(
                   url,
                   mode: LaunchMode
-                      .inAppWebView, // or LaunchMode.externalApplication
+                      .externalApplication, // LaunchMode .externalApplication or .inAppWebView
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
