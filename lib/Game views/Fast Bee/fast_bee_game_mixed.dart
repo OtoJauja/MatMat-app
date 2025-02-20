@@ -171,9 +171,11 @@ class _FastBeeGameState extends State<FastBeeGameMixed> {
         currentExpression = "($a + $b) × $c";
         break;
       case "2digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
+        List<int> allowedNumbers = [1, 2, 4, 5];
         int a = random.nextInt(90) + 10;
         int b = random.nextInt(9) + 1;
-        int c = random.nextInt(9) + 1;
+        int c = allowedNumbers[
+            random.nextInt(allowedNumbers.length)];
         currentExpression = "($a - $b) ÷ $c";
         break;
       case "2_digit_times_1_digit_minus_1_digit_times_1_digit": // New 6th mission

@@ -337,6 +337,11 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
   // Game screen
   @override
   Widget build(BuildContext context) {
+    final evaluatedResult = _evaluateExpression(currentExpression);
+    final resultText = (evaluatedResult % 1 == 0)
+        ? evaluatedResult.toInt().toString()
+        : evaluatedResult.toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -403,7 +408,7 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                                   style: const TextStyle(color: Color(0xffffa400)),
                                 ),
                                 TextSpan(
-                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
                                   ),

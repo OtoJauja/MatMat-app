@@ -22,7 +22,7 @@ class CalmBearGamePercentages extends StatefulWidget {
     "10_percent_of_2_digit_or_3_digit",
     "20_percent_of_2_digit_or_3_digit",
     "50_percent_of_1_digit_2_digit_or_3_digit",
-    "20_25_50_percent_of_2_digit_3_digit_or_4_digit",
+    "20_25_50_percent_of_2_digit_3_digit",
     "2_digit_plus_10_20_25_or_50_percent",
     "2_digit_minus_10_or_50_percent",
     "30_percent_of_2_digit",
@@ -142,7 +142,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
       }
       currentExpression = "50% of $a";
     } else if (widget.mode ==
-        "20_25_50_percent_of_2_digit_3_digit_or_4_digit") {
+        "20_25_50_percent_of_2_digit_3_digit") {
       int a = random.nextBool()
           ? random.nextInt(90) + 10
           : random.nextInt(900) + 100;
@@ -348,6 +348,11 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
 
   @override
   Widget build(BuildContext context) {
+    final evaluatedResult = _evaluateExpression(currentExpression);
+    final resultText = (evaluatedResult % 1 == 0)
+        ? evaluatedResult.toInt().toString()
+        : evaluatedResult.toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -413,8 +418,7 @@ class _CalmBearGameState extends State<CalmBearGamePercentages> {
                                       const TextStyle(color: Color(0xffffa400)),
                                 ),
                                 TextSpan(
-                                  text: _evaluateExpression(currentExpression)
-                                      .toStringAsFixed(2),
+                                  text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
                                   ),

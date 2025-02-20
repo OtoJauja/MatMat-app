@@ -30,6 +30,11 @@ class HomeView extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
+            child: Icon(
+              Icons.account_circle,
+              size: 32,
+              color: Color.fromARGB(255, 50, 50, 50),  
+            ),
           ),
         ],
       ),

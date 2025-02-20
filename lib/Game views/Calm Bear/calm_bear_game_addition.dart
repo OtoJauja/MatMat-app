@@ -238,7 +238,7 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
         title: const Text(
-          "Game Over!",
+          "Mission over!",
           style: TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
@@ -324,6 +324,12 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
   // Game screen
   @override
   Widget build(BuildContext context) {
+    // Checks for decimal numbers for showing answers
+    final evaluatedResult = _evaluateExpression(currentExpression);
+    final resultText = (evaluatedResult % 1 == 0)
+        ? evaluatedResult.toInt().toString()
+        : evaluatedResult.toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -384,12 +390,12 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                               ),
                               children: [
                                 TextSpan(
-                                  text:
-                                      "$currentExpression = ",
-                                  style: const TextStyle(color: Color(0xffffa400)),
+                                  text: "$currentExpression = ",
+                                  style: const TextStyle(
+                                      color: Color(0xffffa400)),
                                 ),
                                 TextSpan(
-                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
                                   ),

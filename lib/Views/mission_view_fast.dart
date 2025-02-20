@@ -71,11 +71,10 @@ class _MissionViewFastState extends State<MissionViewFast> {
       body: Container(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
               // Use Consumer to rebuild when the missions update
               Expanded(
                 child: Consumer<MissionsProviderFast>(

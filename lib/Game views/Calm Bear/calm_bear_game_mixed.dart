@@ -26,7 +26,7 @@ class CalmBearGameMixed extends StatefulWidget {
     "2digit_minus_1_digit_times_1_digit",
     "2_digit_times_1_digit_minus_1_digit_times_1_digit",
     "1_digit_times_2_digit_plus_1_digit_times_2_digit",
-    "1_digit_times_3_digit_minus_2_digit_times_1_digit",
+    "3_digit_times_1_digit_minus_1_digit",
     "2_digit_plus_2_digit_divided_by_1_digit",
     "3_digit_plus_2_digit_divided_by_1_digit",
   ];
@@ -147,9 +147,11 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         currentExpression = "($a + $b) × $c";
         break;
       case "2digit_minus_1_digit_times_1_digit": // was the 7th now is the 5th mission
+        List<int> allowedNumbers = [1, 2, 4, 5];
         int a = random.nextInt(90) + 10;
         int b = random.nextInt(9) + 1;
-        int c = random.nextInt(9) + 1;
+        int c = allowedNumbers[
+            random.nextInt(allowedNumbers.length)];
         currentExpression = "($a - $b) ÷ $c";
         break;
       case "2_digit_times_1_digit_minus_1_digit_times_1_digit": // New 6th mission
@@ -166,7 +168,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         int d = random.nextInt(90) + 10;
         currentExpression = "$a × $b + $c × $d";
         break;
-      case "1_digit_times_3_digit_minus_2_digit_times_1_digit": // Was the 5th now is th 8th mission
+      case "3_digit_times_1_digit_minus_1_digit": // Was the 5th now is th 8th mission
         int a = random.nextInt(900) + 100;
         int b = random.nextInt(9) + 1;
         int c = random.nextInt(9) + 1;
@@ -181,7 +183,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
         }
         currentExpression = "($a + $b) ÷ $c";
         break;
-      case "3_digit_plus_2_digit_divided_by_1_digit": // !!!Either a whole result or a result with one digit behind the comma
+      case "3_digit_plus_2_digit_divided_by_1_digit":
         int a = random.nextInt(900) + 100;
         int b = random.nextInt(90) + 10;
         int c = random.nextInt(9) + 2;
@@ -424,6 +426,11 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
   // Game screen
   @override
   Widget build(BuildContext context) {
+    final evaluatedResult = _evaluateExpression(currentExpression);
+    final resultText = (evaluatedResult % 1 == 0)
+        ? evaluatedResult.toInt().toString()
+        : evaluatedResult.toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -490,7 +497,7 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                                   style: const TextStyle(color: Color(0xffffa400)),
                                 ),
                                 TextSpan(
-                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
                                   ),

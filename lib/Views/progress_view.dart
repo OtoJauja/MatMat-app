@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_app/mission_provider_calm.dart';
 import 'package:flutter_app/mission_provider_fast.dart';
+import 'dart:math' as math;
 
 class ProgressView extends StatelessWidget {
   const ProgressView({super.key});
@@ -12,72 +13,77 @@ class ProgressView extends StatelessWidget {
     final missionsProviderCalm = Provider.of<MissionsProviderCalm>(context);
     final missionsProviderFast = Provider.of<MissionsProviderFast>(context);
 
-    final subjects = [
-      "Addition",
-      "Subtraction",
-      "Multiplication",
-      "Division",
-      "Mixed operations",
-      "Exponentiation",
-      "Sequences",
-      "Percentages"
-    ];
+    // Map chart symbols to provider keys
+    final Map<String, String> subjectMapping = {
+      "+": "Addition",
+      "-": "Subtraction",
+      "x": "Multiplication",
+      "÷": "Division",
+      "Mix": "Mixed operations",
+      "x²": "Exponentiation",
+      "Seq": "Sequences",
+      "%": "Percentages",
+    };
 
-    final List<Color> colors = [
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400),
-      const Color(0xffffa400)
-    ];
+    // Subject "pictograms"
+    final subjects = ["+", "-", "x", "÷", "Mix", "x²", "Seq", "%"];
 
-    // Function to generate sections for a given provider
+    // All slices use the same color
+    final List<Color> colors =
+        List.generate(subjects.length, (i) => const Color(0xffffa400));
+
+    // Generate PieChartSectionData for Calm Bear
     List<PieChartSectionData> generateSectionsCalm(
         MissionsProviderCalm provider) {
       return List.generate(subjects.length, (i) {
-        final subject = subjects[i];
+        final symbol = subjects[i];
+        final realSubjectKey = subjectMapping[symbol] ?? symbol;
         final completedMissions =
-            provider.getCompletedMissionsCount(subject).toDouble();
+            provider.getCompletedMissionsCount(realSubjectKey).toDouble();
+
+        final sliceRadius = 15 + (completedMissions * 10);
 
         return PieChartSectionData(
           value: 1,
           color: colors[i],
-          title: "${subjects[i]}\n${completedMissions.toInt()}",
-          radius: 15 + (completedMissions * 20),
-          titleStyle: const TextStyle(fontFamily: 'Mali',
+          title: completedMissions.toInt().toString(),
+          titleStyle: const TextStyle(
+            fontFamily: 'Mali',
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 50, 50, 50),
           ),
+          titlePositionPercentageOffset: 1.4,
+          radius: sliceRadius,
           showTitle: true,
-          titlePositionPercentageOffset: 1.2,
         );
       });
     }
 
-    // Function to generate sections for a given provider
+    // Generate PieChartSectionData for Fast Bee
     List<PieChartSectionData> generateSectionsFast(
         MissionsProviderFast provider) {
       return List.generate(subjects.length, (i) {
-        final subject = subjects[i];
+        final symbol = subjects[i];
+        final realSubjectKey = subjectMapping[symbol] ?? symbol;
         final completedMissions =
-            provider.getCompletedMissionsCount(subject).toDouble();
+            provider.getCompletedMissionsCount(realSubjectKey).toDouble();
+
+        final sliceRadius = 15 + (completedMissions * 10);
 
         return PieChartSectionData(
           value: 1,
           color: colors[i],
-          title: "${subjects[i]}\n${completedMissions.toInt()}",
-          radius: 15 + (completedMissions * 20),
-          titleStyle: const TextStyle(fontFamily: 'Mali',
+          title: completedMissions.toInt().toString(),
+          titleStyle: const TextStyle(
+            fontFamily: 'Mali',
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 50, 50, 50),
           ),
+          titlePositionPercentageOffset: 1.4,
+          radius: sliceRadius,
           showTitle: true,
-          titlePositionPercentageOffset: 1.2,
         );
       });
     }
@@ -93,36 +99,60 @@ class ProgressView extends StatelessWidget {
         elevation: 0,
         title: const Text(
           'Progress',
-          style: TextStyle(fontFamily: 'Mali',
+          style: TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
         ),
         centerTitle: true,
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: Icon(
+              Icons.account_circle,
+              size: 32,
+              color: Color.fromARGB(255, 50, 50, 50),
+            ),
+          ),
+        ],
       ),
       body: isLandscape
           ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildChart("Calm Bear",
-                    generateSectionsCalm(missionsProviderCalm), chartSize),
-                _buildChart("Fast Bee",
-                    generateSectionsFast(missionsProviderFast), chartSize),
+                _buildChart(
+                  "Calm Bear",
+                  generateSectionsCalm(missionsProviderCalm),
+                  chartSize,
+                  subjects,
+                ),
+                _buildChart(
+                  "Fast Bee",
+                  generateSectionsFast(missionsProviderFast),
+                  chartSize,
+                  subjects, 
+                ),
               ],
             )
           : SingleChildScrollView(
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildChart("Calm Bear",
-                        generateSectionsCalm(missionsProviderCalm), chartSize),
-                    _buildChart("Fast Bee",
-                        generateSectionsFast(missionsProviderFast), chartSize),
+                    _buildChart(
+                      "Calm Bear",
+                      generateSectionsCalm(missionsProviderCalm),
+                      chartSize,
+                      subjects,
+                    ),
+                    _buildChart(
+                      "Fast Bee",
+                      generateSectionsFast(missionsProviderFast),
+                      chartSize,
+                      subjects,
+                    ),
                   ],
                 ),
               ),
@@ -130,14 +160,20 @@ class ProgressView extends StatelessWidget {
     );
   }
 
+  // The chart widget
   Widget _buildChart(
-      String title, List<PieChartSectionData> sections, double size) {
+    String title,
+    List<PieChartSectionData> sections,
+    double size,
+    List<String> subjects,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           title,
-          style: const TextStyle(fontFamily: 'Mali',
+          style: const TextStyle(
+            fontFamily: 'Mali',
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 50, 50, 50),
@@ -147,19 +183,62 @@ class ProgressView extends StatelessWidget {
         SizedBox(
           height: size,
           width: size,
-          child: PieChart(
-            PieChartData(
-              sections: sections,
-              sectionsSpace: 6,
-              centerSpaceRadius: size * 0.15,
-              borderData: FlBorderData(show: false),
-              pieTouchData: PieTouchData(
-                touchCallback: (FlTouchEvent event, pieTouchResponse) {},
+          child: Stack(
+            children: [
+              // The Piechart at the bottom
+              PieChart(
+                PieChartData(
+                  sections: sections,
+                  sectionsSpace: 6,
+                  centerSpaceRadius: size * 0.13,
+                  borderData: FlBorderData(show: false),
+                  pieTouchData: PieTouchData(
+                    touchCallback: (FlTouchEvent event, pieTouchResponse) {},
+                  ),
+                ),
               ),
-            ),
+              // Overlay ring of pictograms
+              Positioned.fill(
+                child: _buildSymbolRing(subjects, size),
+              ),
+            ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildSymbolRing(List<String> subjects, double size) {
+    final List<Widget> symbolWidgets = [];
+    final double center = size / 2;
+    final double ringRadius = size * 0.11;
+
+    // 30 degrees in radians
+    const double rotationOffset = math.pi / 8;
+
+    for (int i = 0; i < subjects.length; i++) {
+      // Add rotationOffset to rotate the ring to fit the sections
+      final angle = rotationOffset + (2 * math.pi / subjects.length) * i;
+
+      final offsetX = center + ringRadius * math.cos(angle);
+      final offsetY = center + ringRadius * math.sin(angle);
+
+      symbolWidgets.add(
+        Positioned(
+          left: offsetX - 10,
+          top: offsetY - 10,
+          child: Text(
+            subjects[i],
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 50, 50, 50),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Stack(children: symbolWidgets);
   }
 }

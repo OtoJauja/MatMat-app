@@ -147,7 +147,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         currentExpression = "√$a";
         break;
       case "cubic_root_of_1_digit_2_digit_3_digit":
-        // Exclude 1³ by starting at 2³.
+        // Exclude 1 by starting at 2
         int a = [
           pow(2, 3).toInt(),
           pow(3, 3).toInt(),
@@ -168,7 +168,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
         List<int> perfectSquares2Digit = [16, 25, 36, 49, 64, 81];
         int a = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
         int b = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
-        currentExpression = "√$a * √$b";
+        currentExpression = "√$a x √$b";
         break;
       case "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
       List<int> twoDigitSquares = [16, 25, 36, 49, 64, 81];
@@ -400,6 +400,11 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
 
   @override
   Widget build(BuildContext context) {
+    final evaluatedResult = _evaluateExpression(currentExpression);
+    final resultText = (evaluatedResult % 1 == 0)
+        ? evaluatedResult.toInt().toString()
+        : evaluatedResult.toStringAsFixed(2);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -465,7 +470,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                                 ),
                                 // Display correct result in green
                                 TextSpan(
-                                  text: _evaluateExpression(currentExpression).toStringAsFixed(2),
+                                  text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
                                   ),

@@ -71,11 +71,10 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
       body: Container(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
               // Use Consumer to rebuild when the missions update
               Expanded(
                 child: Consumer<MissionsProviderCalm>(
@@ -106,7 +105,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
 
     return SingleChildScrollView(
       child: HexagonOffsetGrid.oddFlat(
-        color: const Color.fromARGB(255, 255, 255, 255),
+        color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
         columns: columns,
         rows: rows,
