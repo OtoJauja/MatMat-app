@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart'; // Import provider package
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../Game views/Fast Bee/fast_bee_game_addition.dart'; // Addition game
 import '../Game views/Fast Bee/fast_bee_game_subtraction.dart'; // Subtraction game
@@ -24,21 +25,26 @@ class MissionViewFast extends StatefulWidget {
 }
 
 class _MissionViewFastState extends State<MissionViewFast> {
-  late List<Mission> missions; // Use Mission model directly
-
-  @override
+   @override
   void initState() {
     super.initState();
-    // Load saved progress for the given subject
+    // Get the current users UID from FirebaseAuth
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    // Load progress from Firestore for the given subject
     Provider.of<MissionsProviderFast>(context, listen: false)
-        .loadSavedProgress(widget.subjectName);
+        .loadProgressFromFirestore(userId, widget.subjectName);
   }
 
-  void updateMission(int missionNumber, int correctAnswers) {
+  void updateMission(int missionNumber, int newScore) {
     final missionsProvider =
         Provider.of<MissionsProviderFast>(context, listen: false);
+    final userId = FirebaseAuth.instance.currentUser!.uid;
     missionsProvider.updateMissionProgress(
-        widget.subjectName, missionNumber, correctAnswers);
+      widget.subjectName,
+      missionNumber,
+      newScore,
+      userId: userId,
+    );
     setState(() {});
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Views/profile_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_app/mission_provider_calm.dart';
@@ -107,13 +108,21 @@ class ProgressView extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 50, 50, 50),
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.account_circle,
+                size: 32,
+                color: Color.fromARGB(255, 50, 50, 50),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
             ),
           ),
         ],

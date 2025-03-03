@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/Services/firebase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Mission {
@@ -18,6 +19,7 @@ class Mission {
     }
   }
 }
+
 class MissionsProviderCalm with ChangeNotifier {
   final Map<String, List<Mission>> _missions = {
     "Addition": List.generate(10, (index) => Mission(number: index + 1)),
@@ -38,14 +40,13 @@ class MissionsProviderCalm with ChangeNotifier {
     return _missions[subject]?.where((mission) => mission.isCompleted).length ?? 0;
   }
 
-  // Load saved progress from SharedPreferences for a given subject
+  // (Optional) Old local load from SharedPreferences
   Future<void> loadSavedProgress(String subject) async {
     final prefs = await SharedPreferences.getInstance();
     final missions = _missions[subject];
     if (missions != null) {
       for (int i = 0; i < missions.length; i++) {
-        // Use a subject‑specific key
-        int savedScore = prefs.getInt("${subject}_highestScore_$i") ?? 0;
+        int savedScore = prefs.getInt("${subject}_correctAnswers_$i") ?? 0;
         missions[i].correctAnswers = savedScore;
         missions[i].isCompleted = savedScore >= 15;
       }
@@ -53,12 +54,50 @@ class MissionsProviderCalm with ChangeNotifier {
     }
   }
 
-  // Update mission only if new score is higher
-  void updateMissionProgress(String subject, int missionNumber, int newScore) {
+  /// Load mission data from Firestore for a user and subject
+  Future<void> loadProgressFromFirestore(String userId, String subject) async {
+    final firebaseService = FirebaseService();
+    final missionsData = await firebaseService.loadMissionProgress(
+      userId: userId,
+      subject: "calm_$subject",  // for example calm_Addition
+    );
+
+    if (missionsData.isNotEmpty) {
+      final localList = _missions[subject] ?? [];
+      // For each item in missionsData update local mission
+      for (var item in missionsData) {
+        final missionNumber = item['missionNumber'] as int;
+        final correctAnswers = item['correctAnswers'] as int;
+        final isCompleted = item['isCompleted'] as bool;
+
+        final localMission = localList.firstWhere(
+          (m) => m.number == missionNumber,
+          orElse: () => Mission(number: missionNumber),
+        );
+        localMission.correctAnswers = correctAnswers;
+        localMission.isCompleted = isCompleted;
+      }
+      notifyListeners();
+    }
+  }
+
+  /// Update mission progress, store in local memory and optionally Firestore if userId is given
+  void updateMissionProgress(String subject, int missionNumber, int newScore, {String? userId}) {
     final mission = _missions[subject]?.firstWhere((m) => m.number == missionNumber);
     if (mission != null) {
       mission.updateCorrectAnswers(newScore);
       notifyListeners();
+
+      // If a userId is provided sync to Firestore
+      if (userId != null) {
+        final firebaseService = FirebaseService();
+        firebaseService.updateMissionProgress(
+          userId: userId,
+          subject: "calm_$subject",
+          missionNumber: missionNumber,
+          newScore: newScore,
+        );
+      }
     }
   }
 }

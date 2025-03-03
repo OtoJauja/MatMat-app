@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Views/profile_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LearnView extends StatelessWidget {
@@ -24,7 +25,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': 'Multiplication from 1 to 20',
-            'url': 'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
+            'url':
+                'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
           },
         ],
       },
@@ -38,7 +40,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': 'Division from 1 to 10',
-            'url': 'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
+            'url':
+                'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
           },
         ],
       },
@@ -62,7 +65,8 @@ class LearnView extends StatelessWidget {
         'tips': [
           {
             'name': 'Exponentiation Basics',
-            'url': 'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
+            'url':
+                'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
           },
           {
             'name': 'Introduction to Exponents',
@@ -74,7 +78,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': 'Cubic roots',
-            'url': 'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
+            'url':
+                'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
           },
         ],
       },
@@ -88,7 +93,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': 'Percentages in 10s',
-            'url': 'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
+            'url':
+                'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
           },
           {
             'name': 'Percentages: Per 100',
@@ -112,13 +118,21 @@ class LearnView extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 50, 50, 50),
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.account_circle,
+                size: 32,
+                color: Color.fromARGB(255, 50, 50, 50),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
             ),
           ),
         ],
@@ -137,7 +151,6 @@ class LearnView extends StatelessWidget {
             final topic = topics[index];
             return InkWell(
               onTap: () {
-                // Navigate to TipsView, passing the current topic's details
                 Navigator.push(
                   context,
                   MaterialPageRoute(

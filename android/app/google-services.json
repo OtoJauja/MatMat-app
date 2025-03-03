@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "90283105369",
+    "project_id": "mat-mat-app",
+    "storage_bucket": "mat-mat-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90283105369:android:270073b9f308254942a548",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvFh39aijDbggRMjDhk2YqwClF-myqUUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

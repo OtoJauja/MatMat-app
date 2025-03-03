@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../Game views/Calm Bear/calm_bear_game_addition.dart';
 import '../Game views/Calm Bear/calm_bear_game_division.dart';
@@ -11,8 +12,8 @@ import '../Game views/Calm Bear/calm_bear_game_percentages.dart';
 import '../Game views/Calm Bear/calm_bear_game_sequences.dart';
 import '../Game views/Calm Bear/calm_bear_game_subtraction.dart';
 
-import 'package:flutter_app/mission_provider_calm.dart'; // Import the Missions for Calm bear
-import 'package:flutter_app/hexagon_progress_painter.dart'; // Import hexagon progress painter
+import 'package:flutter_app/mission_provider_calm.dart';
+import 'package:flutter_app/hexagon_progress_painter.dart';
 
 class MissionViewCalm extends StatefulWidget {
   final String subjectName;
@@ -24,21 +25,26 @@ class MissionViewCalm extends StatefulWidget {
 }
 
 class _MissionViewCalmState extends State<MissionViewCalm> {
-  late List<Mission> missions; // Use Mission model directly
-
   @override
   void initState() {
     super.initState();
-    // Load saved progress for the given subject
+    // Get the current users UID from FirebaseAuth
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    // Load progress from Firestore for the given subject
     Provider.of<MissionsProviderCalm>(context, listen: false)
-        .loadSavedProgress(widget.subjectName);
+        .loadProgressFromFirestore(userId, widget.subjectName);
   }
 
-  void updateMission(int missionNumber, int correctAnswers) {
+  void updateMission(int missionNumber, int newScore) {
     final missionsProvider =
         Provider.of<MissionsProviderCalm>(context, listen: false);
+    final userId = FirebaseAuth.instance.currentUser!.uid;
     missionsProvider.updateMissionProgress(
-        widget.subjectName, missionNumber, correctAnswers);
+      widget.subjectName,
+      missionNumber,
+      newScore,
+      userId: userId,
+    );
     setState(() {});
   }
 
@@ -75,18 +81,16 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Use Consumer to rebuild when the missions update
+              // Use Consumer to rebuild when missions update.
               Expanded(
                 child: Consumer<MissionsProviderCalm>(
                   builder: (context, missionsProvider, child) {
-                    List<Mission> missions = missionsProvider
-                        .getMissionsForSubject(widget.subjectName);
+                    List<Mission> missions =
+                        missionsProvider.getMissionsForSubject(widget.subjectName);
                     return missions.isEmpty
                         ? const Center(
-                            child:
-                                Text("No missions available for this subject."))
-                        : _buildHoneycombGrid(
-                            missions, context, hexWidth, orientation);
+                            child: Text("No missions available for this subject."))
+                        : _buildHoneycombGrid(missions, context, hexWidth, orientation);
                   },
                 ),
               ),
@@ -97,7 +101,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
     );
   }
 
-  // Build the honeycomb pattern
+  // Build the honeycomb grid of mission tiles
   Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context,
       double hexWidth, Orientation orientation) {
     final columns = orientation == Orientation.portrait ? 2 : 5;
@@ -113,7 +117,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           final missionIndex = row * columns + col;
           if (missionIndex >= missions.length) {
             return HexagonWidgetBuilder(
-              color: const Color.fromARGB(255, 255, 255, 255),
+              color: Colors.white,
               child: Container(), // Empty container
             );
           }
@@ -164,8 +168,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
     );
   }
 
-  Future<void> _navigateToMission(
-      BuildContext context, String subjectName, int missionNumber) async {
+  Future<void> _navigateToMission(BuildContext context, String subjectName, int missionNumber) async {
     int? result;
 
     if (subjectName == "Addition") {

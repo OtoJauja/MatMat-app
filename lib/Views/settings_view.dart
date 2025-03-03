@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_app/Views/profile_view.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -49,7 +51,7 @@ class SettingsView extends StatelessWidget {
         {"number": "4", "description": "Divide 4-Digit by 1-Digit Numbers"},
         {"number": "5", "description": "Divide 2-Digit Numbers"},
         {"number": "6", "description": "Divide 3-Digit by 2-Digit Numbers"},
-        {"number": "7", "description": "Divide 3-Digit by 1-Digit by 1-Digit Numbers"},
+        {"number": "7","description": "Divide 3-Digit by 1-Digit by 1-Digit Numbers"},
         {"number": "8", "description": "Divide Decimals by 1-Digit Numbers"},
         {"number": "9", "description": "Divide 4-Digit Numbers by 1-Digit Numbers by 1-Digit Numbers"},
         {"number": "10", "description": "Divide Decimal Numbers by 2-Digit Numbers"},
@@ -72,10 +74,10 @@ class SettingsView extends StatelessWidget {
         {"number": "3", "description": "1-Digit Cubed"},
         {"number": "4", "description": "1-Digit Squared + 1-Digit Squared"},
         {"number": "5", "description": "1-Digit Cubed - 1-Digit Squared"},
-        {"number": "6", "description": "Square root of 1-Digit, 2-Digit or 3-Digit Numbers"},
+        {"number": "6", "description": "Square root of 1-Digit, 2-Digit or 3-Digit Numbers" },
         {"number": "7", "description": "Cubic root of 1-Digit, 2-Digit or 3-Digit Numbers"},
         {"number": "8", "description": "Square root of 1-Digit or 2-Digit + 1-Digit Squared"},
-        {"number": "9", "description": "Square root of 2-Digit × square root of 2-Digit Numbers"},
+        {"number": "9",  "description": "Square root of 2-Digit × square root of 2-Digit Numbers"},
         {"number": "10", "description": "Square of 2-Digits Divided by the square root of 2-Digits or 3-Digits"},
       ],
       "Percentages": [
@@ -109,22 +111,31 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Settings',
-          style: TextStyle(fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),  
+        title: Text(
+          tr('settings.title'),
+          style: const TextStyle(
+            fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
         ),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 50, 50, 50),  
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.account_circle,
+                size: 32,
+                color: Color.fromARGB(255, 50, 50, 50),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
             ),
           ),
         ],
@@ -132,32 +143,63 @@ class SettingsView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: subjectsAndMissions.keys.map((subject) {
-            return Card(
+          children: [
+            // Translation Option Card
+            Card(
               color: const Color(0xffffee9ae),
-              child: ExpansionTile(
+              child: ListTile(
+                leading: const Icon(
+                  Icons.language,
+                  color: Color.fromARGB(255, 50, 50, 50),
+                ),
                 title: Text(
-                  subject,
-                  style: const TextStyle(fontFamily: 'Mali',
-                    color: Color.fromARGB(255, 50, 50, 50),  
+                  tr('settings.change_language'),
+                  style: const TextStyle(
+                    fontFamily: 'Mali',
+                    color: Color.fromARGB(255, 50, 50, 50),
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                      ),
                   ),
-                children: subjectsAndMissions[subject]!.map<Widget>((mission) {
-                  return ListTile(
-                    title: Text(
-                      '${mission["number"]}. ${mission["description"]}',
-                      style: const TextStyle(fontFamily: 'Mali',
-                    color: Color.fromARGB(255, 50, 50, 50),  
-                    fontSize: 16,
-                      ),
-                  ),
-                  );
-                }).toList(),
+                ),
+                onTap: () {
+                  final currentLocale = context.locale;
+                  final newLocale = currentLocale.languageCode == 'en'
+                      ? const Locale('lv')
+                      : const Locale('en');
+                  context.setLocale(newLocale);
+                },
               ),
-            );
-          }).toList(),
+            ),
+            // Existing cards for subjects and missions
+            ...subjectsAndMissions.keys.map((subject) {
+              return Card(
+                color: const Color(0xffffee9ae),
+                child: ExpansionTile(
+                  title: Text(
+                    subject,
+                    style: const TextStyle(
+                      fontFamily: 'Mali',
+                      color: Color.fromARGB(255, 50, 50, 50),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  children: subjectsAndMissions[subject]!.map<Widget>((mission) {
+                    return ListTile(
+                      title: Text(
+                        '${mission["number"]}. ${mission["description"]}',
+                        style: const TextStyle(
+                          fontFamily: 'Mali',
+                          color: Color.fromARGB(255, 50, 50, 50),
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            }).toList(),
+          ],
         ),
       ),
     );

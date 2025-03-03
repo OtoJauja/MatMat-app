@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_app/Views/profile_view.dart';
 import 'subjects_view_fast.dart';
 import 'subjects_view_calm.dart';
 
@@ -20,20 +20,29 @@ class HomeView extends StatelessWidget {
         elevation: 0,
         title: const Text(
           'Choose mode!',
-          style: TextStyle(fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),  
+          style: TextStyle(
+            fontFamily: 'Mali',
+            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
         ),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.account_circle,
-              size: 32,
-              color: Color.fromARGB(255, 50, 50, 50),  
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.account_circle,
+                size: 32,
+                color: Color.fromARGB(255, 50, 50, 50),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileView()),
+                );
+              },
             ),
           ),
         ],
@@ -108,37 +117,40 @@ class ModeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 50, color: const Color.fromARGB(255, 50, 50, 50),  ), 
+            Icon(icon, size: 50, color: const Color.fromARGB(255, 50, 50, 50)),
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(fontFamily: 'Mali',
+              style: const TextStyle(
+                fontFamily: 'Mali',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 50, 50, 50),  
+                color: Color.fromARGB(255, 50, 50, 50),
               ),
             ),
             const SizedBox(height: 5),
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Mali',
+              style: const TextStyle(
+                fontFamily: 'Mali',
                 fontSize: 14,
-                color: Color.fromARGB(255, 50, 50, 50),   
+                color: Color.fromARGB(255, 50, 50, 50),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onStartPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xffffa400), 
+                backgroundColor: const Color(0xffffa400),
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(20),
               ),
               child: const Text(
                 'Start',
-                style: TextStyle(fontFamily: 'Mali',
-                  color: Colors.white, 
+                style: TextStyle(
+                  fontFamily: 'Mali',
+                  color: Colors.white,
                 ),
               ),
             )
