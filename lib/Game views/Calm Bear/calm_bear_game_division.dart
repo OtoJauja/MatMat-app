@@ -396,10 +396,9 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
           icon: const Icon(Icons.close),
           onPressed: () async {
             await _saveHighestScore(widget.missionIndex, highestScore);
-            // Update the provider
             Provider.of<MissionsProviderCalm>(context, listen: false)
                 .updateMissionProgress(
-                    "Division", widget.missionIndex + 1, highestScore);
+                    "Devision", widget.missionIndex + 1, highestScore);
             await Future.delayed(const Duration(milliseconds: 100));
             Navigator.pop(context, highestScore);
           },
@@ -412,9 +411,9 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                 "Correct: $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
-                  color: Color(0xffffa400),
+                  color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
-                  fontSize: 34,
+                  fontSize: 28,
                 ),
               ),
             ),
@@ -432,12 +431,12 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                       "$totalQuestionsAnswered of 15",
                       style: const TextStyle(
                         fontFamily: 'Mali',
-                        color: Color(0xffffa400),
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
-                        fontSize: 38,
+                        fontSize: 28,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     showingAnswer
                         ? RichText(
                             textAlign: TextAlign.center,
@@ -450,14 +449,13 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                               children: [
                                 TextSpan(
                                   text: "$currentExpression = ",
-                                  style:
-                                      const TextStyle(color: Color(0xffffa400)),
+                                  style: const TextStyle(
+                                      color: Color(0xffffa400)),
                                 ),
                                 TextSpan(
                                   text: "$resultText ",
                                   style: const TextStyle(
                                     color: Colors.lightGreen,
-                                    fontFamily: 'Mali',
                                   ),
                                 ),
                                 // Display the users incorrect answer in red with a strike
@@ -533,3 +531,4 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
     );
   }
 }
+

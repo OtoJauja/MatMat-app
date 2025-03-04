@@ -427,9 +427,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                 "Correct: $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
-                  color: Color(0xffffa400),
+                  color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
-                  fontSize: 34,
+                  fontSize: 28,
                 ),
               ),
             ),
@@ -447,9 +447,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                       "$totalQuestionsAnswered of 15",
                       style: const TextStyle(
                         fontFamily: 'Mali',
-                        color: Color(0xffffa400),
+                        color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
-                        fontSize: 38,
+                        fontSize: 28,
                       ),
                     ),
                     const SizedBox(height: 20),

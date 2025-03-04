@@ -199,7 +199,7 @@ class ProgressView extends StatelessWidget {
                 PieChartData(
                   sections: sections,
                   sectionsSpace: 6,
-                  centerSpaceRadius: size * 0.13,
+                  centerSpaceRadius: size * 0.12,
                   borderData: FlBorderData(show: false),
                   pieTouchData: PieTouchData(
                     touchCallback: (FlTouchEvent event, pieTouchResponse) {},
@@ -220,7 +220,7 @@ class ProgressView extends StatelessWidget {
   Widget _buildSymbolRing(List<String> subjects, double size) {
     final List<Widget> symbolWidgets = [];
     final double center = size / 2;
-    final double ringRadius = size * 0.11;
+    final double ringRadius = size * 0.10;
 
     // 30 degrees in radians
     const double rotationOffset = math.pi / 8;
@@ -234,7 +234,7 @@ class ProgressView extends StatelessWidget {
 
       symbolWidgets.add(
         Positioned(
-          left: offsetX - 10,
+          left: offsetX - 9,
           top: offsetY - 10,
           child: Text(
             subjects[i],

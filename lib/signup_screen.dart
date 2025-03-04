@@ -52,19 +52,17 @@ class _SignupScreenState extends State<SignupScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
         ),
-        body: Column(
-          textDirection: TextDirection.ltr,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 18,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: Column(
-                textDirection: TextDirection.ltr,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+       body: Column(
+        children: [
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                   const Text(
                     'Sign Up',
                     style: TextStyle(
@@ -167,12 +165,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         fontFamily: 'Mali',
                         color: Color.fromARGB(255, 50, 50, 50),
                       ),
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ],
-        ));
+          ),
+        ]));
   }
 }
