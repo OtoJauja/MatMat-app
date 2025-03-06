@@ -18,7 +18,6 @@ import 'package:flutter_app/mission_provider_calm.dart';
 import 'package:flutter_app/hexagon_progress_painter.dart';
 
 class MissionViewCalm extends StatefulWidget {
-  // subjectName should be the original key (e.g. "Addition")
   final String subjectName;
 
   const MissionViewCalm({super.key, required this.subjectName});
