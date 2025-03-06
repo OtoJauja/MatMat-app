@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Views/profile_view.dart';
 import 'subjects_view_fast.dart';
@@ -9,7 +10,6 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
     // Calculate card width based on screen size
     final cardWidth = screenWidth > 600 ? screenWidth * 0.4 : screenWidth * 0.9;
 
@@ -18,9 +18,9 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Choose mode!',
-          style: TextStyle(
+        title: Text(
+          tr('home.title'),
+          style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -55,8 +55,8 @@ class HomeView extends StatelessWidget {
             children: [
               ModeCard(
                 icon: Icons.pets,
-                title: 'Calm Bear',
-                subtitle: 'Complete the tasks at your own pace',
+                title: tr('home.calm_bear'),
+                subtitle: tr('home.calm_subtitle'),
                 width: cardWidth,
                 onStartPressed: () {
                   Navigator.push(
@@ -69,8 +69,8 @@ class HomeView extends StatelessWidget {
               const SizedBox(height: 20),
               ModeCard(
                 icon: Icons.local_florist,
-                title: 'Fast Bee',
-                subtitle: 'Complete the tasks in the given time',
+                title: tr('home.fast_bee'),
+                subtitle: tr('home.fast_subtitle'),
                 width: cardWidth,
                 onStartPressed: () {
                   Navigator.of(context).push(
@@ -146,9 +146,9 @@ class ModeCard extends StatelessWidget {
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(20),
               ),
-              child: const Text(
-                'Start',
-                style: TextStyle(
+              child: Text(
+                tr('home.start'),
+                style: const TextStyle(
                   fontFamily: 'Mali',
                   color: Colors.white,
                 ),

@@ -3,126 +3,196 @@
       "title": "Iestatījumi",
       "change_language": "Mainīt valodu"
     },
-      "subjects": {
-        "addition": {
+    "subjects": {
+      "addition": {
         "title": "Saskaitīšana",
-        "missions": [
-            { "number": "1", "description": "Saskaitīt 1 cipara skaitļus" },
-            { "number": "2", "description": "Saskaitīt 1 un 2 ciparu skaitļus" },
-            { "number": "3", "description": "Saskaitīt 2 ciparu skaitļus bez pārvietošanas" },
-            { "number": "4", "description": "Saskaitīt 2 ciparu skaitļus ar pārvietošanu" },
-            { "number": "5", "description": "Saskaitīt 3 ciparu un 2 ciparu skaitļus" },
-            { "number": "6", "description": "Saskaitīt 3 ciparu skaitļus" },
-            { "number": "7", "description": "Saskaitīt 4 ciparu un 2 ciparu skaitļus" },
-            { "number": "8", "description": "Saskaitīt 4 ciparu un 3 ciparu skaitļus" },
-            { "number": "9", "description": "Saskaitīt 4 ciparu skaitļus" },
-            { "number": "10", "description": "Decimālo skaitļu saskaitīšana" }
-        ]
-        },
-        "subtraction": {
-        "title": "Atņemšana",
-        "missions": [
-            { "number": "1", "description": "Atņemt 2 un 1 ciparu skaitļus" },
-            { "number": "2", "description": "Atņemt 2 ciparu skaitļus" },
-            { "number": "3", "description": "Atņemt 3 ciparu skaitļus ar 2 vai 1 ciparu, bez pārvietošanas" },
-            { "number": "4", "description": "Atņemt 3 ciparu skaitļus ar 2 vai 1 ciparu, ar pārvietošanu" },
-            { "number": "5", "description": "Atņemt 3, 2 un 1 ciparu skaitļus" },
-            { "number": "6", "description": "Atņemt 3 ciparu skaitļus" },
-            { "number": "7", "description": "Atņemt 4 ciparu skaitļus ar 2 cipariem" },
-            { "number": "8", "description": "Atņemt 4 ciparu skaitļus ar 3 cipariem" },
-            { "number": "9", "description": "Atņemt 4 ciparu skaitļus" },
-            { "number": "10", "description": "Decimālo skaitļu atņemšana" }
-        ]
-        },
-        "multiplication": {
-        "title": "Reizināšana",
-        "missions": [
-            { "number": "1", "description": "Reizināt 1 cipara skaitļus" },
-            { "number": "2", "description": "Reizināt 1 ciparu ar 2 ciparu skaitļiem" },
-            { "number": "3", "description": "Reizināt 2 ciparu ar 1 cipara skaitļiem" },
-            { "number": "4", "description": "Reizināt 3 ciparu ar 1 cipara skaitļiem vai otrādi" },
-            { "number": "5", "description": "Reizināt 4 ciparu ar 1 cipara skaitļiem" },
-            { "number": "6", "description": "Reizināt 2 ciparu skaitļus" },
-            { "number": "7", "description": "Reizināt 1 ciparu x 1 ciparu x 1 ciparu skaitļus" },
-            { "number": "8", "description": "Reizināt 2 ciparu x 1 ciparu x 1 ciparu skaitļus" },
-            { "number": "9", "description": "Reizināt decimālos skaitļus ar 1 cipara skaitļiem" },
-            { "number": "10", "description": "Reizināt decimālos skaitļus" }
-        ]
-        },
-        "division": {
-        "title": "Dalīšana",
-        "missions": [
-            { "number": "1", "description": "Dalīt 1 cipara skaitļus" },
-            { "number": "2", "description": "Dalīt 1 vai 2 ciparu skaitļus ar 1 cipara skaitļiem, iegūstot decimālo rezultātu" },
-            { "number": "3", "description": "Dalīt 3 ciparu skaitļus ar 1 cipara skaitļiem" },
-            { "number": "4", "description": "Dalīt 4 ciparu skaitļus ar 1 cipara skaitļiem" },
-            { "number": "5", "description": "Dalīt 2 ciparu skaitļus" },
-            { "number": "6", "description": "Dalīt 3 ciparu skaitļus ar 2 ciparu skaitļiem" },
-            { "number": "7", "description": "Dalīt 3 ciparu skaitļus vispirms ar 1, tad ar 1 cipara skaitļiem" },
-            { "number": "8", "description": "Dalīt decimālos skaitļus ar 1 cipara skaitļiem" },
-            { "number": "9", "description": "Dalīt 4 ciparu skaitļus vispirms ar 1, tad ar 1 cipara skaitļiem" },
-            { "number": "10", "description": "Dalīt decimālos skaitļus ar 2 ciparu skaitļiem" }
-        ]
-        },
-        "mixed_operations": {
-        "title": "Jauktās darbības",
-        "missions": [
-            { "number": "1", "description": "(1 cipars + 1 cipars) x 1 cipara skaitļi" },
-            { "number": "2", "description": "(1 cipars + 2 cipari) x 1 cipara skaitļi" },
-            { "number": "3", "description": "1 cipars x (2 cipari + 2 cipari)" },
-            { "number": "4", "description": "(2 cipari + 1 cipars) x 1 cipara skaitlis" },
-            { "number": "5", "description": "(2 cipari - 1 cipars) x 1 cipara skaitlis" },
-            { "number": "6", "description": "2 cipari x 1 cipars - 1 cipars x 1 cipars" },
-            { "number": "7", "description": "1 cipars x 2 cipari + 1 cipars x 2 cipari" },
-            { "number": "8", "description": "3 cipari x 1 cipars - 1 cipara skaitļi" },
-            { "number": "9", "description": "(2 cipari + 2 cipari) ÷ 1 cipara skaitļi" },
-            { "number": "10", "description": "(3 cipari + 2 cipari) ÷ 1 cipara skaitļi" }
-        ]
-        },
-        "exponentiation": {
-        "title": "Pakāpināšana",
-        "missions": [
-            { "number": "1", "description": "1 cipara kvadrāts" },
-            { "number": "2", "description": "2 ciparu kvadrāts" },
-            { "number": "3", "description": "1 cipara kubs" },
-            { "number": "4", "description": "1 cipara kvadrāts + 1 cipara kvadrāts" },
-            { "number": "5", "description": "1 cipara kubs - 1 cipara kvadrāts" },
-            { "number": "6", "description": "Kvadrātsakne no 1, 2 vai 3 ciparu skaitļiem" },
-            { "number": "7", "description": "Kubiksakne no 1, 2 vai 3 ciparu skaitļiem" },
-            { "number": "8", "description": "Kvadrātsakne no 1 cipara vai 2 ciparu + 1 cipara kvadrāts" },
-            { "number": "9", "description": "Kvadrātsakne no 2 cipariem × kvadrātsakne no 2 cipariem" },
-            { "number": "10", "description": "2 ciparu kvadrāts, dalīts ar kvadrātsakni no 2 vai 3 cipariem" }
-        ]
-        },
-        "percentages": {
-        "title": "Procenti",
-        "missions": [
-            { "number": "1", "description": "10% no 2 vai 3 ciparu skaitļiem" },
-            { "number": "2", "description": "20% no 2 vai 3 ciparu skaitļiem" },
-            { "number": "3", "description": "50% no 1, 2 vai 3 ciparu skaitļiem" },
-            { "number": "4", "description": "20%, 25% vai 50% no 2 vai 3 ciparu skaitļiem" },
-            { "number": "5", "description": "Palielināt 2 ciparu skaitļus par 10%, 20%, 25% vai 50%" },
-            { "number": "6", "description": "Samazināt 2 ciparu skaitļus par 10% vai 50%" },
-            { "number": "7", "description": "30% no 2 ciparu skaitļiem" },
-            { "number": "8", "description": "Palielināt 3 ciparu skaitļus par 10%, 20%, 25% vai 50%" },
-            { "number": "9", "description": "1 cipara procents no 2 ciparu skaitļiem" },
-            { "number": "10", "description": "2 ciparu procents no 2 ciparu skaitļiem" }
-        ]
-        },
-        "sequences": {
-        "title": "Secības",
-        "missions": [
-            { "number": "1", "description": "Sākt ar 1; 2; 3 vai 4 un pievienot 1 cipara skaitli. Piemēram, 4; 11; 18; 25; ..." },
-            { "number": "2", "description": "Sākt ar 2 ciparu skaitļiem un pievienot 1 cipara skaitļus. Piemēram, 23; 28; 33; 38; ..." },
-            { "number": "3", "description": "Sākt ar 3 ciparu skaitļiem un atņemt 1 vai 2 ciparu skaitļus. Piemēram, 345; 340; 335; 330; ..." },
-            { "number": "4", "description": "Sākt ar 1 cipara skaitli un reizināt ar 2 vai 3. Piemēram, 3; 6; 12; 24; ..." },
-            { "number": "5", "description": "Sākt ar 2 ciparu skaitli un reizināt ar 2 vai 3. Piemēram, 21; 63; 189; 56; ..." },
-            { "number": "6", "description": "1 vai 2 ciparu (<=20) kvadrāts. Piemēram, 9; 16; 25; 36; ..." },
-            { "number": "7", "description": "Fibonaci secība, sākot ar 1 cipara skaitli (>1). Piemēram, 4; 5; 9; 14; ..." },
-            { "number": "8", "description": "Sākas ar 1 cipara skaitli (>1) reizinātu ar 2 un palielinātu par 1. Piemēram, 4; 9; 19; 39; ..." },
-            { "number": "9", "description": "Divreiz 1 cipara skaitlis, nākamais ir ciparu summa. Piemēram, 66; 12; 77; 14; ..." },
-            { "number": "10", "description": "Sākt ar 1 vai 2 ciparu pirmskaitli. Piemēram, 11; 13; 17; 19; ..." }
-        ]
+        "missions": {
+          "1": "Saskaitīt 1 cipara skaitļus",
+          "2": "Saskaitīt 1 cipara un 2 ciparu skaitļus",
+          "3": "Saskaitīt 2 ciparu skaitļus bez pārvietošanas",
+          "4": "Saskaitīt 2 ciparu skaitļus ar pārvietošanu",
+          "5": "Saskaitīt 3 ciparu un 2 ciparu skaitļus",
+          "6": "Saskaitīt 3 ciparu skaitļus",
+          "7": "Saskaitīt 4 ciparu un 2 ciparu skaitļus",
+          "8": "Saskaitīt 4 ciparu un 3 ciparu skaitļus",
+          "9": "Saskaitīt 4 ciparu skaitļus",
+          "10": "Decimālo skaitļu saskaitīšana"
         }
-    }
-    }
+      },
+      "subtraction": {
+        "title": "Atņemšana",
+        "missions": {
+          "1": "Atņemt 2 ciparu un 1 cipara skaitļus",
+          "2": "Atņemt 2 ciparu skaitļus",
+          "3": "Atņemt 3 ciparu skaitļus, izmantojot 2 vai 1 ciparu, bez pārvietošanas",
+          "4": "Atņemt 3 ciparu skaitļus, izmantojot 2 vai 1 ciparu, ar pārvietošanu",
+          "5": "Atņemt 3, 2 un 1 ciparu skaitļus",
+          "6": "Atņemt 3 ciparu skaitļus",
+          "7": "Atņemt 4 ciparu skaitļus ar 2 cipariem",
+          "8": "Atņemt 4 ciparu skaitļus ar 3 cipariem",
+          "9": "Atņemt 4 ciparu skaitļus",
+          "10": "Decimālo skaitļu atņemšana"
+        }
+      },
+      "multiplication": {
+        "title": "Reizināšana",
+        "missions": {
+          "1": "Reizināt 1 cipara skaitļus",
+          "2": "Reizināt 1 ciparu ar 2 ciparu skaitļiem",
+          "3": "Reizināt 2 ciparu skaitļus ar 1 cipara skaitļiem",
+          "4": "Reizināt 3 ciparu skaitļus ar 1 cipara skaitļiem vai otrādi",
+          "5": "Reizināt 4 ciparu skaitļus ar 1 cipara skaitļiem",
+          "6": "Reizināt 2 ciparu skaitļus",
+          "7": "Reizināt 1 cipara skaitļus trīs reizes",
+          "8": "Reizināt 2 ciparu skaitļus ar 1 cipara skaitļiem divas reizes",
+          "9": "Reizināt decimālos skaitļus ar 1 cipara skaitļiem",
+          "10": "Reizināt decimālos skaitļus"
+        }
+      },
+      "division": {
+        "title": "Dalīšana",
+        "missions": {
+          "1": "Dalīt 1 cipara skaitļus",
+          "2": "Dalīt 1 vai 2 ciparu skaitļus ar 1 cipara skaitļiem, iegūstot decimālo rezultātu",
+          "3": "Dalīt 3 ciparu skaitļus ar 1 cipara skaitļiem",
+          "4": "Dalīt 4 ciparu skaitļus ar 1 cipara skaitļiem",
+          "5": "Dalīt 2 ciparu skaitļus",
+          "6": "Dalīt 3 ciparu skaitļus ar 2 ciparu skaitļiem",
+          "7": "Dalīt 3 ciparu skaitļus vispirms ar 1, tad ar 1 cipara skaitļiem",
+          "8": "Dalīt decimālos skaitļus ar 1 cipara skaitļiem",
+          "9": "Dalīt 4 ciparu skaitļus vispirms ar 1, tad ar 1 cipara skaitļiem",
+          "10": "Dalīt decimālos skaitļus ar 2 ciparu skaitļiem"
+        }
+      },
+      "mixed_operations": {
+        "title": "Jauktās darbības",
+        "missions": {
+          "1": "(1 cipars + 1 cipars) x 1 cipara skaitļi",
+          "2": "(1 cipars + 2 cipari) x 1 cipara skaitļi",
+          "3": "1 cipars x (2 cipari + 2 cipari)",
+          "4": "(2 cipari + 1 cipars) x 1 cipara skaitlis",
+          "5": "(2 cipari - 1 cipars) x 1 cipara skaitlis",
+          "6": "2 cipari x 1 cipars - 1 cipars x 1 cipara skaitļi",
+          "7": "1 cipars x 2 cipari + 1 cipars x 2 cipari",
+          "8": "3 cipari x 1 cipars - 1 cipara skaitļi",
+          "9": "(2 cipari + 2 cipari) ÷ 1 cipara skaitļi",
+          "10": "(3 cipari + 2 cipari) ÷ 1 cipara skaitļi"
+        }
+      },
+      "exponentiation": {
+        "title": "Kāpināšana",
+        "missions": {
+          "1": "1 cipara kvadrāts",
+          "2": "2 ciparu kvadrāts",
+          "3": "1 cipara kubs",
+          "4": "1 cipara kvadrāts + 1 cipara kvadrāts",
+          "5": "1 cipara kubs - 1 cipara kvadrāts",
+          "6": "Kvadrātsakne no 1, 2 vai 3 cipariem",
+          "7": "Kubicakne no 1, 2 vai 3 cipariem",
+          "8": "Kvadrātsakne no 1 cipara vai 2 ciparu + 1 cipara kvadrāts",
+          "9": "Kvadrātsakne no 2 cipariem × kvadrātsakne no 2 cipariem",
+          "10": "2 ciparu kvadrāts, dalīts ar kvadrātsakni no 2 vai 3 cipariem"
+        }
+      },
+      "percentages": {
+        "title": "Procenti",
+        "missions": {
+          "1": "10% no 2 vai 3 ciparu skaitļiem",
+          "2": "20% no 2 vai 3 ciparu skaitļiem",
+          "3": "50% no 1, 2 vai 3 ciparu skaitļiem",
+          "4": "20%, 25% vai 50% no 2 vai 3 ciparu skaitļiem",
+          "5": "Palielināt 2 ciparu skaitļus par 10%, 20%, 25% vai 50%",
+          "6": "Samazināt 2 ciparu skaitļus par 10% vai 50%",
+          "7": "30% no 2 ciparu skaitļiem",
+          "8": "Palielināt 3 ciparu skaitļus par 10%, 20%, 25% vai 50%",
+          "9": "1 cipara procents no 2 ciparu skaitļiem",
+          "10": "2 ciparu procents no 2 ciparu skaitļiem"
+        }
+      },
+      "sequences": {
+        "title": "Secības",
+        "missions": {
+          "1": "Sākt ar 1; 2; 3 vai 4 un pievienot 1 cipara skaitli. Piemēram, 4; 11; 18; 25; ...",
+          "2": "Sākt ar 2 ciparu skaitļiem un pievienot 1 cipara skaitļus. Piemēram, 23; 28; 33; 38; ...",
+          "3": "Sākt ar 3 ciparu skaitļiem un atņemt 1 vai 2 ciparu skaitļus. Piemēram, 345; 340; 335; 330; ...",
+          "4": "Sākt ar 1 cipara skaitli un reizināt ar 2 vai 3. Piemēram, 3; 6; 12; 24; ...",
+          "5": "Sākt ar 2 ciparu skaitli un reizināt ar 2 vai 3. Piemēram, 21; 63; 189; 56; ...",
+          "6": "1 vai 2 ciparu (<=20) kvadrāts. Piemēram, 9; 16; 25; 36; ...",
+          "7": "Fibonaci secība, sākot ar 1 cipara skaitli (>1). Piemēram, 4; 5; 9; 14; ...",
+          "8": "Sākas ar 1 cipara skaitli (>1) reizinātu ar 2 un palielinātu par 1. Piemēram, 4; 9; 19; 39; ...",
+          "9": "Divreiz 1 cipara skaitlis, nākamais ir ciparu summa. Piemēram, 66; 12; 77; 14; ...",
+          "10": "Sākt ar 1 vai 2 ciparu pirmskaitli. Piemēram, 11; 13; 17; 19; ..."
+        }
+      }
+    },
+    "navigation": {
+    "home": "Mājas",
+    "progress": "Progres",
+    "learn": "Mācies",
+    "settings": "Iestatījumi"
+  },
+  "home": {
+    "title": "Izvēlies režīmu!",
+    "calm_bear": "Ņiprais Lācis",
+    "calm_subtitle": "Izpildiet uzdevumus savā tempā",
+    "fast_bee": "Čaklā Bite",
+    "fast_subtitle": "Izpildiet uzdevumus noteiktajā laikā",
+    "start": "Sākt"
+  },
+  "learn": {
+    "title": "Mācies",
+    "x_times_y": "x × y",
+    "multiplication": "Reizināšana",
+    "x_divide_y": "x ÷ y",
+    "division": "Dalīšana",
+    "sequences": "Secības",
+    "sequences_subtitle": "Secības modeļi",
+    "exponentiation": "x²",
+    "exponentiation_subtitle": "Kāpināšanas pamati",
+    "percentages": "%",
+    "percentages_subtitle": "Izpratne par procentiem",
+    "tip1": { "name": "Jautri reizināšanas triki" },
+    "tip2": { "name": "Jautrais reizināšanas video" },
+    "tip3": { "name": "Reizināšana no 1 līdz 20" },
+    "tip4": { "name": "Dalīšanas pamati" },
+    "tip5": { "name": "Dalīšana no 1 līdz 10" },
+    "tip6": { "name": "Sekvenču izpratne" },
+    "tip7": { "name": "Sekvenču izpratne: n-tais termins" },
+    "tip8": { "name": "Kāpināšanas pamati" },
+    "tip9": { "name": "Ievads kāpināšanā" },
+    "tip10": { "name": "Kvadrātsaknes" },
+    "tip11": { "name": "Kubsaknes" },
+    "tip12": { "name": "Procentu likmes padarītas vienkāršas" },
+    "tip13": { "name": "Procentuālais īpatsvars desmitdaļās" },
+    "tip14": { "name": "Procentos: Uz 100" }
+  },
+  "progress": {
+    "title": "Progres",
+    "calm_bear": "Ņiprais Lācis",
+    "fast_bee": "Čaklā Bite"
+  },
+  "subjects_screen": {
+    "title": "Priekšmeti"
+  },
+  "mission": {
+    "no_missions": "Nav pieejamu uzdevumu šim priekšmetam.",
+    "of_15": "no 15",
+    "highest": "Augstākais: "
+  },
+  "subject_view":{
+    "Addition": "Saskaitīšana",
+    "Subtraction": "Atņemšana",
+    "Multiplication": "Reizināšana",
+    "Division": "Dalīšana",
+    "Mixed operations": "Jauktās darbības",
+    "Sequences": "Secības",
+    "Exponentiation": "Kāpināšana",
+    "Percentages": "Procenti"
+  },
+  "profile": {
+    "title": "Profils",
+    "user": "Lietotājs: ",
+    "log_out": "Izslēgties"
+
+  }
+  }

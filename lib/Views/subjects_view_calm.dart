@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'mission_view_calm.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SubjectsViewCalm extends StatelessWidget {
   const SubjectsViewCalm({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final subjects = [
+    // Use subject keys that match your provider keys exactly.
+    final List<String> subjectKeys = [
       "Addition",
       "Subtraction",
       "Multiplication",
@@ -19,15 +21,17 @@ class SubjectsViewCalm extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 50, 50, 50)),
+          icon:
+              const Icon(Icons.arrow_back, color: Color.fromARGB(255, 50, 50, 50)),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Subjects',
-          style: TextStyle(fontFamily: 'Mali',
+        title: Text(
+          tr('subjects_screen.title'),
+          style: const TextStyle(
+            fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
@@ -36,25 +40,30 @@ class SubjectsViewCalm extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        color: const Color.fromARGB(255, 255, 255, 255),
+        color: Colors.white,
         child: ListView.builder(
-          itemCount: subjects.length,
+          itemCount: subjectKeys.length,
           itemBuilder: (context, index) {
+            final subjectKey = subjectKeys[index];
             return ListTile(
               title: Text(
-                subjects[index],
-                style: const TextStyle(fontFamily: 'Mali',
+                tr('subject_view.$subjectKey'),
+                style: const TextStyle(
+                  fontFamily: 'Mali',
                   color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
               ),
-              trailing: const Icon(Icons.chevron_right, color: Color.fromARGB(255, 50, 50, 50)),
+              trailing: const Icon(
+                Icons.chevron_right,
+                color: Color.fromARGB(255, 50, 50, 50),
+              ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MissionViewCalm(subjectName: subjects[index]),
+                    builder: (context) => MissionViewCalm(subjectName: subjectKey),
                   ),
                 );
               },

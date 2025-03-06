@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'dart:math' as math;
 
 import '../Game views/Calm Bear/calm_bear_game_addition.dart';
 import '../Game views/Calm Bear/calm_bear_game_division.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_app/mission_provider_calm.dart';
 import 'package:flutter_app/hexagon_progress_painter.dart';
 
 class MissionViewCalm extends StatefulWidget {
+  // subjectName should be the original key (e.g. "Addition")
   final String subjectName;
 
   const MissionViewCalm({super.key, required this.subjectName});
@@ -28,9 +31,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
   @override
   void initState() {
     super.initState();
-    // Get the current users UID from FirebaseAuth
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    // Load progress from Firestore for the given subject
     Provider.of<MissionsProviderCalm>(context, listen: false)
         .loadProgressFromFirestore(userId, widget.subjectName);
   }
@@ -64,7 +65,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.subjectName,
+          // Use the localized subject title for display
+          tr('subject_view.${widget.subjectName}'),
           style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
@@ -81,15 +83,22 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Use Consumer to rebuild when missions update.
               Expanded(
                 child: Consumer<MissionsProviderCalm>(
                   builder: (context, missionsProvider, child) {
                     List<Mission> missions =
                         missionsProvider.getMissionsForSubject(widget.subjectName);
                     return missions.isEmpty
-                        ? const Center(
-                            child: Text("No missions available for this subject."))
+                        ? Center(
+                            child: Text(
+                              tr('mission.no_missions'),
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 50, 50, 50),
+                              ),
+                            ),
+                          )
                         : _buildHoneycombGrid(missions, context, hexWidth, orientation);
                   },
                 ),
@@ -101,7 +110,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
     );
   }
 
-  // Build the honeycomb grid of mission tiles
   Widget _buildHoneycombGrid(List<Mission> missions, BuildContext context,
       double hexWidth, Orientation orientation) {
     final columns = orientation == Orientation.portrait ? 2 : 5;
@@ -118,7 +126,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           if (missionIndex >= missions.length) {
             return HexagonWidgetBuilder(
               color: Colors.white,
-              child: Container(), // Empty container
+              child: Container(),
             );
           }
 
@@ -150,7 +158,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                         ),
                       ),
                       Text(
-                        "${mission.correctAnswers} of 15",
+                        "${mission.correctAnswers} ${tr('mission.of_15')}",
                         style: const TextStyle(
                           fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
@@ -171,7 +179,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
   Future<void> _navigateToMission(BuildContext context, String subjectName, int missionNumber) async {
     int? result;
 
-    if (subjectName == "Addition") {
+    if (subjectName.toLowerCase() == "addition".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameAddition(
@@ -180,7 +188,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Subtraction") {
+    } else if (subjectName.toLowerCase() == "subtraction".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameSubtraction(
@@ -189,7 +197,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Multiplication") {
+    } else if (subjectName.toLowerCase() == "multiplication".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameMultiplication(
@@ -198,7 +206,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Division") {
+    } else if (subjectName.toLowerCase() == "division".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameDivision(
@@ -207,7 +215,8 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Mixed operations") {
+    } else if (subjectName.toLowerCase() == "mixed operations".toLowerCase() ||
+        subjectName.toLowerCase() == "mixed_operations".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameMixed(
@@ -216,7 +225,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Sequences") {
+    } else if (subjectName.toLowerCase() == "sequences".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameSequences(
@@ -225,7 +234,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Exponentiation") {
+    } else if (subjectName.toLowerCase() == "exponentiation".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGameExponentiation(
@@ -234,7 +243,7 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           ),
         ),
       );
-    } else if (subjectName == "Percentages") {
+    } else if (subjectName.toLowerCase() == "percentages".toLowerCase()) {
       result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (context) => CalmBearGamePercentages(

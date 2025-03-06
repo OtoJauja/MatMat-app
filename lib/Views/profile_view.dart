@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../login_screen.dart';
@@ -22,9 +23,9 @@ class ProfileView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "Profile",
-          style: TextStyle(
+        title: Text(
+          tr('profile.title'),
+          style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -40,7 +41,7 @@ class ProfileView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "User: ${user.email}",
+                    "${tr("profile.user")} ${user.email}",
                     style: const TextStyle(
                       fontFamily: 'Mali',
                       fontSize: 20,
@@ -54,9 +55,9 @@ class ProfileView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
                     ),
-                    child: const Text(
-                      "Log Out",
-                      style: TextStyle(
+                    child: Text(
+                      tr('profile.log_out'),
+                      style: const TextStyle(
                         fontFamily: 'Mali',
                         fontSize: 18,
                         color: Colors.white,

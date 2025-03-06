@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Views/profile_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,94 +11,90 @@ class LearnView extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final crossAxisCount = screenWidth > 600 ? 4 : 2;
 
+    // Define topics using translation keys.
     final List<Map<String, dynamic>> topics = [
       {
-        'title': 'x × y',
-        'subtitle': 'Multiplication',
+        'title': tr('learn.x_times_y'),
+        'subtitle': tr('learn.multiplication'),
         'tips': [
           {
-            'name': 'Fun Multiplication tricks',
+            'name': tr('learn.tip1.name'),
             'url': 'https://www.boredteachers.com/post/multiplication-tricks'
           },
           {
-            'name': 'Fun Multiplication video',
+            'name': tr('learn.tip2.name'),
             'url': 'https://www.youtube.com/watch?v=eW2dRLyoyds&t=159s'
           },
           {
-            'name': 'Multiplication from 1 to 20',
-            'url':
-                'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
+            'name': tr('learn.tip3.name'),
+            'url': 'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
           },
         ],
       },
       {
-        'title': 'x ÷ y',
-        'subtitle': 'Division',
+        'title': tr('learn.x_divide_y'),
+        'subtitle': tr('learn.division'),
         'tips': [
           {
-            'name': 'Division Basics',
+            'name': tr('learn.tip4.name'),
             'url': 'https://www.youtube.com/watch?v=rGMecZ_aERo'
           },
           {
-            'name': 'Division from 1 to 10',
-            'url':
-                'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
+            'name': tr('learn.tip5.name'),
+            'url': 'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
           },
         ],
       },
       {
-        'title': '4; 5; 9; 14; ...',
-        'subtitle': 'Sequences',
+        'title': tr('learn.sequences'),
+        'subtitle': tr('learn.sequences_subtitle'),
         'tips': [
           {
-            'name': 'Understanding Sequences',
+            'name': tr('learn.tip6.name'),
             'url': 'https://www.youtube.com/watch?v=tfU1tNf_65s'
           },
           {
-            'name': 'Understanding Sequences: nth Term',
+            'name': tr('learn.tip7.name'),
             'url': 'https://www.youtube.com/watch?v=xtvJwaYfXss&t=1s'
           },
         ],
       },
       {
-        'title': 'x²',
-        'subtitle': 'Exponentiation',
+        'title': tr('learn.exponentiation'),
+        'subtitle': tr('learn.exponentiation_subtitle'),
         'tips': [
           {
-            'name': 'Exponentiation Basics',
-            'url':
-                'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
+            'name': tr('learn.tip8.name'),
+            'url': 'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
           },
           {
-            'name': 'Introduction to Exponents',
+            'name': tr('learn.tip9.name'),
             'url': 'https://www.youtube.com/watch?v=XZRQhkii0h0'
           },
           {
-            'name': 'Square roots',
+            'name': tr('learn.tip10.name'),
             'url': 'https://www.k8worksheets.com/pdfs/square-root/charts-4.pdf'
           },
           {
-            'name': 'Cubic roots',
-            'url':
-                'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
+            'name': tr('learn.tip11.name'),
+            'url': 'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
           },
         ],
       },
       {
-        'title': '%',
-        'subtitle': 'Percentages',
+        'title': tr('learn.percentages'),
+        'subtitle': tr('learn.percentages_subtitle'),
         'tips': [
           {
-            'name': 'Percentages Made Simple',
+            'name': tr('learn.tip12.name'),
             'url': 'https://byjus.com/maths/percentage/'
           },
           {
-            'name': 'Percentages in 10s',
-            'url':
-                'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
+            'name': tr('learn.tip13.name'),
+            'url': 'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
           },
           {
-            'name': 'Percentages: Per 100',
+            'name': tr('learn.tip14.name'),
             'url': 'https://www.mathsisfun.com/percentage.html'
           },
         ],
@@ -109,9 +106,9 @@ class LearnView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Learn',
-          style: TextStyle(
+        title: Text(
+          tr('learn.title'),
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -182,6 +179,7 @@ class LearnView extends StatelessWidget {
                         topic['subtitle'].toString().isNotEmpty)
                       Text(
                         topic['subtitle'],
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Color.fromARGB(255, 50, 50, 50),
@@ -245,13 +243,12 @@ class TipsView extends StatelessWidget {
               if (await canLaunchUrl(url)) {
                 await launchUrl(
                   url,
-                  mode: LaunchMode
-                      .externalApplication, // LaunchMode .externalApplication or .inAppWebView
+                  mode: LaunchMode.externalApplication,
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Could not open the link ${tip['url']}'),
+                    content: Text(tr('learn.could_not_open_link', args: [tip['url']])),
                   ),
                 );
               }

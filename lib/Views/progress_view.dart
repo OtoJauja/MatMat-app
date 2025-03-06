@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_app/mission_provider_calm.dart';
 import 'package:flutter_app/mission_provider_fast.dart';
 import 'dart:math' as math;
+import 'package:easy_localization/easy_localization.dart';
 
 class ProgressView extends StatelessWidget {
   const ProgressView({super.key});
@@ -98,9 +99,9 @@ class ProgressView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Progress',
-          style: TextStyle(
+        title: Text(
+          tr('progress.title'),
+          style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -132,16 +133,16 @@ class ProgressView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildChart(
-                  "Calm Bear",
+                  tr('progress.calm_bear'),
                   generateSectionsCalm(missionsProviderCalm),
                   chartSize,
                   subjects,
                 ),
                 _buildChart(
-                  "Fast Bee",
+                  tr('progress.fast_bee'),
                   generateSectionsFast(missionsProviderFast),
                   chartSize,
-                  subjects, 
+                  subjects,
                 ),
               ],
             )
@@ -151,13 +152,13 @@ class ProgressView extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildChart(
-                      "Calm Bear",
+                      tr('progress.calm_bear'),
                       generateSectionsCalm(missionsProviderCalm),
                       chartSize,
                       subjects,
                     ),
                     _buildChart(
-                      "Fast Bee",
+                      tr('progress.fast_bee'),
                       generateSectionsFast(missionsProviderFast),
                       chartSize,
                       subjects,
@@ -228,7 +229,6 @@ class ProgressView extends StatelessWidget {
     for (int i = 0; i < subjects.length; i++) {
       // Add rotationOffset to rotate the ring to fit the sections
       final angle = rotationOffset + (2 * math.pi / subjects.length) * i;
-
       final offsetX = center + ringRadius * math.cos(angle);
       final offsetY = center + ringRadius * math.sin(angle);
 
@@ -247,7 +247,6 @@ class ProgressView extends StatelessWidget {
         ),
       );
     }
-
     return Stack(children: symbolWidgets);
   }
 }

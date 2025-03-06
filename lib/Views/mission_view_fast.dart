@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'dart:math' as math;
 
 import '../Game views/Fast Bee/fast_bee_game_addition.dart'; // Addition game
 import '../Game views/Fast Bee/fast_bee_game_subtraction.dart'; // Subtraction game
@@ -64,7 +66,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.subjectName,
+          tr('subject_view.${widget.subjectName}'),
           style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
@@ -88,9 +90,16 @@ class _MissionViewFastState extends State<MissionViewFast> {
                     List<Mission> missions = missionsProvider
                         .getMissionsForSubject(widget.subjectName);
                     return missions.isEmpty
-                        ? const Center(
-                            child:
-                                Text("No missions available for this subject."))
+                        ? Center(
+                            child: Text(
+                              tr('mission.no_missions'),
+                              style: const TextStyle(
+                                fontFamily: 'Mali',
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 50, 50, 50),
+                              ),
+                            ),
+                          )
                         : _buildHoneycombGrid(
                             missions, context, hexWidth, orientation);
                   },
@@ -152,7 +161,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
                         ),
                       ),
                       Text(
-                        "Highest: ${mission.correctAnswers}",
+                        "${tr("mission.highest")} ${mission.correctAnswers}",
                         style: const TextStyle(
                           fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),

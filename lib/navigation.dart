@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'Views/home_view.dart';
 import 'Views/progress_view.dart';
@@ -30,17 +31,13 @@ class _MainNavigationState extends State<MainNavigation> {
 
   void _onItemTapped(int index) {
     if (_currentIndex != index) {
-      // Reset the current tab to its root when switching
       _navigatorKeys[_currentIndex]
           .currentState
           ?.popUntil((route) => route.isFirst);
-
-      // Switch to the new tab
       setState(() {
         _currentIndex = index;
       });
     } else {
-      // If the current tab is selected pop to the root of that tab
       _navigatorKeys[_currentIndex]
           .currentState
           ?.popUntil((route) => route.isFirst);
@@ -62,11 +59,9 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final currentNavigatorState =
-            _navigatorKeys[_currentIndex].currentState;
+        final currentNavigatorState = _navigatorKeys[_currentIndex].currentState;
         if (currentNavigatorState != null && currentNavigatorState.canPop()) {
           currentNavigatorState.pop();
-          // Prevent the system from closing the app
           return false;
         }
         if (_currentIndex != 0) {
@@ -75,7 +70,6 @@ class _MainNavigationState extends State<MainNavigation> {
           });
           return false;
         }
-        // returning true will allow the app to be closed
         return true;
       },
       child: Scaffold(
@@ -87,13 +81,23 @@ class _MainNavigationState extends State<MainNavigation> {
           backgroundColor: Colors.white,
           currentIndex: _currentIndex,
           onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.show_chart), label: 'Progress'),
-            BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Learn'),
+              icon: const Icon(Icons.home),
+              label: tr('navigation.home'),
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
+              icon: const Icon(Icons.show_chart),
+              label: tr('navigation.progress'),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.school),
+              label: tr('navigation.learn'),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.settings),
+              label: tr('navigation.settings'),
+            ),
           ],
           selectedItemColor: const Color(0xffffa400),
           unselectedItemColor: const Color.fromARGB(255, 50, 50, 50),

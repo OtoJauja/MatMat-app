@@ -37,9 +37,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MissionsProviderFast()),
       ],
       child: MaterialApp(
+        key: ValueKey(context.locale.toString()), // Forces rebuild on locale change
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Mali'),
-        // Setup easy_localization properties
+        // EasyLocalization properties
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
