@@ -9,7 +9,6 @@ class SubjectsViewFast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use subject keys that match your provider keys exactly.
     final List<String> subjectKeys = [
       "Addition",
       "Subtraction",
