@@ -54,6 +54,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15, top: 15),
+            child: Image.asset(
+              "assets/images/matmat-logo-14.png",
+              width: 313,
+              height: 180,
+            ),
+          ),
+          const SizedBox(
+            height: 18,
+          ),
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
@@ -64,17 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 18),
-                      const Text(
-                        'Log In',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 50, 50, 50),
-                          fontSize: 38,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       if (_errorMessage != null)
                         Text(
                           _errorMessage!,

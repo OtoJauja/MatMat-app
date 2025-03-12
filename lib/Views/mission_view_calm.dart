@@ -3,7 +3,6 @@ import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'dart:math' as math;
 
 import '../Game views/Calm Bear/calm_bear_game_addition.dart';
 import '../Game views/Calm Bear/calm_bear_game_division.dart';
@@ -14,7 +13,7 @@ import '../Game views/Calm Bear/calm_bear_game_percentages.dart';
 import '../Game views/Calm Bear/calm_bear_game_sequences.dart';
 import '../Game views/Calm Bear/calm_bear_game_subtraction.dart';
 
-import 'package:flutter_app/mission_provider_calm.dart';
+import 'package:flutter_app/Services/mission_provider_calm.dart';
 import 'package:flutter_app/hexagon_progress_painter.dart';
 
 class MissionViewCalm extends StatefulWidget {

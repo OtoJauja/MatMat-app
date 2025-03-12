@@ -3,7 +3,6 @@ import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'dart:math' as math;
 
 import '../Game views/Fast Bee/fast_bee_game_addition.dart'; // Addition game
 import '../Game views/Fast Bee/fast_bee_game_subtraction.dart'; // Subtraction game
@@ -14,7 +13,7 @@ import '../Game views/Fast Bee/fast_bee_game_sequences.dart'; // Sequence game
 import '../Game views/Fast Bee/fast_bee_game_exponentiation.dart'; // Exponent game
 import '../Game views/Fast Bee/fast_bee_game_percentages.dart'; // Percentage game
 
-import 'package:flutter_app/mission_provider_fast.dart'; // Import the Missions for Fast bee
+import 'package:flutter_app/Services/mission_provider_fast.dart'; // Import the Missions for Fast bee
 import 'package:flutter_app/hexagon_progress_painter.dart'; // Import hexagon progress painter
 
 class MissionViewFast extends StatefulWidget {

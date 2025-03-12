@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Views/profile_view.dart';
+import 'package:lottie/lottie.dart';
 import 'subjects_view_fast.dart';
 import 'subjects_view_calm.dart';
 
@@ -9,15 +10,56 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    // Calculate card width based on screen size
-    final cardWidth = screenWidth > 600 ? screenWidth * 0.4 : screenWidth * 0.9;
+    final screenSize = MediaQuery.of(context).size;
+    final orientation = MediaQuery.of(context).orientation;
+
+    final cardWidth = orientation == Orientation.portrait
+        ? screenSize.width * 0.85
+        : screenSize.width * 0.3;
+
+    final modeCards = <Widget>[
+      ModeCard(
+        animation: Lottie.network(
+          'https://lottie.host/c2753c92-6b72-47ee-9281-aa75a32c65ba/mfccXVGSGr.json',
+          height: 130,
+          width: 130,
+          fit: BoxFit.fill,
+          frameRate: FrameRate.max,
+        ),
+        title: tr('home.calm_bear'),
+        subtitle: tr('home.calm_subtitle'),
+        width: cardWidth,
+        onStartPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SubjectsViewCalm()),
+          );
+        },
+      ),
+      const SizedBox(height: 25),
+      ModeCard(
+        animation: Lottie.network(
+          'https://lottie.host/9e38b30a-e6c6-41f2-a5de-40784e3b7515/uqdOkZBisG.json',
+          height: 130,
+          width: 130,
+          fit: BoxFit.fill,
+          frameRate: FrameRate.max,
+        ),
+        title: tr('home.fast_bee'),
+        subtitle: tr('home.fast_subtitle'),
+        width: cardWidth,
+        onStartPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SubjectsViewFast()),
+          );
+        },
+      ),
+    ];
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         title: Text(
           tr('home.title'),
           style: const TextStyle(
@@ -47,40 +89,26 @@ class HomeView extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ModeCard(
-                icon: Icons.pets,
-                title: tr('home.calm_bear'),
-                subtitle: tr('home.calm_subtitle'),
-                width: cardWidth,
-                onStartPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SubjectsViewCalm()),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              ModeCard(
-                icon: Icons.local_florist,
-                title: tr('home.fast_bee'),
-                subtitle: tr('home.fast_subtitle'),
-                width: cardWidth,
-                onStartPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const SubjectsViewFast()),
-                  );
-                },
-              ),
-            ],
+      body: SingleChildScrollView(
+        child: Container(
+          constraints: BoxConstraints(
+            minHeight: screenSize.height,
+            minWidth: screenSize.width,
           ),
+          alignment: Alignment.center,
+          child: orientation == Orientation.portrait
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: modeCards,
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    modeCards.first,
+                    const SizedBox(width: 25),
+                    modeCards.last,
+                  ],
+                ),
         ),
       ),
     );
@@ -88,7 +116,7 @@ class HomeView extends StatelessWidget {
 }
 
 class ModeCard extends StatelessWidget {
-  final IconData icon;
+  final LottieBuilder animation;
   final String title;
   final String subtitle;
   final double width;
@@ -96,7 +124,7 @@ class ModeCard extends StatelessWidget {
 
   const ModeCard({
     super.key,
-    required this.icon,
+    required this.animation,
     required this.title,
     required this.subtitle,
     required this.width,
@@ -106,7 +134,6 @@ class ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
       color: const Color(0xffffee9ae),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -115,9 +142,10 @@ class ModeCard extends StatelessWidget {
         width: width,
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 50, color: const Color.fromARGB(255, 50, 50, 50)),
+            animation,
             const SizedBox(height: 10),
             Text(
               title,

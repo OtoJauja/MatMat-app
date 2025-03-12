@@ -133,7 +133,7 @@
   },
   "home": {
     "title": "Izvēlies režīmu!",
-    "calm_bear": "Ņiprais Lācis",
+    "calm_bear": "Drosmīgais Lācis",
     "calm_subtitle": "Izpildiet uzdevumus savā tempā",
     "fast_bee": "Čaklā Bite",
     "fast_subtitle": "Izpildiet uzdevumus noteiktajā laikā",
@@ -168,7 +168,7 @@
   },
   "progress": {
     "title": "Progres",
-    "calm_bear": "Ņiprais Lācis",
+    "calm_bear": "Drosmīgais Lācis",
     "fast_bee": "Čaklā Bite"
   },
   "subjects_screen": {
@@ -180,6 +180,8 @@
     "highest": "Augstākais: "
   },
   "subject_view":{
+    "brave_bear_description": "Drosmīgā lāča režīmā jūs gaida vairākas aizraujošas misijas. Izbaudiet mierīgu tempu, apgūstot dažādas tēmas!",
+    "buzzy_bee_description": "Čaklās bites režīmā tev būs jāveic vairāki ātra tempa un saistoši uzdevumi, kas paredzēti, lai uzlabotu tavas problēmu risināšanas prasmes!",
     "Addition": "Saskaitīšana",
     "Subtraction": "Atņemšana",
     "Multiplication": "Reizināšana",

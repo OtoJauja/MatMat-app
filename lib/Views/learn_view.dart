@@ -134,64 +134,69 @@ class LearnView extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: screenWidth > 600 ? 2 : 1.5,
-          ),
-          itemCount: topics.length,
-          itemBuilder: (context, index) {
-            final topic = topics[index];
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TipsView(
-                      topicTitle: topic['title'],
-                      topicSubtitle: topic['subtitle'],
-                      tips: topic['tips'],
-                    ),
-                  ),
-                );
-              },
-              child: Card(
-                color: const Color(0xffffee9ae),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: screenWidth > 600 ? 2 : 1.5,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      topic['title'],
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (topic['subtitle'] != null &&
-                        topic['subtitle'].toString().isNotEmpty)
-                      Text(
-                        topic['subtitle'],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color.fromARGB(255, 50, 50, 50),
-                          fontWeight: FontWeight.bold,
+                itemCount: topics.length,
+                itemBuilder: (context, index) {
+                  final topic = topics[index];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TipsView(
+                            topicTitle: topic['title'],
+                            topicSubtitle: topic['subtitle'],
+                            tips: topic['tips'],
+                          ),
                         ),
+                      );
+                    },
+                    child: Card(
+                      color: const Color(0xffffee9ae),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                  ],
-                ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            topic['title'],
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (topic['subtitle'] != null &&
+                              topic['subtitle'].toString().isNotEmpty)
+                            Text(
+                              topic['subtitle'],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 50, 50, 50),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

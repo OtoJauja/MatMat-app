@@ -54,6 +54,17 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
        body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15, top: 15),
+            child: Image.asset(
+              "assets/images/matmat-logo-14.png",
+              width: 313,
+              height: 180,
+            ),
+          ),
+          const SizedBox(
+            height: 18,
+          ),
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
@@ -63,14 +74,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                  const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 50, 50, 50),
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   const SizedBox(
                     height: 20,
                   ),

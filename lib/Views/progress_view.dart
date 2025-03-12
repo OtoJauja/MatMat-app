@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Views/profile_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_app/mission_provider_calm.dart';
-import 'package:flutter_app/mission_provider_fast.dart';
+import 'package:flutter_app/Services/mission_provider_calm.dart';
+import 'package:flutter_app/Services/mission_provider_fast.dart';
 import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 
@@ -129,7 +129,8 @@ class ProgressView extends StatelessWidget {
         ],
       ),
       body: isLandscape
-          ? Row(
+          ? SingleChildScrollView(
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildChart(
@@ -146,6 +147,7 @@ class ProgressView extends StatelessWidget {
                 ),
               ],
             )
+          )
           : SingleChildScrollView(
               child: SizedBox(
                 width: double.infinity,

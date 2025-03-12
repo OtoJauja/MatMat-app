@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import 'mission_view_fast.dart'; // Import Mission View
 
@@ -25,8 +26,10 @@ class SubjectsViewFast extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon:
-              const Icon(Icons.arrow_back, color: Color.fromARGB(255, 50, 50, 50)),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 50, 50, 50),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -42,34 +45,70 @@ class SubjectsViewFast extends StatelessWidget {
       ),
       body: Container(
         color: Colors.white,
-        child: ListView.builder(
-          itemCount: subjectKeys.length,
-          itemBuilder: (context, index) {
-            final subjectKey = subjectKeys[index];
-            return ListTile(
-              title: Text(
-                tr('subject_view.$subjectKey'),
-                style: const TextStyle(
-                  fontFamily: 'Mali',
-                  color: Color.fromARGB(255, 50, 50, 50),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                color: const Color(0xffffee9ae),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Lottie.network(
+                        'https://lottie.host/9e38b30a-e6c6-41f2-a5de-40784e3b7515/uqdOkZBisG.json',
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.fill,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          tr('subject_view.buzzy_bee_description'),
+                          style: const TextStyle(
+                            fontFamily: 'Mali',
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 50, 50, 50),
+                          ),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              trailing: const Icon(
-                Icons.chevron_right,
-                color: Color.fromARGB(255, 50, 50, 50),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MissionViewFast(subjectName: subjectKey),
+            ),
+            ...subjectKeys.map((subjectKey) {
+              return ListTile(
+                title: Text(
+                  tr('subject_view.$subjectKey'),
+                  style: const TextStyle(
+                    fontFamily: 'Mali',
+                    color: Color.fromARGB(255, 50, 50, 50),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
-                );
-              },
-            );
-          },
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: Color.fromARGB(255, 50, 50, 50),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MissionViewFast(subjectName: subjectKey),
+                    ),
+                  );
+                },
+              );
+            }).toList(),
+          ],
         ),
       ),
     );

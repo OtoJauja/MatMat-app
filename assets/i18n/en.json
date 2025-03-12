@@ -133,9 +133,9 @@
   },
   "home": {
     "title": "Choose mode!",
-    "calm_bear": "Calm Bear",
+    "calm_bear": "Brave Bear",
     "calm_subtitle": "Complete the tasks at your own pace",
-    "fast_bee": "Fast Bee",
+    "fast_bee": "Buzzy Bee",
     "fast_subtitle": "Complete the tasks in the given time",
     "start": "Start"
   },
@@ -168,8 +168,8 @@
   },
   "progress": {
     "title": "Progress",
-    "calm_bear": "Calm Bear",
-    "fast_bee": "Fast Bee"
+    "calm_bear": "Brave Bear",
+    "fast_bee": "Buzzy Bee"
   },
   "subjects_screen": {
     "title": "Subjects"
@@ -180,6 +180,8 @@
     "highest": "Highest: "
   },
   "subject_view":{
+    "brave_bear_description": "Brave Bear mode challenges you with a series of engaging missions. Enjoy a calm pace as you progress through various subjects!",
+    "buzzy_bee_description": "Buzzy Bee mode challenges you with a series of fast paced and engaging missions designed to boost your problem solving skills!",
     "Addition": "Addition",
     "Subtraction": "Subtraction",
     "Multiplication": "Multiplication",
