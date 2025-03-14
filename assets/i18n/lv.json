@@ -181,7 +181,7 @@
   },
   "subject_view":{
     "brave_bear_description": "Drosmīgā lāča režīmā jūs gaida vairākas aizraujošas misijas. Izbaudiet mierīgu tempu, apgūstot dažādas tēmas!",
-    "buzzy_bee_description": "Čaklās bites režīmā tev būs jāveic vairāki ātra tempa un saistoši uzdevumi, kas paredzēti, lai uzlabotu tavas problēmu risināšanas prasmes!",
+    "buzzy_bee_description": "Čaklās bites režīmā tev būs jāveic vairāki ātra tempa un saistoši uzdevumi! Tikai pareizas atbildes tiek skaitītas!",
     "Addition": "Saskaitīšana",
     "Subtraction": "Atņemšana",
     "Multiplication": "Reizināšana",
@@ -196,5 +196,23 @@
     "user": "Lietotājs: ",
     "log_out": "Izslēgties"
 
+  },
+  "game_screen": {
+    "next_mission": "Nākamā misija",
+    "mission_over": "Misija beigusies!",
+    "correct_answers": "Pareizās atbildes: ",
+    "time_taken": "Patērētais laiks: ",
+    "question": "Vai vēlaties turpināt nākamo misiju vai izvēlēties citu misiju?",
+    "back_to_missions": "Atpakaļ uz misijām",
+    "correct": "Pareizi: ",
+    "of_15": " no 15",
+    "get_ready": "Esiet gatavi!",
+    "seconds": "sekundes",
+    "skip": "Izlaist",
+    "times_up": "Laiks beidzies!",
+    "of": "no",
+    "increase": "Palielini",
+    "decrease": "Samazināt",
+    "by": "par"
   }
   }

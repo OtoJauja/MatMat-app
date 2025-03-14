@@ -7,7 +7,10 @@ class Mission {
   int correctAnswers;
   bool isCompleted;
 
-  Mission({required this.number, this.correctAnswers = 0, this.isCompleted = false});
+  Mission(
+      {required this.number,
+      this.correctAnswers = 0,
+      this.isCompleted = false});
 
   // Only update if the new score is higher
   void updateCorrectAnswers(int answers) {
@@ -26,7 +29,8 @@ class MissionsProviderCalm with ChangeNotifier {
     "Subtraction": List.generate(10, (index) => Mission(number: index + 1)),
     "Multiplication": List.generate(10, (index) => Mission(number: index + 1)),
     "Division": List.generate(10, (index) => Mission(number: index + 1)),
-    "Mixed operations": List.generate(10, (index) => Mission(number: index + 1)),
+    "Mixed operations":
+        List.generate(10, (index) => Mission(number: index + 1)),
     "Exponentiation": List.generate(10, (index) => Mission(number: index + 1)),
     "Percentages": List.generate(10, (index) => Mission(number: index + 1)),
     "Sequences": List.generate(10, (index) => Mission(number: index + 1)),
@@ -37,16 +41,18 @@ class MissionsProviderCalm with ChangeNotifier {
   }
 
   int getCompletedMissionsCount(String subject) {
-    return _missions[subject]?.where((mission) => mission.isCompleted).length ?? 0;
+    return _missions[subject]?.where((mission) => mission.isCompleted).length ??
+        0;
   }
 
   // (Optional) Old local load from SharedPreferences
-  Future<void> loadSavedProgress(String subject) async {
+  Future<void> loadSavedProgress(String userId, String subject) async {
     final prefs = await SharedPreferences.getInstance();
     final missions = _missions[subject];
     if (missions != null) {
       for (int i = 0; i < missions.length; i++) {
-        int savedScore = prefs.getInt("${subject}_correctAnswers_$i") ?? 0;
+        int savedScore =
+            prefs.getInt("${userId}_calm_${subject}_correctAnswers_$i") ?? 0;
         missions[i].correctAnswers = savedScore;
         missions[i].isCompleted = savedScore >= 15;
       }
@@ -54,17 +60,17 @@ class MissionsProviderCalm with ChangeNotifier {
     }
   }
 
-  /// Load mission data from Firestore for a user and subject
+  /// Load mission data from Firestore for user and subject
   Future<void> loadProgressFromFirestore(String userId, String subject) async {
     final firebaseService = FirebaseService();
     final missionsData = await firebaseService.loadMissionProgress(
       userId: userId,
-      subject: "calm_$subject",  // for example calm_Addition
+      subject: "calm_$subject",
     );
 
     if (missionsData.isNotEmpty) {
       final localList = _missions[subject] ?? [];
-      // For each item in missionsData update local mission
+      final prefs = await SharedPreferences.getInstance();
       for (var item in missionsData) {
         final missionNumber = item['missionNumber'] as int;
         final correctAnswers = item['correctAnswers'] as int;
@@ -76,14 +82,21 @@ class MissionsProviderCalm with ChangeNotifier {
         );
         localMission.correctAnswers = correctAnswers;
         localMission.isCompleted = isCompleted;
+
+        // Save the updated progress locally
+        await prefs.setInt(
+            "${userId}_calm_${subject}_correctAnswers_${missionNumber - 1}",
+            correctAnswers);
       }
       notifyListeners();
     }
   }
 
-  /// Update mission progress, store in local memory and optionally Firestore if userId is given
-  void updateMissionProgress(String subject, int missionNumber, int newScore, {String? userId}) {
-    final mission = _missions[subject]?.firstWhere((m) => m.number == missionNumber);
+  /// Update mission progress, store in local memory and Firestore if userId is given
+  void updateMissionProgress(String subject, int missionNumber, int newScore,
+      {String? userId}) {
+    final mission =
+        _missions[subject]?.firstWhere((m) => m.number == missionNumber);
     if (mission != null) {
       mission.updateCorrectAnswers(newScore);
       notifyListeners();

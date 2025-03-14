@@ -48,7 +48,7 @@ class SubjectsViewCalm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
-                color: const Color(0xffffee9ae),
+                color: const Color.fromARGB(255, 142, 216, 251),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

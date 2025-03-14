@@ -41,47 +41,49 @@ class MissionsProviderFast with ChangeNotifier {
   }
 
   // (Optional) Old local load from SharedPreferences
-  Future<void> loadSavedProgress(String subject) async {
-    final prefs = await SharedPreferences.getInstance();
-    final missions = _missions[subject];
-    if (missions != null) {
-      for (int i = 0; i < missions.length; i++) {
-        int savedScore = prefs.getInt("${subject}_correctAnswers_$i") ?? 0;
-        missions[i].correctAnswers = savedScore;
-        missions[i].isCompleted = savedScore >= 15;
-      }
-      notifyListeners();
+  Future<void> loadSavedProgress(String userId, String subject) async {
+  final prefs = await SharedPreferences.getInstance();
+  final missions = _missions[subject];
+  if (missions != null) {
+    for (int i = 0; i < missions.length; i++) {
+      int savedScore = prefs.getInt("${userId}_fast_${subject}_correctAnswers_$i") ?? 0;
+      missions[i].correctAnswers = savedScore;
+      missions[i].isCompleted = savedScore >= 15;
     }
+    notifyListeners();
   }
+}
 
   /// Load mission data from Firestore for a user and subject
   Future<void> loadProgressFromFirestore(String userId, String subject) async {
-    final firebaseService = FirebaseService();
-    final missionsData = await firebaseService.loadMissionProgress(
-      userId: userId,
-      subject: "fast_$subject",
-    );
+  final firebaseService = FirebaseService();
+  final missionsData = await firebaseService.loadMissionProgress(
+    userId: userId,
+    subject: "fast_$subject",
+  );
 
-    if (missionsData.isNotEmpty) {
-      final localList = _missions[subject] ?? [];
-      // For each item in missionsData update local mission
-      for (var item in missionsData) {
-        final missionNumber = item['missionNumber'] as int;
-        final correctAnswers = item['correctAnswers'] as int;
-        final isCompleted = item['isCompleted'] as bool;
+  if (missionsData.isNotEmpty) {
+    final localList = _missions[subject] ?? [];
+    final prefs = await SharedPreferences.getInstance();
+    for (var item in missionsData) {
+      final missionNumber = item['missionNumber'] as int;
+      final correctAnswers = item['correctAnswers'] as int;
+      final isCompleted = item['isCompleted'] as bool;
 
-        final localMission = localList.firstWhere(
-          (m) => m.number == missionNumber,
-          orElse: () => Mission(number: missionNumber),
-        );
-        localMission.correctAnswers = correctAnswers;
-        localMission.isCompleted = isCompleted;
-      }
-      notifyListeners();
+      final localMission = localList.firstWhere(
+        (m) => m.number == missionNumber,
+        orElse: () => Mission(number: missionNumber),
+      );
+      localMission.correctAnswers = correctAnswers;
+      localMission.isCompleted = isCompleted;
+
+      // Save the updated progress locally
+      await prefs.setInt("${userId}_fast_${subject}_correctAnswers_${missionNumber - 1}", correctAnswers);
     }
+    notifyListeners();
   }
-
-  /// Update mission progress, store in local memory and optionally Firestore if userId is given
+}
+  /// Update mission progress, store in local memory and Firestore if userId is given
   void updateMissionProgress(String subject, int missionNumber, int newScore, {String? userId}) {
     final mission = _missions[subject]?.firstWhere((m) => m.number == missionNumber);
     if (mission != null) {

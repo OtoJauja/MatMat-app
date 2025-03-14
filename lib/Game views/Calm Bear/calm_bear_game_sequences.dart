@@ -2,9 +2,11 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_calm.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -280,18 +282,18 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
-        title: const Text(
-          "Game Over!",
-          style: TextStyle(
+        title: Text(
+          tr('game_screen.mission_over'),
+          style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
-          "Correct answers: $correctAnswers\n\n"
-          "Time taken: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-          "Do you want to continue to the next mission or choose a different mission?",
+          "${tr('game_screen.correct_answers')} $sessionScore\n\n"
+          "${tr('game_screen.time_taken')}: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+          "${tr('game_screen.question')}",
           style: const TextStyle(
             fontFamily: 'Mali',
             color: Color.fromARGB(255, 50, 50, 50),
@@ -324,9 +326,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
-            child: const Text(
-              "Next Mission",
-              style: TextStyle(
+            child: Text(
+              tr('game_screen.next_mission'),
+              style: const TextStyle(
                 fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
@@ -343,9 +345,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
               Navigator.pop(context);
               Navigator.pop(context, highestScore);
             },
-            child: const Text(
-              "Back to Missions",
-              style: TextStyle(
+            child: Text(
+              tr('game_screen.back_to_missions'),
+              style: const TextStyle(
                 fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
@@ -379,7 +381,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "Correct: $sessionScore",
+                "${tr('game_screen.correct')} $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
                   color: Color.fromARGB(255, 50, 50, 50),
@@ -399,8 +401,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "$totalQuestionsAnswered of 15",
+                      "$totalQuestionsAnswered${tr("game_screen.of_15")}",
                       style: const TextStyle(
+                        fontFamily: 'Mali',
                         color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
@@ -408,40 +411,50 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                     ),
                     const SizedBox(height: 20),
                     showingAnswer
-                        ? RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontFamily: 'Mali',
-                                fontSize: 38,
-                                fontWeight: FontWeight.bold,
+                        ? Column(mainAxisSize: MainAxisSize.min, children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily: 'Mali',
+                                  fontSize: 38,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                children: [
+                                  const TextSpan(
+                                    text: "x = ",
+                                    style: TextStyle(
+                                      fontFamily: 'Mali',
+                                      color: Color(0xffffa400),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "$nextValue ",
+                                    style: const TextStyle(
+                                      fontFamily: 'Mali',
+                                      color: Colors.lightGreen,
+                                    ),
+                                  ),
+                                  // Display the users incorrect answer in red with a strike
+                                  TextSpan(
+                                    text: "($userInput)",
+                                    style: const TextStyle(
+                                      fontFamily: 'Mali',
+                                      color: Colors.red,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              children: [
-                                const TextSpan(
-                                  text: "x = ",
-                                  style: TextStyle(
-                                    fontFamily: 'Mali',
-                                    color: Color(0xffffa400),
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "$nextValue ",
-                                  style: const TextStyle(
-                                    fontFamily: 'Mali',
-                                    color: Colors.lightGreen,
-                                  ),
-                                ),
-                                // Display the users incorrect answer in red with a strike
-                                TextSpan(
-                                  text: "($userInput)",
-                                  style: const TextStyle(
-                                    fontFamily: 'Mali',
-                                    color: Colors.red,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              ],
                             ),
+                            const SizedBox(height: 20),// Plays animation if the answer is incorrect
+                                Lottie.network(
+                                  'https://lottie.host/c2753c92-6b72-47ee-9281-aa75a32c65ba/mfccXVGSGr.json',
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.fill,
+                                ),
+                            ],
                           )
                         : Text(
                             currentSequence,
@@ -491,7 +504,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                   ],
                 )
               : Text(
-                  preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
+                  preStartTimer > 0 ? "$preStartTimer" : tr('game_screen.get_ready'),
                   style: const TextStyle(
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,

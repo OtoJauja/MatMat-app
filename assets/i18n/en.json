@@ -181,7 +181,7 @@
   },
   "subject_view":{
     "brave_bear_description": "Brave Bear mode challenges you with a series of engaging missions. Enjoy a calm pace as you progress through various subjects!",
-    "buzzy_bee_description": "Buzzy Bee mode challenges you with a series of fast paced and engaging missions designed to boost your problem solving skills!",
+    "buzzy_bee_description": "Buzzy Bee mode challenges you with a series of fast paced and engaging missions! Only correct answers are counted!",
     "Addition": "Addition",
     "Subtraction": "Subtraction",
     "Multiplication": "Multiplication",
@@ -195,5 +195,23 @@
     "title": "Profile",
     "user": "User: ",
     "log_out": "Log Out"
+  },
+  "game_screen": {
+    "next_mission": "Next mission",
+    "mission_over": "Mission over!",
+    "correct_answers": "Correct answers: ",
+    "time_taken": "Time taken: ",
+    "question": "Do you want to continue to the next mission or choose a different mission?",
+    "back_to_missions": "Back to Missions",
+    "correct": "Correct: ",
+    "of_15": " of 15",
+    "get_ready": "Get Ready!",
+    "seconds": "seconds",
+    "skip": "Skip",
+    "times_up": "Time's Up!",
+    "of": "of",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "by": "par"
   }
 }

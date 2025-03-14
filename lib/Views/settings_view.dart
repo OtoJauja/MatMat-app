@@ -59,7 +59,7 @@ class SettingsView extends StatelessWidget {
           children: [
             // Language change card
             Card(
-              color: const Color(0xffffee9ae),
+              color: const Color.fromARGB(255, 142, 216, 251),
               child: ListTile(
                 leading: const Icon(
                   Icons.language,
@@ -87,7 +87,7 @@ class SettingsView extends StatelessWidget {
             ...subjectKeys.map((subject) {
               // For each subject iterate through 10 missions
               return Card(
-                color: const Color(0xffffee9ae),
+                color: const Color.fromARGB(255, 142, 216, 251),
                 child: ExpansionTile(
                   title: Text(
                     tr('subjects.$subject.title'),

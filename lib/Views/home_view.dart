@@ -134,7 +134,7 @@ class ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xffffee9ae),
+      color: const Color.fromARGB(255, 142, 216, 251),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

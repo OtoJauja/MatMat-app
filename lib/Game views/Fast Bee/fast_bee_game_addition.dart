@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_fast.dart';
@@ -274,15 +275,15 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xffffee9ae),
-        title: const Text(
-          "Time's Up!",
-          style: TextStyle(
+        title: Text(
+          tr('game_screen.times_up'),
+          style: const TextStyle(
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
-          "Correct answers: $sessionScore\n\nDo you want to continue to the next mission or choose a different mission?",
+          "${tr('game_screen.correct_answers')} $sessionScore\n\n${tr('game_screen.question')}",
           style: const TextStyle(
             color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
@@ -313,9 +314,9 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                 Navigator.popUntil(context, (route) => route.isFirst);
               }
             },
-            child: const Text(
-              "Next Mission",
-              style: TextStyle(
+            child: Text(
+              tr('game_screen.next_mission'),
+              style: const TextStyle(
                 fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
@@ -331,9 +332,9 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
               Navigator.pop(context);
               Navigator.pop(context, highestScore);
             },
-            child: const Text(
-              "Back to Missions",
-              style: TextStyle(
+            child: Text(
+              tr('game_screen.back_to_missions'),
+              style: const TextStyle(
                 fontFamily: 'Mali',
                 color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
@@ -366,7 +367,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "Correct: $sessionScore",
+                "${tr('game_screen.correct')} $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
                   color: Color.fromARGB(255, 50, 50, 50),
@@ -386,7 +387,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                 children: [
                   const SizedBox(height: 20),
                   Text(
-                    "⏳ $timeLeft seconds",
+                    "⏳ $timeLeft ${tr('game_screen.seconds')}",
                     style: const TextStyle(
                       color: Color.fromARGB(255, 50, 50, 50),
                       fontWeight: FontWeight.bold,
@@ -442,9 +443,9 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffffee9ae),
                     ),
-                    child: const Text(
-                      "Skip",
-                      style: TextStyle(
+                    child: Text(
+                      tr('game_screen.skip'),
+                      style: const TextStyle(
                         color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                       ),
@@ -453,7 +454,7 @@ class _FastBeeGameState extends State<FastBeeGameAddition> {
                 ],
               )
             : Text(
-                preStartTimer > 0 ? "$preStartTimer" : "Get Ready!",
+                preStartTimer > 0 ? "$preStartTimer" : tr('game_screen.get_ready'),
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
