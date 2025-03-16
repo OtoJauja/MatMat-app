@@ -163,7 +163,7 @@ class LearnView extends StatelessWidget {
                       );
                     },
                     child: Card(
-                      color: const Color.fromARGB(255, 142, 216, 251),
+                      color: const Color(0xffffee9ae),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

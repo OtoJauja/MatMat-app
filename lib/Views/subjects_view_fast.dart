@@ -49,7 +49,7 @@ class SubjectsViewFast extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
-                color: const Color.fromARGB(255, 142, 216, 251),
+                color: const Color(0xffffa400),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
