@@ -1,7 +1,8 @@
 {
   "settings": {
     "title": "Settings",
-    "change_language": "Change language"
+    "change_language": "Change language",
+    "mission_desctiption": "Check out the mission descriptions below!"
   },
   "subjects": {
     "addition": {

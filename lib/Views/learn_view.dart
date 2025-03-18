@@ -165,7 +165,7 @@ class LearnView extends StatelessWidget {
                     child: Card(
                       color: const Color(0xffffee9ae),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,7 +1,8 @@
 {
     "settings": {
       "title": "Iestatījumi",
-      "change_language": "Mainīt valodu"
+      "change_language": "Mainīt valodu",
+      "mission_desctiption": "Iepazīstieties ar misiju aprakstiem zemāk!"
     },
     "subjects": {
       "addition": {
