@@ -24,7 +24,6 @@ class SettingsView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         title: Text(
           tr('settings.title'),
           style: const TextStyle(
@@ -70,8 +69,6 @@ class SettingsView extends StatelessWidget {
                   // Language change card
                   Card(
                     color: const Color(0xffffa400),
-                    child: SizedBox(
-                      width: 350, // Fixed width
                       child: ListTile(
                         leading: const Icon(
                           Icons.language,
@@ -112,7 +109,6 @@ class SettingsView extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ),
                   ),
                   const SizedBox(height: 16),
                   Card(
@@ -120,8 +116,6 @@ class SettingsView extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: SizedBox(
-                      width: 350,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
@@ -148,16 +142,14 @@ class SettingsView extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ),
                   ),
                   const SizedBox(height: 16),
                   // Loop through each subject key and display its missions
                   ...subjectKeys.map((subject) {
                     return Card(
                       color: const Color(0xffffee9ae),
-                      child: SizedBox(
-                        width: 350,
                         child: ExpansionTile(
+                          iconColor: const Color(0xffffa400),
                           title: Text(
                             tr('subjects.$subject.title'),
                             style: const TextStyle(
@@ -181,7 +173,6 @@ class SettingsView extends StatelessWidget {
                             );
                           }),
                         ),
-                      ),
                     );
                   })
                 ],

@@ -174,6 +174,7 @@ class LearnView extends StatelessWidget {
                             topic['title'],
                             style: const TextStyle(
                               fontSize: 18,
+                              color: Color.fromARGB(255, 50, 50, 50),
                               fontWeight: FontWeight.bold,
                             ),
                           ),

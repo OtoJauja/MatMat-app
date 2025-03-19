@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_app/Theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'navigation.dart';
 import 'Services/mission_provider_calm.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         key: ValueKey(context.locale.toString()), // Forces rebuild on locale change
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Mali'),
+        theme: lightMode,
         // EasyLocalization properties
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
