@@ -1,17 +1,80 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:hexagon/hexagon.dart';
 import 'package:flutter_app/Views/profile_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LearnView extends StatelessWidget {
   const LearnView({super.key});
 
+  Widget _buildHexagonGrid(BuildContext context, List<Map<String, dynamic>> topics) {
+    final orientation = MediaQuery.of(context).orientation;
+    final columns = orientation == Orientation.portrait ? 2 : 5;
+    final rows = (topics.length / columns).ceil();
+
+    return SingleChildScrollView(
+      child: HexagonOffsetGrid.oddFlat(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+        columns: columns,
+        rows: rows,
+        buildTile: (col, row) {
+          final topicIndex = row * columns + col;
+          if (topicIndex >= topics.length) {
+            // If there is no topic for this tile, return an empty hexagon.
+            return HexagonWidgetBuilder(
+              color: Colors.white,
+              child: Container(),
+            );
+          }
+
+          final topic = topics[topicIndex];
+
+          return HexagonWidgetBuilder(
+            padding: 4.0,
+            cornerRadius: 24.0,
+            color: const Color(0xffffee9ae),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TipsView(
+                      topicTitle: topic['title'],
+                      topicSubtitle: topic['subtitle'],
+                      tips: topic['tips'],
+                    ),
+                  ),
+                );
+              },
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      topic['title'],
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 50, 50, 50),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenWidth > 600 ? 4 : 2;
 
-    // Define topics using translation keys.
+    // Define topics using translation keys
     final List<Map<String, dynamic>> topics = [
       {
         'title': tr('learn.x_times_y'),
@@ -109,7 +172,7 @@ class LearnView extends StatelessWidget {
         title: Text(
           tr('learn.title'),
           style: const TextStyle(
-            color: Colors.black,
+            color: Color.fromARGB(255, 50, 50, 50),
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
@@ -134,71 +197,7 @@ class LearnView extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: screenWidth > 600 ? 2 : 1.5,
-                ),
-                itemCount: topics.length,
-                itemBuilder: (context, index) {
-                  final topic = topics[index];
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TipsView(
-                            topicTitle: topic['title'],
-                            topicSubtitle: topic['subtitle'],
-                            tips: topic['tips'],
-                          ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      color: const Color(0xffffee9ae),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            topic['title'],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Color.fromARGB(255, 50, 50, 50),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          if (topic['subtitle'] != null &&
-                              topic['subtitle'].toString().isNotEmpty)
-                            Text(
-                              topic['subtitle'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 50, 50, 50),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+      body: _buildHexagonGrid(context, topics),
     );
   }
 }

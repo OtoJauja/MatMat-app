@@ -132,7 +132,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           final progress = (mission.correctAnswers) / 15;
 
           return HexagonWidgetBuilder(
-            elevation: 0,
             padding: 4.0,
             cornerRadius: 24.0,
             color: const Color(0xffffee9ae),

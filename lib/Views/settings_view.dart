@@ -150,6 +150,7 @@ class SettingsView extends StatelessWidget {
                       color: const Color(0xffffee9ae),
                         child: ExpansionTile(
                           iconColor: const Color(0xffffa400),
+                          collapsedIconColor: const Color.fromARGB(255, 50, 50, 50),
                           title: Text(
                             tr('subjects.$subject.title'),
                             style: const TextStyle(
