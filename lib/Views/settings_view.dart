@@ -120,8 +120,8 @@ class SettingsView extends StatelessWidget {
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           children: [
-                            Lottie.network(
-                              'https://lottie.host/c2753c92-6b72-47ee-9281-aa75a32c65ba/mfccXVGSGr.json',
+                            Lottie.asset(
+                              'assets/animations/Bear.json',
                               height: 150,
                               width: 150,
                               fit: BoxFit.fill,

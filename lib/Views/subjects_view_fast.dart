@@ -57,8 +57,8 @@ class SubjectsViewFast extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Lottie.network(
-                        'https://lottie.host/9e38b30a-e6c6-41f2-a5de-40784e3b7515/uqdOkZBisG.json',
+                      Lottie.asset(
+                        'assets/animations/Bee.json',
                         height: 150,
                         width: 150,
                         fit: BoxFit.fill,

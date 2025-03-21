@@ -19,8 +19,8 @@ class HomeView extends StatelessWidget {
 
     final modeCards = <Widget>[
       ModeCard(
-        animation: Lottie.network(
-          'https://lottie.host/c2753c92-6b72-47ee-9281-aa75a32c65ba/mfccXVGSGr.json',
+        animation: Lottie.asset(
+          'assets/animations/Bear.json',
           height: 130,
           width: 130,
           fit: BoxFit.fill,
@@ -38,8 +38,8 @@ class HomeView extends StatelessWidget {
       ),
       const SizedBox(height: 25),
       ModeCard(
-        animation: Lottie.network(
-          'https://lottie.host/9e38b30a-e6c6-41f2-a5de-40784e3b7515/uqdOkZBisG.json',
+        animation: Lottie.asset(
+          'assets/animations/Bee.json',
           height: 130,
           width: 130,
           fit: BoxFit.fill,
