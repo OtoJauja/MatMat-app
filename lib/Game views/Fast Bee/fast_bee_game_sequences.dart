@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_fast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,7 +36,7 @@ class FastBeeGameSequences extends StatefulWidget {
   State<FastBeeGameSequences> createState() => _FastBeeGameState();
 }
 
-class _FastBeeGameState extends State<FastBeeGameSequences> {
+class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerProviderStateMixin{
   int sessionScore = 0; // The score for the current session
   int highestScore = 0; // The highest score loaded from storage
   late Timer _timer;
@@ -51,6 +52,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
   int nextValue = 0;
   late TextEditingController _controller;
   late FocusNode _focusNode; // Focus to autoclick input
+  late AnimationController _lottieController;
 
   // Timer for the skip functionality
   Timer? _skipTimer;
@@ -80,6 +82,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
     timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
+    _lottieController = AnimationController(vsync: this);
     // Load the highest score for this mission at the start
     _loadHighestScore(widget.missionIndex).then((value) {
       if (mounted) {
@@ -94,6 +97,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
 
   @override
   void dispose() {
+    _lottieController.dispose(); // Dispose the controller
     _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
@@ -328,6 +332,17 @@ class _FastBeeGameState extends State<FastBeeGameSequences> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        icon: Lottie.asset(
+        'assets/animations/B3.json',
+        height: 170,
+        width: 170,
+        controller: _lottieController,
+        onLoaded: (composition) {
+          _lottieController.duration = composition.duration;
+          _lottieController.forward(); // Plays the animation once
+        },
+        repeat: false, // Ensure the animation does not loop
+      ),
         actions: [
           TextButton(
             onPressed: () async {

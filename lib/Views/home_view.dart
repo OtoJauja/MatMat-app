@@ -20,11 +20,10 @@ class HomeView extends StatelessWidget {
     final modeCards = <Widget>[
       ModeCard(
         animation: Lottie.asset(
-          'assets/animations/Bear.json',
-          height: 130,
-          width: 130,
+          'assets/animations/lacis1.json',
+          height: 150,
+          width: 150,
           fit: BoxFit.fill,
-          frameRate: FrameRate.max,
         ),
         title: tr('home.calm_bear'),
         subtitle: tr('home.calm_subtitle'),
@@ -39,11 +38,10 @@ class HomeView extends StatelessWidget {
       const SizedBox(height: 25),
       ModeCard(
         animation: Lottie.asset(
-          'assets/animations/Bee.json',
-          height: 130,
-          width: 130,
+          'assets/animations/B1.json',
+          height: 150,
+          width: 150,
           fit: BoxFit.fill,
-          frameRate: FrameRate.max,
         ),
         title: tr('home.fast_bee'),
         subtitle: tr('home.fast_subtitle'),

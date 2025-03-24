@@ -121,7 +121,7 @@ class SettingsView extends StatelessWidget {
                         child: Row(
                           children: [
                             Lottie.asset(
-                              'assets/animations/Bear.json',
+                              'assets/animations/lacis4.json',
                               height: 150,
                               width: 150,
                               fit: BoxFit.fill,

@@ -214,5 +214,8 @@
     "increase": "Increase",
     "decrease": "Decrease",
     "by": "par"
+  },
+  "login_screen": {
+    
   }
 }

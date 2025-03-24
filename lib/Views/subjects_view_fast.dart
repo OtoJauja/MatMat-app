@@ -58,7 +58,7 @@ class SubjectsViewFast extends StatelessWidget {
                   child: Row(
                     children: [
                       Lottie.asset(
-                        'assets/animations/Bee.json',
+                        'assets/animations/B1.json',
                         height: 150,
                         width: 150,
                         fit: BoxFit.fill,

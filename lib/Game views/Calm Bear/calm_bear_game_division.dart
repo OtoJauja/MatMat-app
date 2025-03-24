@@ -315,6 +315,11 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        icon: Lottie.asset(
+                        'assets/animations/lacis3.json',
+                        height: 150,
+                        width: 150,
+                      ),
         actions: [
           TextButton(
             onPressed: () async {
@@ -477,8 +482,8 @@ class _CalmBearGameState extends State<CalmBearGameDivision> {
                               ),
                               const SizedBox(height: 20),
                               if (isWrong) // Plays animation if the answer is incorrect
-                                Lottie.network(
-                                  'https://lottie.host/c2753c92-6b72-47ee-9281-aa75a32c65ba/mfccXVGSGr.json',
+                                Lottie.asset(
+                                  'assets/animations/lacis5.json',
                                   height: 150,
                                   width: 150,
                                   fit: BoxFit.fill,
