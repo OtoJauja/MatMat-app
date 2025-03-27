@@ -70,7 +70,8 @@ class SubjectsViewFast extends StatelessWidget {
                           style: const TextStyle(
                             fontFamily: 'Mali',
                             fontSize: 14,
-                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 50, 50, 50),
                           ),
                           textAlign: TextAlign.center,
                           softWrap: true,
