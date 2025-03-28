@@ -14,7 +14,7 @@ class LearnView extends StatelessWidget {
 
     return SingleChildScrollView(
       child: HexagonOffsetGrid.oddFlat(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
         columns: columns,
         rows: rows,
@@ -23,7 +23,7 @@ class LearnView extends StatelessWidget {
           if (topicIndex >= topics.length) {
             // If there is no topic for this tile, return an empty hexagon.
             return HexagonWidgetBuilder(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               child: Container(),
             );
           }
@@ -165,14 +165,13 @@ class LearnView extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           tr('learn.title'),
           style: const TextStyle(
-            color: Color.fromARGB(255, 50, 50, 50),
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
@@ -185,7 +184,6 @@ class LearnView extends StatelessWidget {
               icon: const Icon(
                 Icons.account_circle,
                 size: 32,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
               onPressed: () {
                 Navigator.push(
@@ -217,13 +215,12 @@ class TipsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           topicTitle,
           style: const TextStyle(
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -238,7 +235,6 @@ class TipsView extends StatelessWidget {
             title: Text(
               tip['name'],
               style: const TextStyle(
-                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),

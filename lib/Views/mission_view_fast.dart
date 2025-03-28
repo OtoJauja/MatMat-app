@@ -57,18 +57,16 @@ class _MissionViewFastState extends State<MissionViewFast> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 50, 50, 50)),
+          icon: const Icon(Icons.arrow_back,),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           tr('subject_view.${widget.subjectName}'),
           style: const TextStyle(
             fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -76,7 +74,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Column(
@@ -119,7 +117,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
 
     return SingleChildScrollView(
       child: HexagonOffsetGrid.oddFlat(
-        color: const Color.fromARGB(255, 255, 255, 255),
+        color: Theme.of(context).colorScheme.surface,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
         columns: columns,
         rows: rows,
@@ -127,7 +125,7 @@ class _MissionViewFastState extends State<MissionViewFast> {
           final missionIndex = row * columns + col;
           if (missionIndex >= missions.length) {
             return HexagonWidgetBuilder(
-              color: const Color.fromARGB(255, 255, 255, 255),
+              color: Theme.of(context).colorScheme.surface,
               child: Container(), // Empty container
             );
           }

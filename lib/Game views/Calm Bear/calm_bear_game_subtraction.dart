@@ -401,7 +401,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -422,7 +422,6 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                 "${tr('game_screen.correct')} $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
-                  color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
                   fontSize: 28,
                 ),
@@ -432,7 +431,7 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
         ],
       ),
       body: Container(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         child: Center(
           child: gameStarted
               ? Column(
@@ -442,7 +441,6 @@ class _CalmBearGameState extends State<CalmBearGameSubtraction> {
                       "$totalQuestionsAnswered${tr("game_screen.of_15")}",
                       style: const TextStyle(
                         fontFamily: 'Mali',
-                        color: Color.fromARGB(255, 50, 50, 50),
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
                       ),

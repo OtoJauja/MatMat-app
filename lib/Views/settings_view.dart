@@ -21,14 +21,13 @@ class SettingsView extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           tr('settings.title'),
           style: const TextStyle(
             fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -41,7 +40,6 @@ class SettingsView extends StatelessWidget {
               icon: const Icon(
                 Icons.account_circle,
                 size: 32,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
               onPressed: () {
                 Navigator.push(
@@ -100,7 +98,6 @@ class SettingsView extends StatelessWidget {
                                       fontFamily: 'Mali',
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: Color.fromARGB(255, 50, 50, 50),
                                     ),
                                   ),
                                 );

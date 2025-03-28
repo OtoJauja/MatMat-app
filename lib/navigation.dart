@@ -78,7 +78,7 @@ class _MainNavigationState extends State<MainNavigation> {
           children: List.generate(_tabs.length, _buildTabNavigator),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           currentIndex: _currentIndex,
           onTap: _onItemTapped,
           items: [
@@ -100,7 +100,7 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
           ],
           selectedItemColor: const Color(0xffffa400),
-          unselectedItemColor: const Color.fromARGB(255, 50, 50, 50),
+          unselectedItemColor: Theme.of(context).colorScheme.primary,
           type: BottomNavigationBarType.fixed,
         ),
       ),

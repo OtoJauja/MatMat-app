@@ -48,9 +48,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
         ),
        body: Column(
         children: [
@@ -91,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: const InputDecoration(
                       labelText: "Email",
                       labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 50, 50, 50)),
+                          TextStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: BorderSide(
@@ -118,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: const InputDecoration(
                       labelText: "Password",
                       labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 50, 50, 50)),
+                          TextStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: BorderSide(
@@ -166,7 +166,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       "Already have an account? Login",
                       style: TextStyle(
                         fontFamily: 'Mali',
-                        color: Color.fromARGB(255, 50, 50, 50),
                       ),
                         ),
                       ),

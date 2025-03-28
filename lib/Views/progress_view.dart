@@ -72,7 +72,6 @@ void initState() {
           fontFamily: 'Mali',
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 50, 50, 50),
         ),
         titlePositionPercentageOffset: 1.4,
         radius: sliceRadius,
@@ -100,7 +99,6 @@ void initState() {
           fontFamily: 'Mali',
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 50, 50, 50),
         ),
         titlePositionPercentageOffset: 1.4,
         radius: sliceRadius,
@@ -119,15 +117,14 @@ void initState() {
     final missionsProviderFast = Provider.of<MissionsProviderFast>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           tr('progress.title'),
           style: const TextStyle(
             fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -140,7 +137,6 @@ void initState() {
               icon: const Icon(
                 Icons.account_circle,
                 size: 32,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
               onPressed: () {
                 Navigator.push(
@@ -207,7 +203,6 @@ void initState() {
             fontFamily: 'Mali',
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 50, 50, 50),
           ),
         ),
         const SizedBox(height: 10),
@@ -258,7 +253,6 @@ void initState() {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 50, 50, 50),
             ),
           ),
         ),

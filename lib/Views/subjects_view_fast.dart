@@ -22,12 +22,11 @@ class SubjectsViewFast extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: Color.fromARGB(255, 50, 50, 50),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -35,7 +34,6 @@ class SubjectsViewFast extends StatelessWidget {
           tr('subjects_screen.title'),
           style: const TextStyle(
             fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -43,7 +41,7 @@ class SubjectsViewFast extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         child: ListView(
           children: [
             Padding(
@@ -88,14 +86,12 @@ class SubjectsViewFast extends StatelessWidget {
                   tr('subject_view.$subjectKey'),
                   style: const TextStyle(
                     fontFamily: 'Mali',
-                    color: Color.fromARGB(255, 50, 50, 50),
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
                 ),
                 trailing: const Icon(
                   Icons.chevron_right,
-                  color: Color.fromARGB(255, 50, 50, 50),
                 ),
                 onTap: () {
                   Navigator.push(

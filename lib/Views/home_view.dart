@@ -55,14 +55,13 @@ class HomeView extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           tr('home.title'),
           style: const TextStyle(
             fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -75,7 +74,6 @@ class HomeView extends StatelessWidget {
               icon: const Icon(
                 Icons.account_circle,
                 size: 32,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
               onPressed: () {
                 Navigator.push(
@@ -132,7 +130,7 @@ class ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -151,7 +149,6 @@ class ModeCard extends StatelessWidget {
                 fontFamily: 'Mali',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
             ),
             const SizedBox(height: 5),
@@ -161,7 +158,6 @@ class ModeCard extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'Mali',
                 fontSize: 14,
-                color: Color.fromARGB(255, 50, 50, 50),
               ),
             ),
             const SizedBox(height: 20),

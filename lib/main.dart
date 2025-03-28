@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
         key: ValueKey(context.locale.toString()), // Forces rebuild on locale change
         debugShowCheckedModeBanner: false,
         theme: lightMode,
+        //darkTheme: darkMode, // Optional dark mode
         // EasyLocalization properties
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,

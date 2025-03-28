@@ -410,7 +410,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -432,7 +432,6 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
                 "${tr('game_screen.correct')} $sessionScore",
                 style: const TextStyle(
                   fontFamily: 'Mali',
-                  color: Color.fromARGB(255, 50, 50, 50),
                   fontWeight: FontWeight.bold,
                   fontSize: 28,
                 ),
@@ -441,7 +440,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: gameStarted
             ? Column(
@@ -449,9 +448,8 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
                 children: [
                   const SizedBox(height: 20),
                   Text(
-                    "⏳ $timeLeft ${tr('game_screen.seconds')}",
+                    "$timeLeft ${tr('game_screen.seconds')}",
                     style: const TextStyle(
-                      color: Color.fromARGB(255, 50, 50, 50),
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
                     ),
@@ -503,12 +501,12 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
                   ElevatedButton(
                     onPressed: canSkip ? _skipQuestion : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffffee9ae),
+                      backgroundColor: const Color(0xffffa400),
                     ),
                     child: Text(
                       tr('game_screen.skip'),
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 50, 50, 50),
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
