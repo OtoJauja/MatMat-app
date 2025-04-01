@@ -149,7 +149,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(
-                              fontFamily: 'Mali',
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -165,7 +164,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: const Text(
                       "Already have an account? Login",
                       style: TextStyle(
-                        fontFamily: 'Mali',
                       ),
                         ),
                       ),

@@ -61,7 +61,6 @@ class HomeView extends StatelessWidget {
         title: Text(
           tr('home.title'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -146,7 +145,6 @@ class ModeCard extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontFamily: 'Mali',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -156,7 +154,6 @@ class ModeCard extends StatelessWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'Mali',
                 fontSize: 14,
               ),
             ),
@@ -171,7 +168,6 @@ class ModeCard extends StatelessWidget {
               child: Text(
                 tr('home.start'),
                 style: const TextStyle(
-                  fontFamily: 'Mali',
                   color: Colors.white,
                 ),
               ),

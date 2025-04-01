@@ -335,98 +335,156 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
     _stopwatch.stop();
     final elapsedTime = _stopwatch.elapsed;
 
+    final FocusNode button1FocusNode = FocusNode();
+    final FocusNode button2FocusNode = FocusNode();
+
+    void nextMissionAction() async {
+      // Save the highest score for the finished mission
+      await _saveHighestScore(widget.missionIndex, highestScore);
+
+      // Update the provider for the finished mission
+      Provider.of<MissionsProviderCalm>(context, listen: false)
+          .updateMissionProgress(
+              "Mixed operations", widget.missionIndex + 1, highestScore);
+
+      // Optionally wait a tiny bit to ensure the provider updates
+      await Future.delayed(const Duration(milliseconds: 100));
+      int nextMissionIndex = widget.missionIndex + 1;
+      if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
+        // Remove all game screens and push the next mission
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CalmBearGameMixed(
+              mode: CalmBearGameMixed.missionModes[nextMissionIndex],
+              missionIndex: nextMissionIndex,
+            ),
+          ),
+          (Route<dynamic> route) => route.isFirst,
+        );
+      } else {
+        // If no further missions are available, return to the mission view
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
+    }
+
+    void backToMissionsAction() async {
+      await _saveHighestScore(widget.missionIndex, highestScore);
+      // Update the provider
+      Provider.of<MissionsProviderCalm>(context, listen: false)
+          .updateMissionProgress(
+              "Mixed operations", widget.missionIndex + 1, highestScore);
+      await Future.delayed(const Duration(milliseconds: 100));
+      Navigator.pop(context);
+      Navigator.pop(context, highestScore);
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xffffee9ae),
-        title: Text(
-          tr('game_screen.mission_over'),
-          style: const TextStyle(
-            fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          "${tr('game_screen.correct_answers')} $sessionScore\n\n"
-          "${tr('game_screen.time_taken')}: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
-          "${tr('game_screen.question')}",
-          style: const TextStyle(
-            fontFamily: 'Mali',
-            color: Color.fromARGB(255, 50, 50, 50),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        icon: Lottie.asset(
-                        'assets/animations/lacis3.json',
-                        height: 150,
-                        width: 150,
-                      ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              // Save the highest score for the finished mission
-              await _saveHighestScore(widget.missionIndex, highestScore);
+      builder: (context) {
+        final FocusNode rawKeyboardFocusNode = FocusNode();
 
-              // Update the provider for the finished mission
-              Provider.of<MissionsProviderCalm>(context, listen: false)
-                  .updateMissionProgress(
-                      "Mixed operations", widget.missionIndex + 1, highestScore);
-
-              // Optionally wait a tiny bit to ensure the provider updates
-              await Future.delayed(const Duration(milliseconds: 100));
-
-              int nextMissionIndex = widget.missionIndex + 1;
-              if (nextMissionIndex < CalmBearGameMixed.missionModes.length) {
-                // Remove all game screens and push the next mission
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CalmBearGameMixed(
-                      mode: CalmBearGameMixed.missionModes[nextMissionIndex],
-                      missionIndex: nextMissionIndex,
-                    ),
-                  ),
-                  (Route<dynamic> route) =>
-                      route.isFirst,
-                );
-              } else {
-                // If no further missions are available, return to the mission view
-                Navigator.popUntil(context, (route) => route.isFirst);
+        return RawKeyboardListener(
+          focusNode: rawKeyboardFocusNode,
+          autofocus: true,
+          onKey: (RawKeyEvent event) {
+            if (event is RawKeyDownEvent) {
+              if (event.logicalKey == LogicalKeyboardKey.digit1) {
+                button1FocusNode.requestFocus();
+              } else if (event.logicalKey == LogicalKeyboardKey.digit2) {
+                button2FocusNode.requestFocus();
+              } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+                  event.logicalKey == LogicalKeyboardKey.numpadEnter) {
+                if (button1FocusNode.hasFocus) {
+                  nextMissionAction();
+                } else if (button2FocusNode.hasFocus) {
+                  backToMissionsAction();
+                }
               }
-            },
-            child: Text(
-              tr('game_screen.next_mission'),
+            }
+          },
+          child: AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            title: Text(
+              tr('game_screen.mission_over'),
               style: const TextStyle(
-                fontFamily: 'Mali',
-                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          TextButton(
-            onPressed: () async {
-              await _saveHighestScore(widget.missionIndex, highestScore);
-              // Update the provider
-              Provider.of<MissionsProviderCalm>(context, listen: false)
-                  .updateMissionProgress(
-                      "Mixed operations", widget.missionIndex + 1, highestScore);
-              await Future.delayed(const Duration(milliseconds: 100));
-              Navigator.pop(context);
-              Navigator.pop(context, highestScore);
-            },
-            child: Text(
-              tr('game_screen.back_to_missions'),
+            content: Text(
+              "${tr('game_screen.correct_answers')} $sessionScore\n\n"
+              "${tr('game_screen.time_taken')}: ${elapsedTime.inMinutes}m ${elapsedTime.inSeconds % 60}s\n\n"
+              "${tr('game_screen.question')}",
               style: const TextStyle(
-                fontFamily: 'Mali',
-                color: Color.fromARGB(255, 50, 50, 50),
                 fontWeight: FontWeight.bold,
               ),
             ),
+            icon: Lottie.asset(
+              'assets/animations/lacis3.json',
+              height: 150,
+              width: 150,
+            ),
+            actions: [
+              // Button 1 wrapped in a Focus widget with visual highlight
+              Focus(
+                focusNode: button1FocusNode,
+                child: Builder(
+                  builder: (context) {
+                    final bool hasFocus = Focus.of(context).hasFocus;
+                    return TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                            return hasFocus
+                                ? const Color(0xffffa400)
+                                : null;
+                          },
+                        ),
+                      ),
+                      onPressed: nextMissionAction,
+                      child: Text(
+                        tr('game_screen.next_mission'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Focus(
+                focusNode: button2FocusNode,
+                child: Builder(
+                  builder: (context) {
+                    final bool hasFocus = Focus.of(context).hasFocus;
+                    return TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                            return hasFocus
+                                ? const Color(0xffffa400)
+                                : null;
+                          },
+                        ),
+                      ),
+                      onPressed: backToMissionsAction,
+                      child: Text(
+                        tr('game_screen.back_to_missions'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -463,7 +521,6 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
               child: Text(
                 "${tr('game_screen.correct')} $sessionScore",
                 style: const TextStyle(
-                  fontFamily: 'Mali',
                   fontWeight: FontWeight.bold,
                   fontSize: 28,
                 ),
@@ -482,7 +539,6 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                     Text(
                       "$totalQuestionsAnswered ${tr("game_screen.of_15")}",
                       style: const TextStyle(
-                        fontFamily: 'Mali',
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
                       ),
@@ -496,7 +552,6 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
                                   style: const TextStyle(
-                                    fontFamily: 'Mali',
                                     fontSize: 38,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -535,7 +590,6 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
                         : Text(
                             currentExpression,
                             style: const TextStyle(
-                              fontFamily: 'Mali',
                               color: Color(0xffffa400),
                               fontWeight: FontWeight.bold,
                               fontSize: 38,
@@ -583,7 +637,6 @@ class _CalmBearGameState extends State<CalmBearGameMixed> {
               : Text(
                   preStartTimer > 0 ? "$preStartTimer" : tr('game_screen.get_ready'),
                   style: const TextStyle(
-                    fontFamily: 'Mali',
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
                     fontSize: 38,

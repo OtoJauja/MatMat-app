@@ -27,7 +27,6 @@ class SettingsView extends StatelessWidget {
         title: Text(
           tr('settings.title'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -95,7 +94,6 @@ class SettingsView extends StatelessWidget {
                                   child: Text(
                                     languageName,
                                     style: const TextStyle(
-                                      fontFamily: 'Mali',
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
@@ -128,7 +126,6 @@ class SettingsView extends StatelessWidget {
                               child: Text(
                                 tr('settings.mission_desctiption'),
                                 style: const TextStyle(
-                                  fontFamily: 'Mali',
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 50, 50, 50),
@@ -152,7 +149,6 @@ class SettingsView extends StatelessWidget {
                           title: Text(
                             tr('subjects.$subject.title'),
                             style: const TextStyle(
-                              fontFamily: 'Mali',
                               color: Color.fromARGB(255, 50, 50, 50),
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -164,7 +160,6 @@ class SettingsView extends StatelessWidget {
                               title: Text(
                                 '$missionNumber. ${tr("subjects.$subject.missions.$missionNumber")}',
                                 style: const TextStyle(
-                                  fontFamily: 'Mali',
                                   color: Color.fromARGB(255, 50, 50, 50),
                                   fontSize: 16,
                                 ),

@@ -202,7 +202,7 @@
     "mission_over": "Mission over!",
     "correct_answers": "Correct answers: ",
     "time_taken": "Time taken: ",
-    "question": "Do you want to continue to the next mission or choose a different mission?",
+    "question": "Do you want to continue to the next mission or choose a different mission?\nPress 1 to continue or 2 to go back to missions!",
     "back_to_missions": "Back to Missions",
     "correct": "Correct: ",
     "of_15": " of 15",

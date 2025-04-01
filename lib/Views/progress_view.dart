@@ -69,7 +69,6 @@ void initState() {
         color: const Color(0xffffa400),
         title: completedMissions.toInt().toString(),
         titleStyle: const TextStyle(
-          fontFamily: 'Mali',
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
@@ -96,7 +95,6 @@ void initState() {
         color: const Color(0xffffa400),
         title: completedMissions.toInt().toString(),
         titleStyle: const TextStyle(
-          fontFamily: 'Mali',
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
@@ -124,7 +122,6 @@ void initState() {
         title: Text(
           tr('progress.title'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -200,7 +197,6 @@ void initState() {
         Text(
           title,
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),

@@ -33,7 +33,6 @@ class SubjectsViewFast extends StatelessWidget {
         title: Text(
           tr('subjects_screen.title'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -66,7 +65,6 @@ class SubjectsViewFast extends StatelessWidget {
                         child: Text(
                           tr('subject_view.buzzy_bee_description'),
                           style: const TextStyle(
-                            fontFamily: 'Mali',
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Color.fromARGB(255, 50, 50, 50),
@@ -85,7 +83,6 @@ class SubjectsViewFast extends StatelessWidget {
                 title: Text(
                   tr('subject_view.$subjectKey'),
                   style: const TextStyle(
-                    fontFamily: 'Mali',
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),

@@ -203,7 +203,7 @@
     "mission_over": "Misija beigusies!",
     "correct_answers": "Pareizās atbildes: ",
     "time_taken": "Patērētais laiks: ",
-    "question": "Vai vēlaties turpināt nākamo misiju vai izvēlēties citu misiju?",
+    "question": "Vai vēlaties turpināt nākamo misiju vai izvēlēties citu misiju?\nNospiediet 1, lai turpinātu vai 2, lai izvēlēties citu misiju!",
     "back_to_missions": "Atpakaļ uz misijām",
     "correct": "Pareizi: ",
     "of_15": " no 15",

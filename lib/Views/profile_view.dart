@@ -26,7 +26,6 @@ class ProfileView extends StatelessWidget {
         title: Text(
           tr('profile.title'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -42,7 +41,6 @@ class ProfileView extends StatelessWidget {
                   Text(
                     "${tr("profile.user")} ${user.email}",
                     style: const TextStyle(
-                      fontFamily: 'Mali',
                       fontSize: 20,
                     ),
                   ),
@@ -57,7 +55,6 @@ class ProfileView extends StatelessWidget {
                     child: Text(
                       tr('profile.log_out'),
                       style: const TextStyle(
-                        fontFamily: 'Mali',
                         fontSize: 18,
                         color: Colors.white,
                       ),

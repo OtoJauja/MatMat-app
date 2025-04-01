@@ -65,7 +65,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
           // Use the localized subject title for display
           tr('subject_view.${widget.subjectName}'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -89,7 +88,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                             child: Text(
                               tr('mission.no_missions'),
                               style: const TextStyle(
-                                fontFamily: 'Mali',
                                 fontSize: 18,
                                 color: Color.fromARGB(255, 50, 50, 50),
                               ),
@@ -146,7 +144,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                       Text(
                         mission.number.toString(),
                         style: const TextStyle(
-                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 34,
                           fontWeight: FontWeight.bold,
@@ -155,7 +152,6 @@ class _MissionViewCalmState extends State<MissionViewCalm> {
                       Text(
                         "${mission.correctAnswers} ${tr('mission.of_15')}",
                         style: const TextStyle(
-                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 18,
                         ),

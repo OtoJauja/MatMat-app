@@ -66,7 +66,6 @@ class _MissionViewFastState extends State<MissionViewFast> {
         title: Text(
           tr('subject_view.${widget.subjectName}'),
           style: const TextStyle(
-            fontFamily: 'Mali',
             fontWeight: FontWeight.bold,
             fontSize: 28,
           ),
@@ -91,7 +90,6 @@ class _MissionViewFastState extends State<MissionViewFast> {
                             child: Text(
                               tr('mission.no_missions'),
                               style: const TextStyle(
-                                fontFamily: 'Mali',
                                 fontSize: 18,
                                 color: Color.fromARGB(255, 50, 50, 50),
                               ),
@@ -151,7 +149,6 @@ class _MissionViewFastState extends State<MissionViewFast> {
                       Text(
                         mission.number.toString(),
                         style: const TextStyle(
-                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 34,
                           fontWeight: FontWeight.bold,
@@ -160,7 +157,6 @@ class _MissionViewFastState extends State<MissionViewFast> {
                       Text(
                         "${tr("mission.highest")} ${mission.correctAnswers}",
                         style: const TextStyle(
-                          fontFamily: 'Mali',
                           color: Color.fromARGB(255, 50, 50, 50),
                           fontSize: 18,
                         ),

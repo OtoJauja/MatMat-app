@@ -101,6 +101,11 @@ flutter:
         - asset: assets/fonts/Mali-Bold.ttf
         - asset: assets/fonts/Mali-Medium.ttf
         - asset: assets/fonts/Mali-Regular.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Bold.ttf
+        - asset: assets/fonts/Manrope-Medium.ttf
+        - asset: assets/fonts/Manrope-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
