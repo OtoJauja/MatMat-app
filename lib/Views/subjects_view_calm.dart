@@ -99,7 +99,7 @@ class SubjectsViewCalm extends StatelessWidget {
                   );
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),

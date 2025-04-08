@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_calm.dart';
@@ -332,12 +333,14 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     void nextMissionAction() async {
       // Save the highest score for the finished mission
       await _saveHighestScore(widget.missionIndex, highestScore);
-
-      // Update the provider for the finished mission
-      Provider.of<MissionsProviderCalm>(context, listen: false)
-          .updateMissionProgress(
-              "Exponentiation", widget.missionIndex + 1, highestScore);
-
+      // Ensure the userId is passed to update the Firestore
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        Provider.of<MissionsProviderCalm>(context, listen: false)
+            .updateMissionProgress(
+                "Exponentiation", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       // Optionally wait a tiny bit to ensure the provider updates
       await Future.delayed(const Duration(milliseconds: 100));
       int nextMissionIndex = widget.missionIndex + 1;
@@ -362,9 +365,13 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
     void backToMissionsAction() async {
       await _saveHighestScore(widget.missionIndex, highestScore);
       // Update the provider
-      Provider.of<MissionsProviderCalm>(context, listen: false)
-          .updateMissionProgress(
-              "Exponentiation", widget.missionIndex + 1, highestScore);
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        Provider.of<MissionsProviderCalm>(context, listen: false)
+            .updateMissionProgress(
+                "Exponentiation", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       await Future.delayed(const Duration(milliseconds: 100));
       Navigator.pop(context);
       Navigator.pop(context, highestScore);
@@ -376,11 +383,11 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
       builder: (context) {
         final FocusNode rawKeyboardFocusNode = FocusNode();
 
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: rawKeyboardFocusNode,
           autofocus: true,
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
+          onKeyEvent: (KeyEvent event) {
+            if (event is KeyDownEvent) {
               if (event.logicalKey == LogicalKeyboardKey.digit1) {
                 button1FocusNode.requestFocus();
               } else if (event.logicalKey == LogicalKeyboardKey.digit2) {
@@ -417,7 +424,6 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
               width: 150,
             ),
             actions: [
-              // Button 1 wrapped in a Focus widget with visual highlight
               Focus(
                 focusNode: button1FocusNode,
                 child: Builder(
@@ -426,11 +432,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            return hasFocus
-                                ? const Color(0xffffa400)
-                                : null;
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                            return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
                       ),
@@ -453,11 +457,9 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            return hasFocus
-                                ? const Color(0xffffa400)
-                                : null;
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                            return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
                       ),
@@ -542,6 +544,7 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                                 text: TextSpan(
                                   style: const TextStyle(
                                     fontSize: 38,
+                                    fontFamily: 'Mali',
                                     fontWeight: FontWeight.bold,
                                   ),
                                   children: [

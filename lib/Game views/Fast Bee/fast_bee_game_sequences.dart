@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_fast.dart';
@@ -319,13 +320,22 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
     void nextMissionAction() async {
       // Save the highest score for the finished mission
       await _saveHighestScore(widget.missionIndex, highestScore);
-      // Update the provider for the finished mission
-      Provider.of<MissionsProviderFast>(context, listen: false)
-          .updateMissionProgress(
-              "Sequences", widget.missionIndex + 1, highestScore);
+
+      // Ensure the userId is passed to update the Firestore
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        if(!mounted) return;
+        Provider.of<MissionsProviderFast>(context, listen: false)
+            .updateMissionProgress(
+                "Sequences", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
+
       await Future.delayed(const Duration(milliseconds: 100));
+
       int nextMissionIndex = widget.missionIndex + 1;
       if (nextMissionIndex < FastBeeGameSequences.missionModes.length) {
+        if(!mounted) return;
         // Remove all game screens and push the next mission
         Navigator.pushAndRemoveUntil(
           context,
@@ -338,6 +348,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
           (Route<dynamic> route) => route.isFirst,
         );
       } else {
+        if(!mounted) return;
         // If no further missions are available, return to the mission view
         Navigator.popUntil(context, (route) => route.isFirst);
       }
@@ -346,10 +357,16 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
     void backToMissionsAction() async {
       await _saveHighestScore(widget.missionIndex, highestScore);
       // Update the provider
-      Provider.of<MissionsProviderFast>(context, listen: false)
-          .updateMissionProgress(
-              "Sequences", widget.missionIndex + 1, highestScore);
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        if(!mounted) return;
+        Provider.of<MissionsProviderFast>(context, listen: false)
+            .updateMissionProgress(
+                "Sequences", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       await Future.delayed(const Duration(milliseconds: 100));
+      if(!mounted) return;
       Navigator.pop(context);
       Navigator.pop(context, highestScore);
     }
@@ -360,11 +377,11 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
       builder: (context) {
         final FocusNode rawKeyboardFocusNode = FocusNode();
 
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: rawKeyboardFocusNode,
           autofocus: true,
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
+          onKeyEvent: (KeyEvent event) {
+            if (event is KeyDownEvent) {
               // When 1 is pressed, request focus for button 1
               if (event.logicalKey == LogicalKeyboardKey.digit1) {
                 button1FocusNode.requestFocus();
@@ -372,7 +389,9 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
               // When 2 is pressed, request focus for button 2
               else if (event.logicalKey == LogicalKeyboardKey.digit2) {
                 button2FocusNode.requestFocus();
-              } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+              }
+              // When Enter is pressed, activate the focused button
+              else if (event.logicalKey == LogicalKeyboardKey.enter ||
                   event.logicalKey == LogicalKeyboardKey.numpadEnter) {
                 if (button1FocusNode.hasFocus) {
                   nextMissionAction();
@@ -418,8 +437,8 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
                             return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
@@ -444,8 +463,8 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
                             return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
@@ -578,7 +597,7 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
             : Text(
                 preStartTimer > 0 ? "$preStartTimer" : tr('game_screen.get_ready'),
                 style: const TextStyle(
-                  color: const Color(0xffffa400),
+                  color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,
                   fontSize: 38,
                 ),

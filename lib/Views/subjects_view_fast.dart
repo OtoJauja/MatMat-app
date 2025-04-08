@@ -100,7 +100,7 @@ class SubjectsViewFast extends StatelessWidget {
                   );
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),

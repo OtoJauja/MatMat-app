@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_fast.dart';
@@ -20,15 +21,15 @@ class FastBeeGameExponentiation extends StatefulWidget {
   });
 
   static const List<String> missionModes = [
-    "1_digit_squared", 
-    "2_digit_squared", 
-    "1_digit_cubed",  
+    "1_digit_squared",
+    "2_digit_squared",
+    "1_digit_cubed",
     "1_digit_squared_plus_1_digit_squared",
-    "1_digit_cubed_minus_1_digit_squared",  
-    "square_root_of_1_digit_2_digit_3_digit",   
-    "cubic_root_of_1_digit_2_digit_3_digit", 
-    "square_root_of_1_digit_or_2_digit_plus_1_digit", 
-    "square_root_of_2_digit_times_square_root_of_2_digit", 
+    "1_digit_cubed_minus_1_digit_squared",
+    "square_root_of_1_digit_2_digit_3_digit",
+    "cubic_root_of_1_digit_2_digit_3_digit",
+    "square_root_of_1_digit_or_2_digit_plus_1_digit",
+    "square_root_of_2_digit_times_square_root_of_2_digit",
     "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit",
   ];
 
@@ -36,7 +37,8 @@ class FastBeeGameExponentiation extends StatefulWidget {
   State<FastBeeGameExponentiation> createState() => _FastBeeGameState();
 }
 
-class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTickerProviderStateMixin {
+class _FastBeeGameState extends State<FastBeeGameExponentiation>
+    with SingleTickerProviderStateMixin {
   int sessionScore = 0; // The score for the current session
   int highestScore = 0; // The highest score loaded from storage
   late Timer _timer; // Countdown timer for the game
@@ -77,7 +79,9 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
   @override
   void initState() {
     super.initState();
-    timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
+    timeLeft = widget.missionIndex >= 5
+        ? 120
+        : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _lottieController = AnimationController(vsync: this);
@@ -204,37 +208,59 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
         break;
       case "square_root_of_2_digit_times_square_root_of_2_digit":
         List<int> perfectSquares2Digit = [16, 25, 36, 49, 64, 81];
-        int a = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
-        int b = perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        int a =
+            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
+        int b =
+            perfectSquares2Digit[random.nextInt(perfectSquares2Digit.length)];
         currentExpression = "√$a * √$b";
         break;
       case "square_of_2_digit_divided_square_root_of_2_digit_or_3_digit":
-      List<int> twoDigitSquares = [16, 25, 36, 49, 64, 81];
-      List<int> threeDigitSquares = [
-        100, 121, 144, 169, 196, 225, 256, 289, 324, 361,
-        400, 441, 484, 529, 576, 625, 676, 729, 784, 841, 900, 961
-      ];
-      bool chooseTwoDigit = random.nextBool();
-      int b;
-      if (chooseTwoDigit) {
-        b = twoDigitSquares[random.nextInt(twoDigitSquares.length)];
-      } else {
-        b = threeDigitSquares[random.nextInt(threeDigitSquares.length)];
-      }
-      int divisor = sqrt(b).toInt(); // Whole number
-      List<int> candidates = [];
-      for (int i = 10; i <= 99; i++) {
-        if (i % divisor == 0) {
-          candidates.add(i);
+        List<int> twoDigitSquares = [16, 25, 36, 49, 64, 81];
+        List<int> threeDigitSquares = [
+          100,
+          121,
+          144,
+          169,
+          196,
+          225,
+          256,
+          289,
+          324,
+          361,
+          400,
+          441,
+          484,
+          529,
+          576,
+          625,
+          676,
+          729,
+          784,
+          841,
+          900,
+          961
+        ];
+        bool chooseTwoDigit = random.nextBool();
+        int b;
+        if (chooseTwoDigit) {
+          b = twoDigitSquares[random.nextInt(twoDigitSquares.length)];
+        } else {
+          b = threeDigitSquares[random.nextInt(threeDigitSquares.length)];
         }
-      }
-      if (candidates.isEmpty) {
-        candidates = [10, 20, 30];
-      }
-      int a = candidates[random.nextInt(candidates.length)];
-      
-      currentExpression = "$a² ÷ √$b";
-      break;
+        int divisor = sqrt(b).toInt(); // Whole number
+        List<int> candidates = [];
+        for (int i = 10; i <= 99; i++) {
+          if (i % divisor == 0) {
+            candidates.add(i);
+          }
+        }
+        if (candidates.isEmpty) {
+          candidates = [10, 20, 30];
+        }
+        int a = candidates[random.nextInt(candidates.length)];
+
+        currentExpression = "$a² ÷ √$b";
+        break;
       default:
         currentExpression = "";
     }
@@ -314,7 +340,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
       if (expression.startsWith("∛")) {
         String baseStr = expression.substring(1).trim();
         int base = int.parse(baseStr);
-        return pow(base, 1/3).round();
+        return pow(base, 1 / 3).round();
       }
       // Handle squares
       if (expression.contains("²")) {
@@ -363,7 +389,6 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
       }
     }
   }
-      
 
   // Skip the current question
   void _skipQuestion() {
@@ -387,13 +412,22 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
     void nextMissionAction() async {
       // Save the highest score for the finished mission
       await _saveHighestScore(widget.missionIndex, highestScore);
-      // Update the provider for the finished mission
-      Provider.of<MissionsProviderFast>(context, listen: false)
-          .updateMissionProgress(
-              "Exponentiation", widget.missionIndex + 1, highestScore);
+
+      // Ensure the userId is passed to update the Firestore
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        if(!mounted) return;
+        Provider.of<MissionsProviderFast>(context, listen: false)
+            .updateMissionProgress(
+                "Exponentiation", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
+
       await Future.delayed(const Duration(milliseconds: 100));
+
       int nextMissionIndex = widget.missionIndex + 1;
       if (nextMissionIndex < FastBeeGameExponentiation.missionModes.length) {
+        if(!mounted) return;
         // Remove all game screens and push the next mission
         Navigator.pushAndRemoveUntil(
           context,
@@ -406,6 +440,7 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
           (Route<dynamic> route) => route.isFirst,
         );
       } else {
+        if(!mounted) return;
         // If no further missions are available, return to the mission view
         Navigator.popUntil(context, (route) => route.isFirst);
       }
@@ -414,10 +449,16 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
     void backToMissionsAction() async {
       await _saveHighestScore(widget.missionIndex, highestScore);
       // Update the provider
-      Provider.of<MissionsProviderFast>(context, listen: false)
-          .updateMissionProgress(
-              "Exponentiation", widget.missionIndex + 1, highestScore);
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        if(!mounted) return;
+        Provider.of<MissionsProviderFast>(context, listen: false)
+            .updateMissionProgress(
+                "Exponentiation", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       await Future.delayed(const Duration(milliseconds: 100));
+      if(!mounted) return;
       Navigator.pop(context);
       Navigator.pop(context, highestScore);
     }
@@ -428,11 +469,11 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
       builder: (context) {
         final FocusNode rawKeyboardFocusNode = FocusNode();
 
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: rawKeyboardFocusNode,
           autofocus: true,
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
+          onKeyEvent: (KeyEvent event) {
+            if (event is KeyDownEvent) {
               // When 1 is pressed, request focus for button 1
               if (event.logicalKey == LogicalKeyboardKey.digit1) {
                 button1FocusNode.requestFocus();
@@ -440,7 +481,9 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
               // When 2 is pressed, request focus for button 2
               else if (event.logicalKey == LogicalKeyboardKey.digit2) {
                 button2FocusNode.requestFocus();
-              } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+              }
+              // When Enter is pressed, activate the focused button
+              else if (event.logicalKey == LogicalKeyboardKey.enter ||
                   event.logicalKey == LogicalKeyboardKey.numpadEnter) {
                 if (button1FocusNode.hasFocus) {
                   nextMissionAction();
@@ -486,8 +529,8 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
                             return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
@@ -512,8 +555,8 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
                             return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
@@ -600,7 +643,8 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
                       focusNode: _focusNode,
                       cursorColor: const Color(0xffffa400),
                       textAlign: TextAlign.center,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
                       ],
@@ -644,7 +688,9 @@ class _FastBeeGameState extends State<FastBeeGameExponentiation> with SingleTick
                 ],
               )
             : Text(
-                preStartTimer > 0 ? "$preStartTimer" : tr('game_screen.get_ready'),
+                preStartTimer > 0
+                    ? "$preStartTimer"
+                    : tr('game_screen.get_ready'),
                 style: const TextStyle(
                   color: Color(0xffffa400),
                   fontWeight: FontWeight.bold,

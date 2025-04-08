@@ -22,7 +22,7 @@ class MissionViewCalm extends StatefulWidget {
   const MissionViewCalm({super.key, required this.subjectName});
 
   @override
-  _MissionViewCalmState createState() => _MissionViewCalmState();
+  State<MissionViewCalm> createState() => _MissionViewCalmState();
 }
 
 class _MissionViewCalmState extends State<MissionViewCalm> {

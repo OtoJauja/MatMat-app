@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Services/mission_provider_calm.dart';
@@ -206,9 +207,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
     }
 
     // Transform the generated full sequence into the display format
-    // For most modes, we display 5 items
-    // first three numbers, then x then the fifth number
-    // For the Fibonacci mode display 6 items first five numbers then x
+    // For most modes, display 5 items
+    // first three numbers then x then the fifth number
+    // For Fibonacci mode display 6 items first five numbers then x
     if (widget.mode == "sequence_fibonacci") {
       nextValue = sequence[5];
       currentSequence =
@@ -284,12 +285,14 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
     void nextMissionAction() async {
       // Save the highest score for the finished mission
       await _saveHighestScore(widget.missionIndex, highestScore);
-
-      // Update the provider for the finished mission
-      Provider.of<MissionsProviderCalm>(context, listen: false)
-          .updateMissionProgress(
-              "Sequences", widget.missionIndex + 1, highestScore);
-
+      // Ensure the userId is passed to update the Firestore
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        Provider.of<MissionsProviderCalm>(context, listen: false)
+            .updateMissionProgress(
+                "Sequences", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       // Optionally wait a tiny bit to ensure the provider updates
       await Future.delayed(const Duration(milliseconds: 100));
       int nextMissionIndex = widget.missionIndex + 1;
@@ -314,9 +317,13 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
     void backToMissionsAction() async {
       await _saveHighestScore(widget.missionIndex, highestScore);
       // Update the provider
-      Provider.of<MissionsProviderCalm>(context, listen: false)
-          .updateMissionProgress(
-              "Sequences", widget.missionIndex + 1, highestScore);
+      final String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        Provider.of<MissionsProviderCalm>(context, listen: false)
+            .updateMissionProgress(
+                "Sequences", widget.missionIndex + 1, highestScore,
+                userId: userId);
+      }
       await Future.delayed(const Duration(milliseconds: 100));
       Navigator.pop(context);
       Navigator.pop(context, highestScore);
@@ -328,11 +335,11 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
       builder: (context) {
         final FocusNode rawKeyboardFocusNode = FocusNode();
 
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: rawKeyboardFocusNode,
           autofocus: true,
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
+          onKeyEvent: (KeyEvent event) {
+            if (event is KeyDownEvent) {
               if (event.logicalKey == LogicalKeyboardKey.digit1) {
                 button1FocusNode.requestFocus();
               } else if (event.logicalKey == LogicalKeyboardKey.digit2) {
@@ -369,7 +376,6 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
               width: 150,
             ),
             actions: [
-              // Button 1 wrapped in a Focus widget with visual highlight
               Focus(
                 focusNode: button1FocusNode,
                 child: Builder(
@@ -378,11 +384,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            return hasFocus
-                                ? const Color(0xffffa400)
-                                : null;
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                            return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
                       ),
@@ -405,11 +409,9 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                     return TextButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            return hasFocus
-                                ? const Color(0xffffa400)
-                                : null;
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                            return hasFocus ? const Color(0xffffa400) : null;
                           },
                         ),
                       ),
@@ -485,6 +487,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                               text: TextSpan(
                                 style: const TextStyle(
                                   fontSize: 38,
+                                  fontFamily: 'Mali',
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [

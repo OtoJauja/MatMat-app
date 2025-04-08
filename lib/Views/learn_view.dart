@@ -72,7 +72,6 @@ class LearnView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
 
     // Define topics using translation keys
     final List<Map<String, dynamic>> topics = [
@@ -206,11 +205,11 @@ class TipsView extends StatelessWidget {
   final List<dynamic> tips;
 
   const TipsView({
-    Key? key,
+    super.key,
     required this.topicTitle,
     required this.topicSubtitle,
     required this.tips,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -22,7 +22,7 @@ class MissionViewFast extends StatefulWidget {
   const MissionViewFast({super.key, required this.subjectName});
 
   @override
-  _MissionViewFastState createState() => _MissionViewFastState();
+  State<MissionViewFast> createState() => _MissionViewFastState();
 }
 
 class _MissionViewFastState extends State<MissionViewFast> {

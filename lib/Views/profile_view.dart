@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../login_screen.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  const ProfileView({super.key});
 
   Future<void> _signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
