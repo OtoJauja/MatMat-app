@@ -158,11 +158,29 @@ class _FastBeeGameState extends State<FastBeeGameDivision> with SingleTickerProv
       currentExpression = "$a ÷ $b";
     } else if (widget.mode ==
         "div_1_or_2_digit_by_1_digit_with_decimal_result") {
-      int b = random.nextInt(9) + 1; 
-      int a;
-      do {
-        a = random.nextInt(90) + 1; 
-      } while (a % b == 0); // Ensure result is decimal
+      // Valid one-digit divisor.
+      final validBs = [2, 4, 5, 6, 8];
+      int b = validBs[random.nextInt(validBs.length)];
+      int maxM = (900 / b).floor();
+      int m;
+      if (b == 5) {
+        List<int> possibleMs = [];
+        for (int x = 2; x <= maxM; x += 2) {
+          if (x % 10 != 0) {
+            possibleMs.add(x);
+          }
+        }
+        m = possibleMs[random.nextInt(possibleMs.length)];
+      } else {
+        List<int> possibleMs = [];
+        for (int x = 5; x <= maxM; x += 5) {
+          if (x % 10 != 0) {
+            possibleMs.add(x);
+          }
+        }
+        m = possibleMs[random.nextInt(possibleMs.length)];
+      }
+      int a = (m * b) ~/ 10;
       currentExpression = "$a ÷ $b";
     } else if (widget.mode == "div_3_digit_by_1_digit") {
       int b = random.nextInt(9) + 1; // Divisor
@@ -384,11 +402,11 @@ class _FastBeeGameState extends State<FastBeeGameDivision> with SingleTickerProv
           onKeyEvent: (KeyEvent event) {
             if (event is KeyDownEvent) {
               // When 1 is pressed, request focus for button 1
-              if (event.logicalKey == LogicalKeyboardKey.digit1) {
+              if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) {
                 button1FocusNode.requestFocus();
               }
               // When 2 is pressed, request focus for button 2
-              else if (event.logicalKey == LogicalKeyboardKey.digit2) {
+              else if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad2) {
                 button2FocusNode.requestFocus();
               }
               // When Enter is pressed, activate the focused button

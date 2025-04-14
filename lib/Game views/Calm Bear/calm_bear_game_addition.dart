@@ -296,9 +296,9 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
           autofocus: true,
           onKeyEvent: (KeyEvent event) {
             if (event is KeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.digit1) {
+              if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) { // Registers numpad and normal keys
                 button1FocusNode.requestFocus();
-              } else if (event.logicalKey == LogicalKeyboardKey.digit2) {
+              } else if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad1) { // Registers numpad and normal keys
                 button2FocusNode.requestFocus();
               } else if (event.logicalKey == LogicalKeyboardKey.enter ||
                   event.logicalKey == LogicalKeyboardKey.numpadEnter) {

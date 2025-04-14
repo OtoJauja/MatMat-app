@@ -269,7 +269,7 @@ Widget _buildSymbolOverlay(List<ChartData> data, double size, String innerRadius
               top: offset.dy - 10,
               child: Text(
                 data[i].subject,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 12),
               ),
             );
           }),

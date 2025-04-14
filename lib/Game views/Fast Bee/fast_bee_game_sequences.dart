@@ -383,11 +383,11 @@ class _FastBeeGameState extends State<FastBeeGameSequences> with SingleTickerPro
           onKeyEvent: (KeyEvent event) {
             if (event is KeyDownEvent) {
               // When 1 is pressed, request focus for button 1
-              if (event.logicalKey == LogicalKeyboardKey.digit1) {
+              if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) {
                 button1FocusNode.requestFocus();
               }
               // When 2 is pressed, request focus for button 2
-              else if (event.logicalKey == LogicalKeyboardKey.digit2) {
+              else if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad2) {
                 button2FocusNode.requestFocus();
               }
               // When Enter is pressed, activate the focused button
