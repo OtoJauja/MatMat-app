@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MissionsProviderFast()),
       ],
       child: MaterialApp(
-        key: ValueKey(context.locale.toString()), // Forces rebuild on locale change
         debugShowCheckedModeBanner: false,
         theme: lightMode,
         //darkTheme: darkMode, // Optional dark mode
