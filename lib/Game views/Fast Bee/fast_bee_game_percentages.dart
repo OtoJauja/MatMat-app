@@ -52,6 +52,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
   late TextEditingController _controller; // Persistent controller
   late FocusNode _focusNode; // Focus to autoclick input
   late AnimationController _lottieController;
+  late FocusNode _keyboardFocusNode; // Skip button click
 
   // Timer for the skip functionality
   Timer? _skipTimer;
@@ -80,6 +81,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
     super.initState();
     timeLeft = widget.missionIndex >= 5 ? 120 : 90; // Adjust time based on mission - 1-5 = 60s / 6-10 = 120
     _focusNode = FocusNode();
+    _keyboardFocusNode = FocusNode();
     _controller = TextEditingController();
     _lottieController = AnimationController(vsync: this);
     // Load the highest score for this mission at the start
@@ -100,6 +102,7 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
     _skipTimer?.cancel(); // Cancel the skip timer if it's active
     _focusNode.dispose(); // Dispose of the FocusNode
     _controller.dispose();
+    _keyboardFocusNode.dispose();
     _timer.cancel();
     super.dispose();
   }
@@ -486,7 +489,21 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Focus(
+      focusNode: _keyboardFocusNode,
+      autofocus: true,               // grab focus as soon as screen appears
+      onKeyEvent: (FocusNode node, KeyEvent event) {
+        if (event is KeyDownEvent) {
+          // if ok / enter is presses skip is activated
+          if ((event.logicalKey == LogicalKeyboardKey.enter) &&
+              canSkip) {
+            _skipQuestion();
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      },
+    child:  Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
@@ -599,6 +616,6 @@ class _FastBeeGameState extends State<FastBeeGamePercentages> with SingleTickerP
                 ),
               ),
       ),
-    );
+    ));
   }
 }
