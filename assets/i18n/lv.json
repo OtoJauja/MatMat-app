@@ -128,7 +128,7 @@
     },
     "navigation": {
     "home": "Mājas",
-    "progress": "Progres",
+    "progress": "Progress",
     "learn": "Mācies",
     "settings": "Iestatījumi"
   },
@@ -169,11 +169,13 @@
   },
   "progress": {
     "title": "Progress",
+    "bear_title": "Katras misijas laikā ir veiktas 15 pareizas darbības",
+    "bee_title": "Noteiktā laikā ir veiktas vismaz 15 pareizas darbības katrā misijā",
     "calm_bear": "Drosmīgais Lācis",
     "fast_bee": "Čaklā Bite"
   },
   "subjects_screen": {
-    "title": "Priekšmeti"
+    "title": "Matemātikas darbības"
   },
   "mission": {
     "no_missions": "Nav pieejamu uzdevumu šim priekšmetam.",
@@ -181,14 +183,14 @@
     "highest": "Augstākais: "
   },
   "subject_view":{
-    "brave_bear_description": "Drosmīgā lāča režīmā jūs gaida vairākas aizraujošas misijas. Izbaudiet mierīgu tempu, apgūstot dažādas tēmas!",
-    "buzzy_bee_description": "Čaklās bites režīmā tev būs jāveic vairāki ātra tempa un saistoši uzdevumi! Tikai pareizas atbildes tiek skaitītas!",
+    "brave_bear_description": "Drosmīgā Lāča režīmā izbaudi mierīgu tempu un katrā misijā centies atrisināt 15 darbības",
+    "buzzy_bee_description": "Čaklās Bites režīmā seko laika limitam un centies atrisināt vismaz 15 darbības katrā misijā",
     "Addition": "Saskaitīšana",
     "Subtraction": "Atņemšana",
     "Multiplication": "Reizināšana",
     "Division": "Dalīšana",
     "Mixed operations": "Jauktās darbības",
-    "Sequences": "Secības",
+    "Sequences": "Virknes",
     "Exponentiation": "Kāpināšana",
     "Percentages": "Procenti"
   },

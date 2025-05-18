@@ -1,8 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easy_localization/easy_localization.dart';
+
 
 import '../Game views/Fast Bee/fast_bee_game_addition.dart'; // Addition game
 import '../Game views/Fast Bee/fast_bee_game_subtraction.dart'; // Subtraction game
@@ -154,11 +156,11 @@ class _MissionViewFastState extends State<MissionViewFast> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      AutoSizeText(
                         "${tr("mission.highest")} ${mission.correctAnswers}",
                         style: const TextStyle(
                           color: Color.fromARGB(255, 50, 50, 50),
-                          fontSize: 18,
+                          fontSize: 14,
                         ),
                       ),
                     ],

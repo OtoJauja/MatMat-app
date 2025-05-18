@@ -169,11 +169,13 @@
   },
   "progress": {
     "title": "Progress",
+    "bear_title": "15 correct operations during each mission",
+    "bee_title": "At least 15 correct actions in each mission within the time limit",
     "calm_bear": "Brave Bear",
     "fast_bee": "Buzzy Bee"
   },
   "subjects_screen": {
-    "title": "Subjects"
+    "title": "Mathematical operations"
   },
   "mission": {
     "no_missions": "No missions available for this subject.",
@@ -181,8 +183,8 @@
     "highest": "Highest: "
   },
   "subject_view":{
-    "brave_bear_description": "Brave Bear mode challenges you with a series of engaging missions. Enjoy a calm pace as you progress through various subjects!",
-    "buzzy_bee_description": "Buzzy Bee mode challenges you with a series of fast paced and engaging missions! Only correct answers are counted!",
+    "brave_bear_description": "In Brave Bear mode, enjoy a relaxed pace and try to solve 15 tasks in each mission",
+    "buzzy_bee_description": "In Buzzy Bee mode, follow the time limit and try to solve at least 15 actions in each mission",
     "Addition": "Addition",
     "Subtraction": "Subtraction",
     "Multiplication": "Multiplication",

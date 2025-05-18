@@ -151,11 +151,13 @@ class _ProgressViewState extends State<ProgressView> {
                 children: [
                   _buildRoseChart(
                     tr('progress.calm_bear'),
+                    tr('progress.bear_title'),
                     buildChartDataCalm(missionsProviderCalm),
                     chartSize,
                   ),
                   _buildRoseChart(
                     tr('progress.fast_bee'),
+                    tr('progress.bee_title'),
                     buildChartDataFast(missionsProviderFast),
                     chartSize,
                   ),
@@ -169,11 +171,13 @@ class _ProgressViewState extends State<ProgressView> {
                   children: [
                     _buildRoseChart(
                       tr('progress.calm_bear'),
+                      tr('progress.bear_title'),
                       buildChartDataCalm(missionsProviderCalm),
                       chartSize,
                     ),
                     _buildRoseChart(
                       tr('progress.fast_bee'),
+                      tr('progress.bee_title'),
                       buildChartDataFast(missionsProviderFast),
                       chartSize,
                     ),
@@ -185,7 +189,7 @@ class _ProgressViewState extends State<ProgressView> {
   }
 
   /// Builds a rose chart donut using DoughnutSeries and pointRadiusMapper
-  Widget _buildRoseChart(String title, List<ChartData> data, double size) {
+  Widget _buildRoseChart(String title, String subtitle, List<ChartData> data, double size) {
   double maxVal = data.map((d) => d.value).fold(0, math.max);
   if (maxVal == 0) maxVal = 1; // Avoid division by zero
 
@@ -200,6 +204,9 @@ class _ProgressViewState extends State<ProgressView> {
         title,
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       ),
+      const SizedBox(height: 10),
+      Text(subtitle,
+        style: const TextStyle(fontSize: 14), textAlign: TextAlign.center),
       const SizedBox(height: 10),
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -233,7 +240,7 @@ class _ProgressViewState extends State<ProgressView> {
                         type: ConnectorType.curve,
                         length: '20%',
                       ),
-                      textStyle: TextStyle(fontSize: 12),
+                      textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -269,7 +276,7 @@ Widget _buildSymbolOverlay(List<ChartData> data, double size, String innerRadius
               top: offset.dy - 10,
               child: Text(
                 data[i].subject,
-                style: const TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold,)
               ),
             );
           }),
