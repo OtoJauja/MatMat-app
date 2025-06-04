@@ -53,8 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.surface,
         ),
-        body: Column(
-        children: [
+        body: Column(children: [
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 15),
             child: Image.asset(
@@ -89,8 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: "Email",
-                          labelStyle:
-                              TextStyle(),
+                          labelStyle: TextStyle(),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide: BorderSide(
@@ -116,8 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: "Password",
-                          labelStyle:
-                              TextStyle(),
+                          labelStyle: TextStyle(),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide: BorderSide(
@@ -157,6 +154,35 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 15,
                       ),
                       TextButton(
+                        onPressed: () async {
+                          final email = _emailController.text.trim();
+                          if (email.isEmpty) {
+                            // Paziņojums lietotājam
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Lūdzu ievadiet e-pastu.')),
+                            );
+                            return;
+                          }
+                          try {
+                            await FirebaseAuth.instance
+                                .sendPasswordResetEmail(email: email);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Atgādinājums nosūtīts uz jūsu e-pastu.',
+                                ),
+                              ),
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.message ?? 'Kļūda!')),
+                            );
+                          }
+                        },
+                        child: const Text('Aizmirsu paroli'),
+                      ),
+                      TextButton(
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -165,8 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: const Text(
                           "Don't have an account? Sign up",
-                          style: TextStyle(
-                          ),
+                          style: TextStyle(),
                         ),
                       ),
                     ],

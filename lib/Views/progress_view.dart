@@ -188,7 +188,7 @@ class _ProgressViewState extends State<ProgressView> {
     );
   }
 
-  /// Builds a rose chart donut using DoughnutSeries and pointRadiusMapper
+  /// Builds a rose chart using DoughnutSeries and pointRadiusMapper
   Widget _buildRoseChart(String title, String subtitle, List<ChartData> data, double size) {
   double maxVal = data.map((d) => d.value).fold(0, math.max);
   if (maxVal == 0) maxVal = 1; // Avoid division by zero
@@ -238,7 +238,7 @@ class _ProgressViewState extends State<ProgressView> {
                       labelPosition: ChartDataLabelPosition.outside,
                       connectorLineSettings: ConnectorLineSettings(
                         type: ConnectorType.curve,
-                        length: '20%',
+                        length: '15%',
                       ),
                       textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                     ),

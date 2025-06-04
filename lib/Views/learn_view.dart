@@ -7,72 +7,68 @@ import 'package:url_launcher/url_launcher.dart';
 class LearnView extends StatelessWidget {
   const LearnView({super.key});
 
-  Widget _buildHexagonGrid(BuildContext context, List<Map<String, dynamic>> topics) {
+  Widget _buildHexagonGrid(
+      BuildContext context, List<Map<String, dynamic>> topics) {
     final orientation = MediaQuery.of(context).orientation;
     final columns = orientation == Orientation.portrait ? 2 : 5;
     final rows = (topics.length / columns).ceil();
 
     return SingleChildScrollView(
       child: HexagonOffsetGrid.oddFlat(
-        color: Theme.of(context).colorScheme.surface,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-        columns: columns,
-        rows: rows,
-        buildTile: (col, row) {
-          final topicIndex = row * columns + col;
-          if (topicIndex >= topics.length) {
-            // If there is no topic for this tile, return an empty hexagon.
+          color: Theme.of(context).colorScheme.surface,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+          columns: columns,
+          rows: rows,
+          buildTile: (col, row) {
+            final topicIndex = row * columns + col;
+            if (topicIndex >= topics.length) {
+              // If there is no topic for this tile, return an empty hexagon.
+              return HexagonWidgetBuilder(
+                color: Theme.of(context).colorScheme.surface,
+                child: Container(),
+              );
+            }
+
+            final topic = topics[topicIndex];
+
             return HexagonWidgetBuilder(
-              color: Theme.of(context).colorScheme.surface,
-              child: Container(),
-            );
-          }
-
-          final topic = topics[topicIndex];
-
-          return HexagonWidgetBuilder(
-            padding: 4.0,
-            cornerRadius: 24.0,
-            color: const Color(0xffffee9ae),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TipsView(
-                      topicTitle: topic['title'],
-                      topicSubtitle: topic['subtitle'],
-                      tips: topic['tips'],
-                    ),
-                  ),
-                );
-              },
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
+              padding: 4.0,
+              cornerRadius: 24.0,
+              color: const Color(0xffffee9ae),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(24),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TipsView(
+                          topicTitle: topic['title'],
+                          topicSubtitle: topic['subtitle'],
+                          tips: topic['tips'],
+                        ),
+                      ),
+                    );
+                  },
+                  child: Center(
+                    child: Text(
                       topic['title'],
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Color.fromARGB(255, 50, 50, 50),
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 40, 40, 40),
+                      fontSize: 14),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     // Define topics using translation keys
     final List<Map<String, dynamic>> topics = [
       {
@@ -89,7 +85,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': tr('learn.tip3.name'),
-            'url': 'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
+            'url':
+                'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
           },
         ],
       },
@@ -103,7 +100,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': tr('learn.tip5.name'),
-            'url': 'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
+            'url':
+                'https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-portrait-2288ee-44aaff.pdf'
           },
         ],
       },
@@ -127,7 +125,8 @@ class LearnView extends StatelessWidget {
         'tips': [
           {
             'name': tr('learn.tip8.name'),
-            'url': 'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
+            'url':
+                'https://countontricia.com/2019/06/how-to-teach-exponents-to-beginners.html'
           },
           {
             'name': tr('learn.tip9.name'),
@@ -139,7 +138,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': tr('learn.tip11.name'),
-            'url': 'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
+            'url':
+                'https://math-drills.com/numbersense/cubes_and_cube_roots_001.1360994964.pdf'
           },
         ],
       },
@@ -153,7 +153,8 @@ class LearnView extends StatelessWidget {
           },
           {
             'name': tr('learn.tip13.name'),
-            'url': 'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
+            'url':
+                'https://www.smartboardingschool.com/_files/ugd/e99b9e_3d29122850c042189b087d1ca64e8999.pdf?index=true'
           },
           {
             'name': tr('learn.tip14.name'),
@@ -248,7 +249,8 @@ class TipsView extends StatelessWidget {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(tr('learn.could_not_open_link', args: [tip['url']])),
+                    content: Text(
+                        tr('learn.could_not_open_link', args: [tip['url']])),
                   ),
                 );
               }

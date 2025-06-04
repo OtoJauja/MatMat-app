@@ -1,5 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Services/mission_provider_calm.dart';
+import 'package:flutter_app/Services/mission_provider_fast.dart';
+import 'package:provider/provider.dart';
 import 'Views/home_view.dart';
 import 'Views/progress_view.dart';
 import 'Views/learn_view.dart';
@@ -28,6 +32,29 @@ class _MainNavigationState extends State<MainNavigation> {
     const LearnView(),
     const SettingsView(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAllProgress();
+  }
+
+  Future<void> _loadAllProgress() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final userId = user.uid;
+    final missionsProviderBear =
+        Provider.of<MissionsProviderCalm>(context, listen: false);
+
+    for (final subject in missionsProviderBear.subjectKeys) {
+      await missionsProviderBear.loadProgressFromFirestore(userId, subject);
+    }
+    final fastProvider =
+        Provider.of<MissionsProviderFast>(context, listen: false);
+    for (final subject in fastProvider.subjectKeys) {
+      await fastProvider.loadProgressFromFirestore(userId, subject);
+    }
+  }
 
   void _onItemTapped(int index) {
     if (_currentIndex != index) {
@@ -59,7 +86,8 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final currentNavigatorState = _navigatorKeys[_currentIndex].currentState;
+        final currentNavigatorState =
+            _navigatorKeys[_currentIndex].currentState;
         if (currentNavigatorState != null && currentNavigatorState.canPop()) {
           currentNavigatorState.pop();
           return false;

@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Save mission progress for a given user, subject, and mission number.
-  /// The document is named `subject` (e.g. "calm_Addition") under
+  /// Save mission progress for a given user, subject, and mission number
+  /// The document is named subject e.g. "calm_Addition" under
   /// /users/{userId}/missions/{subject}.
-  /// The array 'missions' holds objects with keys:
+  /// The array missions holds objects with keys
   /// { "missionNumber": int, "correctAnswers": int, "isCompleted": bool }
   Future<void> updateMissionProgress({
     required String userId,
@@ -14,7 +14,7 @@ class FirebaseService {
     required int missionNumber,
     required int newScore,
   }) async {
-    // e.g. docRef for "calm_Addition" under /users/{userId}/missions
+    // docRef for "calm_Addition" under /users/{userId}/missions
     final docRef = _firestore
         .collection('users')
         .doc(userId)
@@ -42,7 +42,7 @@ class FirebaseService {
         missionsArray[index]['isCompleted'] = newScore >= 15;
       }
     } else {
-      // If it doesn't exist, add it
+      // If it doesn't exist add it
       missionsArray.add({
         'missionNumber': missionNumber,
         'correctAnswers': newScore,

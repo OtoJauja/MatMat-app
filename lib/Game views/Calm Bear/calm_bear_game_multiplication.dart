@@ -514,6 +514,8 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                     SizedBox(
                       width: 150,
                       child: TextField(
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                         focusNode: _focusNode,
                         cursorColor: const Color(0xffffa400),
                         textAlign: TextAlign.center,
@@ -553,7 +555,7 @@ class _CalmBearGameState extends State<CalmBearGameMultiplication> {
                   style: const TextStyle(
                     color: Color(0xffffa400),
                     fontWeight: FontWeight.bold,
-                    fontSize: 38,
+                    fontSize: 48,
                   ),
                 ),
         ),

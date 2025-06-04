@@ -40,6 +40,8 @@ class MissionsProviderCalm with ChangeNotifier {
     return _missions[subject] ?? [];
   }
 
+  List<String> get subjectKeys => _missions.keys.toList();
+
   int getCompletedMissionsCount(String subject) {
     return _missions[subject]?.where((mission) => mission.isCompleted).length ??
         0;

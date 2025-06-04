@@ -51,6 +51,7 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
   int preStartTimer = 5; // Pre-start countdown timer
   late Stopwatch _stopwatch; // Stopwatch to track time
   late FocusNode _focusNode; // Focus to autoclick input
+  bool showingCorrect = false; // For showing animation
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
@@ -197,34 +198,47 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
     final correctAnswer = _evaluateExpression(currentExpression);
     double userAnswer =
         double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
-    if (mounted == true) {
-      setState(() {
-        totalQuestionsAnswered++;
 
-        if ((userAnswer - correctAnswer).abs() < 0.01) {
-          sessionScore++; // Increment the session score
-          // Update highestScore if needed
-          if (sessionScore > highestScore) {
-            highestScore = sessionScore;
-          }
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateExpression();
-          }
+    if (!mounted) return;
+
+    setState(() {
+      totalQuestionsAnswered++;
+    });
+
+    if ((userAnswer - correctAnswer).abs() < 0.01) {
+      sessionScore++;
+      if (sessionScore > highestScore) highestScore = sessionScore;
+
+      setState(() {
+        showingCorrect = true;
+      });
+
+      // after 2 seconds hide animation and go next
+      Future.delayed(const Duration(seconds: 2), () {
+        if (!mounted) return;
+        setState(() {
+          showingCorrect = false;
+        });
+
+        if (totalQuestionsAnswered == 16) {
+          _endGame();
         } else {
-          showingAnswer =
-              true; // Show the correct answer for incorrect response
-          Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              showingAnswer = false;
-              if (totalQuestionsAnswered < 16) {
-                _generateExpression();
-              } else {
-                _endGame();
-              }
-            });
-          });
+          _generateExpression();
+        }
+      });
+    } else {
+      setState(() {
+        showingAnswer = true;
+      });
+      Future.delayed(const Duration(seconds: 3), () {
+        if (!mounted) return;
+        setState(() {
+          showingAnswer = false;
+        });
+        if (totalQuestionsAnswered == 16) {
+          _endGame();
+        } else {
+          _generateExpression();
         }
       });
     }
@@ -296,9 +310,13 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
           autofocus: true,
           onKeyEvent: (KeyEvent event) {
             if (event is KeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) { // Registers numpad and normal keys
+              if (event.logicalKey == LogicalKeyboardKey.digit1 ||
+                  event.logicalKey == LogicalKeyboardKey.numpad1) {
+                // Registers numpad and normal keys
                 button1FocusNode.requestFocus();
-              } else if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad1) { // Registers numpad and normal keys
+              } else if (event.logicalKey == LogicalKeyboardKey.digit2 ||
+                  event.logicalKey == LogicalKeyboardKey.numpad1) {
+                // Registers numpad and normal keys
                 button2FocusNode.requestFocus();
               } else if (event.logicalKey == LogicalKeyboardKey.enter ||
                   event.logicalKey == LogicalKeyboardKey.numpadEnter) {
@@ -443,6 +461,14 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                       ),
                     ),
                     const SizedBox(height: 30),
+                    if (showingCorrect) ...[
+                      Lottie.asset(
+                        'assets/animations/lacis2.json',
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.fill,
+                      ),
+                    ],
                     showingAnswer
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
@@ -501,7 +527,8 @@ class _CalmBearGameState extends State<CalmBearGameAddition> {
                     SizedBox(
                       width: 150,
                       child: TextField(
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                         focusNode: _focusNode,
                         cursorColor: const Color(0xffffa400),
                         textAlign: TextAlign.center,

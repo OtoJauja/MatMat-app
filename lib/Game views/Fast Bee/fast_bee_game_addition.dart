@@ -109,7 +109,6 @@ class _FastBeeGameState extends State<FastBeeGameAddition>
     _controller.dispose();
     _timer.cancel();
     super.dispose();
-    
   }
 
   // Timer for 5-second pre-game countdown
@@ -349,11 +348,13 @@ class _FastBeeGameState extends State<FastBeeGameAddition>
           onKeyEvent: (KeyEvent event) {
             if (event is KeyDownEvent) {
               // When 1 is pressed, request focus for button 1
-              if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) {
+              if (event.logicalKey == LogicalKeyboardKey.digit1 ||
+                  event.logicalKey == LogicalKeyboardKey.numpad1) {
                 button1FocusNode.requestFocus();
               }
               // When 2 is pressed, request focus for button 2
-              else if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad2) {
+              else if (event.logicalKey == LogicalKeyboardKey.digit2 ||
+                  event.logicalKey == LogicalKeyboardKey.numpad2) {
                 button2FocusNode.requestFocus();
               }
               // When Enter is pressed, activate the focused button
@@ -457,134 +458,136 @@ class _FastBeeGameState extends State<FastBeeGameAddition>
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _keyboardFocusNode,
-      autofocus: true,               // grab focus as soon as screen appears
-      onKeyEvent: (FocusNode node, KeyEvent event) {
-        if (event is KeyDownEvent) {
-          // if ok / enter is presses skip is activated
-          if ((event.logicalKey == LogicalKeyboardKey.enter) &&
-              canSkip) {
-            _skipQuestion();
-            return KeyEventResult.handled;
+        focusNode: _keyboardFocusNode,
+        autofocus: true, // grab focus as soon as screen appears
+        onKeyEvent: (FocusNode node, KeyEvent event) {
+          if (event is KeyDownEvent) {
+            // if ok / enter is presses skip is activated
+            if ((event.logicalKey == LogicalKeyboardKey.enter) && canSkip) {
+              _skipQuestion();
+              return KeyEventResult.handled;
+            }
           }
-        }
-        return KeyEventResult.ignored;
-      },
-    child:  Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () async {
-            await _saveHighestScore(widget.missionIndex, highestScore);
-            Provider.of<MissionsProviderFast>(context, listen: false)
-                .updateMissionProgress(
-                    "Addition", widget.missionIndex + 1, highestScore);
-            await Future.delayed(const Duration(milliseconds: 100));
-            Navigator.pop(context, highestScore);
-          },
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "${tr('game_screen.correct')} $sessionScore",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28,
-                ),
-              ),
+          return KeyEventResult.ignored;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () async {
+                await _saveHighestScore(widget.missionIndex, highestScore);
+                Provider.of<MissionsProviderFast>(context, listen: false)
+                    .updateMissionProgress(
+                        "Addition", widget.missionIndex + 1, highestScore);
+                await Future.delayed(const Duration(milliseconds: 100));
+                Navigator.pop(context, highestScore);
+              },
             ),
-          ),
-        ],
-      ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Center(
-        child: gameStarted
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  Text(
-                    "$timeLeft ${tr('game_screen.seconds')}",
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "${tr('game_screen.correct')} $sessionScore",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  Text(
-                    currentExpression,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          body: Center(
+            child: gameStarted
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(
+                        "$timeLeft ${tr('game_screen.seconds')}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        currentExpression,
+                        style: const TextStyle(
+                          color: Color(0xffffa400),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 38,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: 150,
+                        child: TextField(
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                          focusNode: _focusNode,
+                          cursorColor: const Color(0xffffa400),
+                          textAlign: TextAlign.center,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9,.]')),
+                          ],
+                          onChanged: (value) {
+                            if (mounted) {
+                              setState(() {
+                                userInput = value;
+                              });
+                            }
+                            if (value.isNotEmpty) {
+                              _validateAnswer();
+                            }
+                          },
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xffffa400)),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xffffa400)),
+                            ),
+                            fillColor: _inputFillColor,
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: canSkip ? _skipQuestion : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffffa400),
+                        ),
+                        child: Text(
+                          tr('game_screen.skip'),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    preStartTimer > 0
+                        ? "$preStartTimer"
+                        : tr('game_screen.get_ready'),
                     style: const TextStyle(
                       color: Color(0xffffa400),
                       fontWeight: FontWeight.bold,
-                      fontSize: 38,
+                      fontSize: 48,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: 150,
-                    child: TextField(
-                      focusNode: _focusNode,
-                      cursorColor: const Color(0xffffa400),
-                      textAlign: TextAlign.center,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
-                      ],
-                      onChanged: (value) {
-                        if (mounted) {
-                          setState(() {
-                            userInput = value;
-                          });
-                        }
-                        if (value.isNotEmpty) {
-                          _validateAnswer();
-                        }
-                      },
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffffa400)),
-                        ),
-                        fillColor: _inputFillColor,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: canSkip ? _skipQuestion : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffffa400),
-                    ),
-                    child: Text(
-                      tr('game_screen.skip'),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : Text(
-                preStartTimer > 0
-                    ? "$preStartTimer"
-                    : tr('game_screen.get_ready'),
-                style: const TextStyle(
-                  color: Color(0xffffa400),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 38,
-                ),
-              ),
-      ),
-    ));
+          ),
+        ));
   }
 }
