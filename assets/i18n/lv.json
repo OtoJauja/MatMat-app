@@ -111,7 +111,7 @@
         }
       },
       "sequences": {
-        "title": "Secības",
+        "title": "Virknes",
         "missions": {
           "1": "Sākt ar 1; 2; 3 vai 4 un pievienot 1 cipara skaitli. Piemēram, 4; 11; 18; 25; ...",
           "2": "Sākt ar 2 ciparu skaitļiem un pievienot 1 cipara skaitļus. Piemēram, 23; 28; 33; 38; ...",
@@ -152,6 +152,7 @@
     "exponentiation_subtitle": "Kāpināšanas pamati",
     "percentages": "Procenti",
     "percentages_subtitle": "Izpratne par procentiem",
+    "allround_tips": "Visaptveroši padomi",
     "tip1": { "name": "Jautri reizināšanas triki" },
     "tip2": { "name": "Jautrais reizināšanas video" },
     "tip3": { "name": "Reizināšana no 1 līdz 20" },
@@ -165,7 +166,10 @@
     "tip11": { "name": "Kubsaknes" },
     "tip12": { "name": "Procentu likmes padarītas vienkāršas" },
     "tip13": { "name": "Procentuālais īpatsvars desmitdaļās" },
-    "tip14": { "name": "Procentos: Uz 100" }
+    "tip14": { "name": "Procentos: Uz 100" },
+    "tip15": { "name": "Padomi skaitīšanai" },
+    "tip16": { "name": "Paplašinātās aprēķinu metodes" },
+    "tip17": { "name": "Galvasrēķinu triki" }
   },
   "progress": {
     "title": "Progress",
@@ -216,6 +220,8 @@
     "of": "no",
     "increase": "Palielini",
     "decrease": "Samazināt",
-    "by": "par"
+    "by": "par",
+    "cheer":"tā turpināt!",
+    "cheer_correct": "Pareizi "
   }
   }

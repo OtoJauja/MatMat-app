@@ -53,6 +53,7 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
   int preStartTimer = 5;
   late Stopwatch _stopwatch;
   late FocusNode _focusNode;
+  bool showingCorrect = false; // For showing animation
 
   Future<void> _saveHighestScore(int missionIndex, int newScore) async {
     final prefs = await SharedPreferences.getInstance();
@@ -240,39 +241,75 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
   }
 
   void _validateAnswer() {
-    final userAnswer = int.tryParse(userInput) ?? -1;
-    if (mounted) {
+  // Parse the user's input
+  final userAnswer = int.tryParse(userInput) ?? -1;
+
+  if (!mounted) return;
+
+  // Always bump the total questions count
+  setState(() {
+    totalQuestionsAnswered++;
+  });
+
+  // Correct case
+  if (userAnswer == nextValue) {
+    // 1) Update scores
+    setState(() {
+      sessionScore++;
+      if (sessionScore > highestScore) highestScore = sessionScore;
+    });
+
+    // 2) Check for milestone
+    final bool isMilestone = sessionScore == 5 ||
+                             sessionScore == 10 ||
+                             sessionScore == 15;
+
+    if (isMilestone) {
+      // Show the “correct” animation
       setState(() {
-        totalQuestionsAnswered++; // Increment total questions
-        if (userAnswer == nextValue) {
-          sessionScore++; // Increment session score
-          // Update highestScore if needed.
-          if (sessionScore > highestScore) {
-            highestScore = sessionScore;
-          }
-          if (totalQuestionsAnswered == 16) {
-            _endGame();
-          } else {
-            _generateSequence();
-          }
-        } else {
-          showingAnswer = true; // Show correct answer for incorrect response
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
-              setState(() {
-                showingAnswer = false;
-                if (totalQuestionsAnswered < 16) {
-                  _generateSequence();
-                } else {
-                  _endGame();
-                }
-              });
-            }
-          });
-        }
+        showingCorrect = true;
+        showingAnswer = false;
       });
+
+      // After 2 seconds, hide animation and go next
+      Future.delayed(const Duration(seconds: 2), () {
+        if (!mounted) return;
+        setState(() {
+          showingCorrect = false;
+        });
+        _proceedToNextSequence();
+      });
+
+    } else {
+      // Not a milestone → go straight to next
+      _proceedToNextSequence();
     }
+
+  } 
+  // Incorrect case
+  else {
+    setState(() {
+      showingAnswer = true;
+      showingCorrect = false;
+    });
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() {
+        showingAnswer = false;
+      });
+      _proceedToNextSequence();
+    });
   }
+}
+
+/// Shared “advance or end” logic for sequences
+void _proceedToNextSequence() {
+  if (totalQuestionsAnswered >= 16) {
+    _endGame();
+  } else {
+    _generateSequence();
+  }
+}
 
   // End the game
   void _endGame() {
@@ -480,6 +517,21 @@ class _CalmBeeGameState extends State<CalmBearGameSequences> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    if (showingCorrect) ...[
+                      Text(
+                      "$sessionScore ${tr('game_screen.cheer_correct')}${tr('game_screen.cheer')}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28,
+                      ),
+                    ),
+                      Lottie.asset(
+                        'assets/animations/lacis2.json',
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.fill,
+                      ),
+                    ],
                     showingAnswer
                         ? Column(mainAxisSize: MainAxisSize.min, children: [
                             RichText(

@@ -88,6 +88,19 @@ class LearnView extends StatelessWidget {
             'url':
                 'https://cf.ltkcdn.net/home-school/files/4425-times-tables-1-to-20.pdf'
           },
+          {
+            'name': tr('learn.tip15.name'),
+            'url': 'https://mentalmathpro.com/mental-math-strategies'
+          },
+          {
+            'name': tr('learn.tip16.name'),
+            'url':
+                'https://worldmentalcalculation.com/advanced-calculation-methods/'
+          },
+          {
+            'name': tr('learn.tip17.name'),
+            'url': 'https://brilliant.org/wiki/mental-math-tricks/'
+          },
         ],
       },
       {

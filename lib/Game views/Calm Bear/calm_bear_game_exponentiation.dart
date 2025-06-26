@@ -292,54 +292,55 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
 
   // Validate user's answer
   void _validateAnswer() {
-    final correctAnswer = _evaluateExpression(currentExpression);
-    double userAnswer =
-        double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
+  final correctAnswer = _evaluateExpression(currentExpression);
+  double userAnswer =
+      double.tryParse(userInput.replaceAll(",", ".")) ?? double.nan;
 
-    if (!mounted) return;
+  if (!mounted) return;
 
-    setState(() {
-      totalQuestionsAnswered++;
-    });
+  setState(() {
+    totalQuestionsAnswered++;
+  });
 
-    if ((userAnswer - correctAnswer).abs() < 0.01) {
-      sessionScore++;
-      if (sessionScore > highestScore) highestScore = sessionScore;
+  if ((userAnswer - correctAnswer).abs() < 0.01) {
+    sessionScore++;
+    if (sessionScore > highestScore) highestScore = sessionScore;
 
-      setState(() {
-        showingCorrect = true;
-      });
+    // Only show the correct animation on milestones 5, 10, 15
+    if (sessionScore == 5 || sessionScore == 10 || sessionScore == 15) {
+      setState(() => showingCorrect = true);
 
-      // after 2 seconds hide animation and go next
       Future.delayed(const Duration(seconds: 2), () {
         if (!mounted) return;
-        setState(() {
-          showingCorrect = false;
-        });
-
+        setState(() => showingCorrect = false);
         if (totalQuestionsAnswered == 16) {
           _endGame();
         } else {
           _generateExpression();
         }
       });
-    } else {
-      setState(() {
-        showingAnswer = true;
-      });
-      Future.delayed(const Duration(seconds: 3), () {
-        if (!mounted) return;
-        setState(() {
-          showingAnswer = false;
-        });
-        if (totalQuestionsAnswered == 16) {
-          _endGame();
-        } else {
-          _generateExpression();
-        }
-      });
+      return;
     }
+
+    if (totalQuestionsAnswered == 16) {
+      _endGame();
+    } else {
+      _generateExpression();
+    }
+
+  } else {
+    setState(() => showingAnswer = true);
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() => showingAnswer = false);
+      if (totalQuestionsAnswered == 16) {
+        _endGame();
+      } else {
+        _generateExpression();
+      }
+    });
   }
+}
 
   // End the game
   void _endGame() {
@@ -555,6 +556,13 @@ class _CalmBearGameState extends State<CalmBearGameExponentiation> {
                     ),
                     const SizedBox(height: 20),
                     if (showingCorrect) ...[
+                      Text(
+                      "$sessionScore ${tr('game_screen.cheer_correct')}${tr('game_screen.cheer')}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28,
+                      ),
+                    ),
                       Lottie.asset(
                         'assets/animations/lacis2.json',
                         height: 150,

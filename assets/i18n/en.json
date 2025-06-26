@@ -165,7 +165,10 @@
     "tip11": { "name": "Cubic roots" },
     "tip12": { "name": "Percentages Made Simple" },
     "tip13": { "name": "Percentages in 10s" },
-    "tip14": { "name": "Percentages: Per 100" }
+    "tip14": { "name": "Percentages: Per 100" },
+    "tip15": { "name": "Tips for Addition" },
+    "tip16": { "name": "Advanced Calculation Methods" },
+    "tip17": { "name": "Mental Math Tricks" }
   },
   "progress": {
     "title": "Progress",
@@ -215,7 +218,9 @@
     "of": "of",
     "increase": "Increase",
     "decrease": "Decrease",
-    "by": "par"
+    "by": "par",
+    "cheer":"keep it up!",
+    "cheer_correct": "Correct "
   },
   "login_screen": {
     
